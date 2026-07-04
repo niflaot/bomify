@@ -1,0 +1,56 @@
+{
+  "name": "bomify",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niflaot/bomify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/niflaot/bomify/issues"
+  },
+  "homepage": "https://github.com/niflaot/bomify#readme",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "next": "^16.2.10",
+    "next-intl": "^4.13.1",
+    "pg": "^8.22.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.1.0",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "dotenv": "^17.4.2",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.10",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
+    "prisma": "^7.8.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  }
+}

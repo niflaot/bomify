@@ -1,0 +1,34 @@
+# dependencies
+node_modules/
+
+# next
+.next/
+out/
+
+# production
+build/
+
+# testing
+coverage/
+*.tsbuildinfo
+
+# prisma
+generated/
+
+# environment
+.env
+.env*.local
+!.env.example
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# system
+.DS_Store
+
+# editor
+.idea/
+.vscode/
