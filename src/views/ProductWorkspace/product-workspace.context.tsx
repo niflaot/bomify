@@ -27,7 +27,7 @@ export function ProductWorkspaceProvider(
   props: ProductWorkspaceProviderProps
 ): ReactElement {
   const { children } = props
-  const [activePanel, setActivePanel] = useState<ProductWorkspacePanel>('pieces')
+  const [activePanel, setActivePanel] = useState<ProductWorkspacePanel>('combinations')
   const [panelOpen, setPanelOpen] = useState(true)
 
   const selectPanel = useCallback(

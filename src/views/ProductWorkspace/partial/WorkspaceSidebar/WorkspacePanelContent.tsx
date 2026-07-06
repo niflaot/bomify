@@ -10,13 +10,20 @@ import {
 import type { ReactElement } from 'react'
 
 import type {
+  ProductWorkspaceCombination,
+  ProductWorkspaceCombinationActions,
+  ProductWorkspaceItem,
   ProductWorkspaceLabels,
   ProductWorkspacePanel
 } from '../../product-workspace.types'
+import { CombinationsPanel } from './CombinationsPanel'
 
 type WorkspacePanelContentProps = {
+  readonly combinationActions: ProductWorkspaceCombinationActions
+  readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
   readonly panel: ProductWorkspacePanel
+  readonly product: ProductWorkspaceItem
 }
 
 type PanelCopy = {
@@ -111,23 +118,6 @@ function MaterialsPanelBody(): ReactElement {
   )
 }
 
-function CombinationsPanelBody(): ReactElement {
-  return (
-    <div className="grid gap-3">
-      {[0, 1, 2].map(index => (
-        <div className="border p-4" key={index}>
-          <PlaceholderLine className="mb-3 h-3 w-2/3 bg-muted" />
-          <div className="grid grid-cols-3 gap-2">
-            <PlaceholderLine className="h-8 bg-muted/70" />
-            <PlaceholderLine className="h-8 bg-muted/70" />
-            <PlaceholderLine className="h-8 bg-muted/70" />
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
 function UploadsPanelBody(): ReactElement {
   return (
     <div className="grid gap-4">
@@ -150,7 +140,9 @@ function StickersPanelBody(): ReactElement {
   )
 }
 
-function renderPanelBody(panel: ProductWorkspacePanel): ReactElement {
+function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
+  const { combinationActions, combinations, labels, panel, product } = props
+
   if (panel === 'product') {
     return <ProductPanelBody />
   }
@@ -160,7 +152,14 @@ function renderPanelBody(panel: ProductWorkspacePanel): ReactElement {
   }
 
   if (panel === 'combinations') {
-    return <CombinationsPanelBody />
+    return (
+      <CombinationsPanel
+        actions={combinationActions}
+        combinations={combinations}
+        labels={labels}
+        productId={product.id}
+      />
+    )
   }
 
   if (panel === 'uploads') {
@@ -198,7 +197,7 @@ export function WorkspacePanelContent(
         </div>
         <p className="text-sm leading-6 text-muted-foreground">{copy.description}</p>
       </div>
-      {renderPanelBody(panel)}
+      {renderPanelBody(props)}
     </section>
   )
 }

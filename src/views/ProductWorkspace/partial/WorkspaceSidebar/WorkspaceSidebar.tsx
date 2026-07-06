@@ -14,13 +14,19 @@ import { cn } from '@/core/utils/class-name.utils'
 
 import { useProductWorkspace } from '../../product-workspace.context'
 import type {
+  ProductWorkspaceCombination,
+  ProductWorkspaceCombinationActions,
+  ProductWorkspaceItem,
   ProductWorkspaceLabels,
   ProductWorkspacePanel
 } from '../../product-workspace.types'
 import { WorkspacePanelContent } from './WorkspacePanelContent'
 
 type WorkspaceSidebarProps = {
+  readonly combinationActions: ProductWorkspaceCombinationActions
+  readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
+  readonly product: ProductWorkspaceItem
 }
 
 type WorkspaceRailItem = {
@@ -29,10 +35,10 @@ type WorkspaceRailItem = {
 }
 
 const railItems: readonly WorkspaceRailItem[] = [
+  { key: 'combinations', icon: Layers3 },
   { key: 'product', icon: Package },
   { key: 'pieces', icon: Boxes },
   { key: 'materials', icon: SwatchBook },
-  { key: 'combinations', icon: Layers3 },
   { key: 'uploads', icon: FileUp },
   { key: 'stickers', icon: Printer }
 ]
@@ -60,7 +66,7 @@ function itemLabel(
  * @returns Sidebar element.
  */
 export function WorkspaceSidebar(props: WorkspaceSidebarProps): ReactElement {
-  const { labels } = props
+  const { combinationActions, combinations, labels, product } = props
   const { activePanel, panelOpen, selectPanel } = useProductWorkspace()
 
   return (
@@ -112,7 +118,13 @@ export function WorkspaceSidebar(props: WorkspaceSidebarProps): ReactElement {
             </p>
           </header>
           <div className="min-h-0 overflow-y-auto">
-            <WorkspacePanelContent labels={labels} panel={activePanel} />
+            <WorkspacePanelContent
+              combinationActions={combinationActions}
+              combinations={combinations}
+              labels={labels}
+              panel={activePanel}
+              product={product}
+            />
           </div>
         </div>
       </div>
