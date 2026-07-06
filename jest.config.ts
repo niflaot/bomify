@@ -10,6 +10,7 @@ const config: Config = {
   coverageProvider: 'v8',
   modulePathIgnorePatterns: ['<rootDir>/.next/'],
   moduleNameMapper: {
+    '^lucide-react/dynamic$': '<rootDir>/src/test/lucide-dynamic.mock.tsx',
     '^@/(.*)$': '<rootDir>/src/$1'
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],

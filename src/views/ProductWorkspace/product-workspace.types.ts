@@ -1,3 +1,5 @@
+import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
+import type { MaterialFormState } from '@/core/types/material.types'
 import type { ProductCombinationFormState } from '@/core/types/product-combination.types'
 
 /**
@@ -22,6 +24,28 @@ export type ProductWorkspaceCombination = {
 }
 
 /**
+ * Global material data rendered in the workspace.
+ */
+export type ProductWorkspaceMaterial = {
+  readonly hexColor: string
+  readonly iconKey: MaterialIconKey
+  readonly id: string
+  readonly name: string
+  readonly updatedAt: string
+  readonly widthCm: number
+}
+
+/**
+ * Product material link rendered in the workspace.
+ */
+export type ProductWorkspaceProductMaterial = {
+  readonly combinationId: string | null
+  readonly id: string
+  readonly material: ProductWorkspaceMaterial
+  readonly updatedAt: string
+}
+
+/**
  * Server action shape used by combination forms.
  */
 export type ProductCombinationFormAction = (
@@ -36,6 +60,23 @@ export type ProductWorkspaceCombinationActions = {
   readonly create: ProductCombinationFormAction
   readonly delete: ProductCombinationFormAction
   readonly update: ProductCombinationFormAction
+}
+
+/**
+ * Server action shape used by material forms.
+ */
+export type MaterialFormAction = (
+  state: MaterialFormState,
+  formData: FormData
+) => Promise<MaterialFormState>
+
+/**
+ * Server actions used by the materials panel.
+ */
+export type ProductWorkspaceMaterialActions = {
+  readonly add: MaterialFormAction
+  readonly delete: MaterialFormAction
+  readonly update: MaterialFormAction
 }
 
 /**
@@ -74,6 +115,31 @@ export type ProductWorkspaceLabels = {
   readonly deleteCombination: string
   readonly deleting: string
   readonly editCombination: string
+  readonly addMaterial: string
+  readonly allCombinations: string
+  readonly createCatalogMaterial: string
+  readonly deleteMaterial: string
+  readonly editMaterial: string
+  readonly materialCatalogEmptyDescription: string
+  readonly materialCatalogSearchLabel: string
+  readonly materialCatalogSearchPlaceholder: string
+  readonly materialColorLabel: string
+  readonly materialDeleteDescription: string
+  readonly materialDeleteTitle: string
+  readonly materialEmptyDescription: string
+  readonly materialEmptyTitle: string
+  readonly materialIconLabel: string
+  readonly materialIconSearchLabel: string
+  readonly materialIconSearchPlaceholder: string
+  readonly materialNameLabel: string
+  readonly materialNamePlaceholder: string
+  readonly materialScopeLabel: string
+  readonly materialSelectLabel: string
+  readonly materialWidthLabel: string
+  readonly materialWidthPlaceholder: string
+  readonly newCatalogMaterial: string
+  readonly saveMaterial: string
+  readonly selectExistingMaterial: string
   readonly product: string
   readonly productPanelDescription: string
   readonly pieces: string

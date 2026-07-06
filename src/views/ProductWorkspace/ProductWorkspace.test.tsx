@@ -4,11 +4,14 @@ import userEvent from '@testing-library/user-event'
 import { ProductWorkspace } from './ProductWorkspace'
 import type {
   ProductWorkspaceCombinationActions,
-  ProductWorkspaceLabels
+  ProductWorkspaceLabels,
+  ProductWorkspaceMaterialActions
 } from './product-workspace.types'
 
 const labels: ProductWorkspaceLabels = {
   addCombination: 'Add combination',
+  addMaterial: 'Add material',
+  allCombinations: 'All combinations',
   calculate: 'Calculate',
   cancel: 'Cancel',
   canvasEmptyDescription: 'Canvas placeholder description.',
@@ -25,21 +28,44 @@ const labels: ProductWorkspaceLabels = {
   combinationNamePlaceholder: 'Leather standard',
   combinations: 'Combinations',
   combinationsPanelDescription: 'Combination panel.',
+  createCatalogMaterial: 'Create catalog material',
   createCombination: 'Create combination',
   deleteCombination: 'Delete',
+  deleteMaterial: 'Remove',
   deleting: 'Deleting',
   editCombination: 'Edit',
+  editMaterial: 'Edit material',
   export: 'Export',
   home: 'Products home',
   materials: 'Materials',
+  materialCatalogEmptyDescription: 'No materials match.',
+  materialCatalogSearchLabel: 'Search materials',
+  materialCatalogSearchPlaceholder: 'Search material catalog',
+  materialColorLabel: 'Color',
+  materialDeleteDescription: 'Remove only from this product.',
+  materialDeleteTitle: 'Remove material',
+  materialEmptyDescription: 'Attach a material.',
+  materialEmptyTitle: 'No materials attached',
+  materialIconLabel: 'Icon',
+  materialIconSearchLabel: 'Search icons',
+  materialIconSearchPlaceholder: 'Search Lucide icons',
+  materialNameLabel: 'Name',
+  materialNamePlaceholder: 'Canvas',
   materialsPanelDescription: 'Materials panel.',
+  materialScopeLabel: 'Applies to',
+  materialSelectLabel: 'Material',
+  materialWidthLabel: 'Width in cm',
+  materialWidthPlaceholder: '140',
+  newCatalogMaterial: 'New material',
   pieces: 'Pieces',
   piecesPanelDescription: 'Pieces panel.',
   product: 'Product',
   productPanelDescription: 'Product panel.',
   save: 'Save',
   saveCombination: 'Save combination',
+  saveMaterial: 'Save material',
   saving: 'Saving',
+  selectExistingMaterial: 'Use catalog',
   sidebarTitle: 'Workspace panel',
   stickers: 'Stickers',
   stickersPanelDescription: 'Stickers panel.',
@@ -72,13 +98,42 @@ const combinationActions: ProductWorkspaceCombinationActions = {
   update: async () => ({ status: 'success' })
 }
 
+const catalogMaterials = [
+  {
+    hexColor: '#222222',
+    iconKey: 'SwatchBook' as const,
+    id: 'material-one',
+    name: 'Canvas',
+    updatedAt: '2026-07-06T12:00:00.000Z',
+    widthCm: 140
+  }
+]
+
+const productMaterials = [
+  {
+    combinationId: null,
+    id: 'product-material-one',
+    material: catalogMaterials[0],
+    updatedAt: '2026-07-06T12:00:00.000Z'
+  }
+]
+
+const materialActions: ProductWorkspaceMaterialActions = {
+  add: async () => ({ status: 'success' }),
+  delete: async () => ({ status: 'success' }),
+  update: async () => ({ status: 'success' })
+}
+
 function renderWorkspace(): ReturnType<typeof render> {
   return render(
     <ProductWorkspace
+      catalogMaterials={catalogMaterials}
       combinationActions={combinationActions}
       combinations={combinations}
       labels={labels}
+      materialActions={materialActions}
       product={product}
+      productMaterials={productMaterials}
     />
   )
 }
@@ -127,5 +182,37 @@ describe('ProductWorkspace', () => {
 
     expect(screen.getByRole('heading', { name: 'Edit' })).toBeInTheDocument()
     expect(screen.getByLabelText('Name')).toHaveValue('Leather standard')
+  })
+
+  it('opens the materials panel and interactive material icon picker', async () => {
+    const user = userEvent.setup()
+
+    renderWorkspace()
+
+    await user.click(screen.getByRole('button', { name: 'Materials' }))
+
+    expect(screen.getByText('Canvas')).toBeInTheDocument()
+    expect(screen.getByText('140 cm - All combinations')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Add material' }))
+    await user.click(screen.getByRole('button', { name: 'New material' }))
+
+    const iconSearch = screen.getByLabelText('Search icons')
+
+    await user.type(iconSearch, 'SwatchBook')
+
+    expect(screen.getByRole('button', { name: 'Icon: Swatch Book' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+
+    await user.clear(iconSearch)
+    await user.type(iconSearch, 'Shield')
+    await user.click(screen.getByRole('button', { name: 'Icon: Shield' }))
+
+    expect(screen.getByRole('button', { name: 'Icon: Shield' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
   })
 })

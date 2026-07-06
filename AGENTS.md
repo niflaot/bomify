@@ -85,6 +85,7 @@ This file centralizes the most relevant coding and collaboration rules for this 
 - Use shadcn form primitives (`Input`, `Textarea`, `Label`, `Button`, `Card`) and Tailwind layout utilities
 - Keep reserved error-message space to avoid layout shift
 - Include loading/disabled states for async submissions
+- Include a visible loading bar during async submissions or route-level loading states
 - Reset dependent fields when controlling fields change format/type
 - Any modifying or destructive action must require an explicit confirm/cancel step
 
@@ -111,6 +112,7 @@ This file centralizes the most relevant coding and collaboration rules for this 
 
 ## Data loading policy
 - For product edit screens (and any view requiring fetches), render skeleton-only until all required data sources are loaded
+- Every route or view that awaits required server data must provide a loading skeleton and loading bar
 - Do not render partial/intermediate editable UI with incomplete required data (avoid partial hydration of forms)
 - Gate rendering with an explicit aggregated readiness condition (e.g. `isReady = allRequiredRequestsSucceeded`)
 - While not ready, keep interactive controls hidden/disabled and show only deterministic loading states

@@ -5,5 +5,8 @@ export type {
   ProductWorkspaceCombinationActions,
   ProductWorkspaceItem,
   ProductWorkspaceLabels,
-  ProductWorkspacePanel
+  ProductWorkspaceMaterial,
+  ProductWorkspaceMaterialActions,
+  ProductWorkspacePanel,
+  ProductWorkspaceProductMaterial
 } from './product-workspace.types'

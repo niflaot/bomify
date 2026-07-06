@@ -14,6 +14,9 @@ import { cn } from '@/core/utils/class-name.utils'
 
 import { useProductWorkspace } from '../../product-workspace.context'
 import type {
+  ProductWorkspaceMaterial,
+  ProductWorkspaceMaterialActions,
+  ProductWorkspaceProductMaterial,
   ProductWorkspaceCombination,
   ProductWorkspaceCombinationActions,
   ProductWorkspaceItem,
@@ -23,10 +26,13 @@ import type {
 import { WorkspacePanelContent } from './WorkspacePanelContent'
 
 type WorkspaceSidebarProps = {
+  readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
   readonly combinationActions: ProductWorkspaceCombinationActions
   readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
+  readonly materialActions: ProductWorkspaceMaterialActions
   readonly product: ProductWorkspaceItem
+  readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
 }
 
 type WorkspaceRailItem = {
@@ -66,7 +72,15 @@ function itemLabel(
  * @returns Sidebar element.
  */
 export function WorkspaceSidebar(props: WorkspaceSidebarProps): ReactElement {
-  const { combinationActions, combinations, labels, product } = props
+  const {
+    catalogMaterials,
+    combinationActions,
+    combinations,
+    labels,
+    materialActions,
+    product,
+    productMaterials
+  } = props
   const { activePanel, panelOpen, selectPanel } = useProductWorkspace()
 
   return (
@@ -119,11 +133,14 @@ export function WorkspaceSidebar(props: WorkspaceSidebarProps): ReactElement {
           </header>
           <div className="min-h-0 overflow-y-auto">
             <WorkspacePanelContent
+              catalogMaterials={catalogMaterials}
               combinationActions={combinationActions}
               combinations={combinations}
               labels={labels}
+              materialActions={materialActions}
               panel={activePanel}
               product={product}
+              productMaterials={productMaterials}
             />
           </div>
         </div>

@@ -10,14 +10,20 @@ import type {
   ProductWorkspaceCombination,
   ProductWorkspaceCombinationActions,
   ProductWorkspaceItem,
-  ProductWorkspaceLabels
+  ProductWorkspaceLabels,
+  ProductWorkspaceMaterial,
+  ProductWorkspaceMaterialActions,
+  ProductWorkspaceProductMaterial
 } from './product-workspace.types'
 
 type ProductWorkspaceProps = {
+  readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
   readonly combinationActions: ProductWorkspaceCombinationActions
   readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
+  readonly materialActions: ProductWorkspaceMaterialActions
   readonly product: ProductWorkspaceItem
+  readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
 }
 
 /**
@@ -27,7 +33,15 @@ type ProductWorkspaceProps = {
  * @returns Product workspace element.
  */
 export function ProductWorkspace(props: ProductWorkspaceProps): ReactElement {
-  const { combinationActions, combinations, labels, product } = props
+  const {
+    catalogMaterials,
+    combinationActions,
+    combinations,
+    labels,
+    materialActions,
+    product,
+    productMaterials
+  } = props
 
   return (
     <ProductWorkspaceProvider>
@@ -35,10 +49,13 @@ export function ProductWorkspace(props: ProductWorkspaceProps): ReactElement {
         <WorkspaceHeader labels={labels} product={product} />
         <div className="grid min-h-0 grid-cols-[auto_1fr]">
           <WorkspaceSidebar
+            catalogMaterials={catalogMaterials}
             combinationActions={combinationActions}
             combinations={combinations}
             labels={labels}
+            materialActions={materialActions}
             product={product}
+            productMaterials={productMaterials}
           />
           <WorkspaceCanvas labels={labels} />
         </div>

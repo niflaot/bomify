@@ -18,10 +18,22 @@ function createPrismaClient(): PrismaClient {
   })
 }
 
+function isPrismaClientCompatible(client: PrismaClient | undefined): client is PrismaClient {
+  return Boolean(
+    client &&
+      'product' in client &&
+      'productCombination' in client &&
+      'material' in client &&
+      'productMaterial' in client
+  )
+}
+
 /**
  * Shared Prisma client instance for server-side data access.
  */
-export const prisma = globalForPrisma.prisma ?? createPrismaClient()
+export const prisma = isPrismaClientCompatible(globalForPrisma.prisma)
+  ? globalForPrisma.prisma
+  : createPrismaClient()
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma

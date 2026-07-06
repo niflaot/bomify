@@ -18,6 +18,7 @@ model Product {
   updatedAt      DateTime  @updatedAt @map("updated_at")
   deletedAt      DateTime? @map("deleted_at")
   combinations   ProductCombination[]
+  materials      ProductMaterial[]
 
   @@index([deletedAt])
   @@index([updatedAt])
@@ -33,8 +34,43 @@ model ProductCombination {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
   product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  materials ProductMaterial[]
 
   @@index([productId, deletedAt])
   @@index([updatedAt])
   @@map("product_combinations")
+}
+
+model Material {
+  id               String            @id @default(cuid())
+  name             String            @db.VarChar(140)
+  iconKey          String            @map("icon_key") @db.VarChar(40)
+  hexColor         String            @map("hex_color") @db.VarChar(7)
+  widthCm          Float             @map("width_cm")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  deletedAt        DateTime?         @map("deleted_at")
+  productMaterials ProductMaterial[]
+
+  @@index([deletedAt])
+  @@index([name])
+  @@map("materials")
+}
+
+model ProductMaterial {
+  id            String              @id @default(cuid())
+  productId     String              @map("product_id")
+  materialId    String              @map("material_id")
+  combinationId String?             @map("combination_id")
+  createdAt     DateTime            @default(now()) @map("created_at")
+  updatedAt     DateTime            @updatedAt @map("updated_at")
+  combination   ProductCombination? @relation(fields: [combinationId], references: [id], onDelete: Cascade)
+  material      Material            @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  product       Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([materialId])
+  @@index([combinationId])
+  @@unique([productId, materialId, combinationId])
+  @@map("product_materials")
 }

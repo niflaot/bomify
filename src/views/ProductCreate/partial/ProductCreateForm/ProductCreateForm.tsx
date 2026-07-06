@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { FormLoadingBar } from '@/components/ui/loading-bar'
 import { Textarea } from '@/components/ui/textarea'
 
 import type { CreateProductFormAction, ProductCreateLabels } from '../../product-create.types'
@@ -45,6 +46,7 @@ export function ProductCreateForm(props: ProductCreateFormProps): ReactElement {
     <Card>
       <CardContent className="pt-5">
         <form action={formAction} className="grid gap-6">
+          <FormLoadingBar />
           <div className="grid gap-2">
             <Label htmlFor="product-name">{labels.nameLabel}</Label>
             <Input

@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { FormLoadingBar } from '@/components/ui/loading-bar'
 import type { ProductCombinationFormState } from '@/core/types/product-combination.types'
 
 import type {
@@ -70,6 +71,7 @@ function CombinationForm(props: CombinationFormProps): ReactElement {
 
   return (
     <form action={formAction} className="grid gap-5">
+      <FormLoadingBar />
       <input name="productId" type="hidden" value={productId} />
       {combination ? (
         <input name="combinationId" type="hidden" value={combination.id} />

@@ -10,20 +10,27 @@ import {
 import type { ReactElement } from 'react'
 
 import type {
+  ProductWorkspaceMaterial,
+  ProductWorkspaceMaterialActions,
   ProductWorkspaceCombination,
   ProductWorkspaceCombinationActions,
   ProductWorkspaceItem,
   ProductWorkspaceLabels,
-  ProductWorkspacePanel
+  ProductWorkspacePanel,
+  ProductWorkspaceProductMaterial
 } from '../../product-workspace.types'
 import { CombinationsPanel } from './CombinationsPanel'
+import { MaterialsPanel } from './MaterialsPanel'
 
 type WorkspacePanelContentProps = {
+  readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
   readonly combinationActions: ProductWorkspaceCombinationActions
   readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
+  readonly materialActions: ProductWorkspaceMaterialActions
   readonly panel: ProductWorkspacePanel
   readonly product: ProductWorkspaceItem
+  readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
 }
 
 type PanelCopy = {
@@ -105,19 +112,6 @@ function PiecesPanelBody(): ReactElement {
   )
 }
 
-function MaterialsPanelBody(): ReactElement {
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      {[0, 1, 2, 3].map(index => (
-        <div className="border p-3" key={index}>
-          <div className="mb-3 aspect-square bg-muted" />
-          <PlaceholderLine className="h-3 w-4/5 bg-muted" />
-        </div>
-      ))}
-    </div>
-  )
-}
-
 function UploadsPanelBody(): ReactElement {
   return (
     <div className="grid gap-4">
@@ -141,14 +135,32 @@ function StickersPanelBody(): ReactElement {
 }
 
 function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
-  const { combinationActions, combinations, labels, panel, product } = props
+  const {
+    catalogMaterials,
+    combinationActions,
+    combinations,
+    labels,
+    materialActions,
+    panel,
+    product,
+    productMaterials
+  } = props
 
   if (panel === 'product') {
     return <ProductPanelBody />
   }
 
   if (panel === 'materials') {
-    return <MaterialsPanelBody />
+    return (
+      <MaterialsPanel
+        actions={materialActions}
+        catalogMaterials={catalogMaterials}
+        combinations={combinations}
+        labels={labels}
+        productId={product.id}
+        productMaterials={productMaterials}
+      />
+    )
   }
 
   if (panel === 'combinations') {
