@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 import { getTranslations } from 'next-intl/server'
 
+import { MaterialCutCanvas } from '@/components/MaterialCutCanvas'
 import { PieceRenderer } from '@/components/PieceRenderer'
 
 /**
@@ -18,12 +19,18 @@ export default async function Page(): Promise<ReactElement> {
   }
   const pieces = [
     {
+      heightMm: 100,
       id: '1',
-      name: t('pieceOne')
+      name: t('pieceOne'),
+      quantity: 3,
+      widthMm: 305
     },
     {
+      heightMm: 230,
       id: '2',
-      name: t('pieceTwo')
+      name: t('pieceTwo'),
+      quantity: 2,
+      widthMm: 270.9
     }
   ] as const
 
@@ -41,6 +48,34 @@ export default async function Page(): Promise<ReactElement> {
         <h1>{t('title')}</h1>
         <p>{t('subtitle')}</p>
       </header>
+
+      <section style={{ display: 'grid', gap: '1rem' }}>
+        <h2 style={{ margin: 0 }}>{t('cutCanvasTitle')}</h2>
+        <MaterialCutCanvas
+          labels={{
+            efficiency: t('efficiency'),
+            fallbackError: t('fallbackError'),
+            height: t('height'),
+            loading: t('loading'),
+            piece: t('piece'),
+            unplaced: t('unplaced'),
+            used: t('used'),
+            waste: t('waste'),
+            width: t('width')
+          }}
+          materialHeightCm={60}
+          materialWidthCm={80}
+          pieces={pieces.map(piece => ({
+            heightMm: piece.heightMm,
+            id: piece.id,
+            name: piece.name,
+            quantity: piece.quantity,
+            source: `/${piece.id}.dxf`,
+            sourceType: 'dxf',
+            widthMm: piece.widthMm
+          }))}
+        />
+      </section>
 
       <section
         aria-label={t('piecesTitle')}
@@ -88,6 +123,10 @@ export default async function Page(): Promise<ReactElement> {
                   })}
                   framed={false}
                   labels={rendererLabels}
+                  measurements={{
+                    heightMm: piece.heightMm,
+                    widthMm: piece.widthMm
+                  }}
                   source={`/${piece.id}.dxf`}
                   sourceType="dxf"
                   strokeWidth={1}

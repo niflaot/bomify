@@ -24,6 +24,10 @@ type UsePieceSourceProps = {
   readonly fallbackError: string
 }
 
+type ReadyPieceSourceState = Omit<Extract<PieceRendererState, { status: 'ready' }>, 'key'>
+
+const sourceCache = new Map<string, Promise<ReadyPieceSourceState>>()
+
 /**
  * Loads a piece source and returns render-ready geometry or PDF data.
  *
@@ -50,46 +54,26 @@ export function usePieceSource(props: UsePieceSourceProps): PieceRendererState {
 
   useEffect(() => {
     let isMounted = true
-    const sourceUrl = sourceType === 'pdf' ? getSourceUrl(source) : ''
+    const cacheable = typeof source === 'string'
+    const sourceUrl = sourceType === 'pdf' && !cacheable ? getSourceUrl(source) : ''
 
     async function load(): Promise<void> {
       try {
-        if (sourceType === 'dxf') {
-          const text = await readSourceText(source)
-          const geometry = parseDxfGeometry(text)
-
-          if (!isMounted) {
-            return
-          }
-
-          setState({
-            status: 'ready',
-            key: loadKey,
-            sourceUrl,
-            sourceType,
-            dxfGeometry: geometry,
-            measurements: measurements || {
-              widthMm: geometry.bounds.width * unitScale,
-              heightMm: geometry.bounds.height * unitScale
-            }
-          })
-          return
-        }
-
-        const buffer = await readSourceBuffer(source)
+        const readyState = await getReadySource({
+          cacheable,
+          cacheKey: loadKey,
+          measurements,
+          source,
+          sourceType,
+          sourceUrl,
+          unitScale
+        })
 
         if (!isMounted) {
           return
         }
 
-        setState({
-          status: 'ready',
-          key: loadKey,
-          sourceUrl,
-          sourceType,
-          pdfBuffer: buffer,
-          measurements: measurements || parsePdfMeasurements(buffer)
-        })
+        setState({ ...readyState, key: loadKey })
       } catch (error) {
         if (!isMounted) {
           return
@@ -108,7 +92,7 @@ export function usePieceSource(props: UsePieceSourceProps): PieceRendererState {
     return () => {
       isMounted = false
 
-      if (source instanceof File && sourceUrl && typeof URL.revokeObjectURL === 'function') {
+      if (!cacheable && source instanceof File && sourceUrl && typeof URL.revokeObjectURL === 'function') {
         URL.revokeObjectURL(sourceUrl)
       }
     }
@@ -118,4 +102,64 @@ export function usePieceSource(props: UsePieceSourceProps): PieceRendererState {
     () => state.key === loadKey ? state : { status: 'loading', key: loadKey },
     [loadKey, state]
   )
+}
+
+type GetReadySourceOptions = {
+  readonly cacheable: boolean
+  readonly cacheKey: string
+  readonly source: string | File
+  readonly sourceType: PieceRendererSourceType
+  readonly sourceUrl: string
+  readonly measurements?: PieceRendererMeasurements
+  readonly unitScale: number
+}
+
+function getReadySource(options: GetReadySourceOptions): Promise<ReadyPieceSourceState> {
+  if (!options.cacheable) {
+    return loadReadySource(options)
+  }
+
+  const cached = sourceCache.get(options.cacheKey)
+
+  if (cached) {
+    return cached
+  }
+
+  const promise = loadReadySource({
+    ...options,
+    sourceUrl: options.sourceType === 'pdf' ? options.source.toString() : ''
+  })
+
+  sourceCache.set(options.cacheKey, promise)
+
+  return promise
+}
+
+async function loadReadySource(options: GetReadySourceOptions): Promise<ReadyPieceSourceState> {
+  const { measurements, source, sourceType, sourceUrl, unitScale } = options
+
+  if (sourceType === 'dxf') {
+    const geometry = parseDxfGeometry(await readSourceText(source))
+
+    return {
+      status: 'ready',
+      sourceUrl,
+      sourceType,
+      dxfGeometry: geometry,
+      measurements: measurements || {
+        widthMm: geometry.bounds.width * unitScale,
+        heightMm: geometry.bounds.height * unitScale
+      }
+    }
+  }
+
+  const buffer = await readSourceBuffer(source)
+
+  return {
+    status: 'ready',
+    sourceUrl,
+    sourceType,
+    pdfBuffer: buffer,
+    measurements: measurements || parsePdfMeasurements(buffer)
+  }
 }
