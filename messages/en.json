@@ -3,6 +3,17 @@
     "title": "Bomify"
   },
   "home": {
-    "title": "Bomify"
+    "dxfFormat": "DXF",
+    "fallbackError": "Could not render piece",
+    "height": "Height",
+    "loading": "Loading piece...",
+    "pdfFormat": "PDF",
+    "pieceOne": "Piece 1",
+    "pieceTwo": "Piece 2",
+    "piecesTitle": "Pattern pieces",
+    "previewLabel": "{name} {format} preview",
+    "subtitle": "PDF and DXF pattern preview",
+    "title": "Bomify",
+    "width": "Width"
   }
 }
