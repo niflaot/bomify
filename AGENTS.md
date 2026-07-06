@@ -34,10 +34,10 @@ This file centralizes the most relevant coding and collaboration rules for this 
 - Extract pure transforms/selectors into `*.utils.ts` and stateful reusable logic into hooks
 
 ## Configuration rules
-- Never hardcode environment or backend URLs in feature code
+- Never hardcode environment or storage URLs in feature code
 - Read runtime config from `src/core/config/*`
-- Backend URL comes from `MN_BACKEND_URL` through `app.config.ts`
-- Keep auth/resource wiring centralized in config (do not duplicate in services)
+- MinIO/S3 configuration comes from `storage.config.ts`
+- Keep resource wiring centralized in config (do not duplicate it in services)
 
 ## API and services
 - Encapsulate API access in service modules under `src/core/services`
@@ -69,25 +69,28 @@ This file centralizes the most relevant coding and collaboration rules for this 
 - Prefer lowercase translation keys
 
 ## Styling and UI system
-- Use SCSS with the 7- narchitecture under `src/styles`
-- Do not colocate component `.scss` files with TSX files
-- Follow BEM naming for custom classes
-- Prefer Radix UI primitives/components for layout and UI consistency
-- Respect existing theme direction (orange accent via Radix Theme)
+- Use shadcn/ui with Tailwind CSS as the only application UI system
+- The shadcn preset is `b1oVxsfY`, initialized as:
+  `pnpm dlx shadcn@latest init --preset b1oVxsfY --template next`
+- Keep `components.json` aligned with that preset (`style: base-sera`, `baseColor: neutral`, `iconLibrary: lucide`)
+- Keep theme colors, radii, borders, dark mode tokens, and chart/sidebar tokens in `src/styles/globals.css`
+- Use Inter via `next/font/google` as the app font for both body text and headings
+- Use shadcn primitives from `src/components/ui/*.tsx`; these files may follow the shadcn lowercase filename convention
+- Do not add SCSS, BEM-only styling, Radix Theme styling, or unrelated custom design systems
+- Compose layouts with Tailwind utility classes and shadcn tokens such as `bg-background`, `text-foreground`, `border-border`, `bg-card`, and `text-muted-foreground`
+- Use lucide icons in buttons and icon controls when an icon exists
 - Every button must use `cursor: pointer` unless disabled (`not-allowed`)
-- Entity IDs visible in views must provide a reusable copy action: desktop uses a link-style control with translated tooltip states, and responsive/mobile uses a full button with text and no tooltip
 
 ## Forms
-- Use shared form styles (`.form`, `.form__grid`, `.form__actions`)
+- Use shadcn form primitives (`Input`, `Textarea`, `Label`, `Button`, `Card`) and Tailwind layout utilities
 - Keep reserved error-message space to avoid layout shift
 - Include loading/disabled states for async submissions
 - Reset dependent fields when controlling fields change format/type
 - Any modifying or destructive action must require an explicit confirm/cancel step
-- **Always use `size="3"` for every `TextField.Root`, `Select.Root`, and `TextArea` in forms** — this matches the established app input style (contacts, orders, segments). Using `size="2"` or omitting `size` produces visually inconsistent, smaller inputs and is not allowed in form views.
 
 ## Listings
-- Follow standardized list structure/styles (`.list`, `.list__header`, `.list__item`, `.list__footer`)
-- Keep responsive grid alignment consistent between header and rows
+- Use shadcn cards, buttons, badges, and Tailwind responsive grids for listings
+- Keep responsive grid alignment consistent between controls and rows/cards
 - Use truncation and `minWidth: 0` guards to prevent overflow regressions
 
 ## Testing and quality

@@ -1,11 +1,20 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import type { ReactNode, ReactElement } from 'react'
 
+import '@/styles/globals.css'
+
 type RootLayoutProps = {
   readonly children: ReactNode
 }
+
+const inter = Inter({
+  display: 'swap',
+  subsets: ['latin'],
+  variable: '--font-inter'
+})
 
 /**
  * Builds localized metadata for the application shell.
@@ -33,8 +42,8 @@ export default async function RootLayout(
   const messages = await getMessages()
 
   return (
-    <html lang={locale}>
-      <body>
+    <html className={inter.variable} lang={locale}>
+      <body className="font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           {props.children}
         </NextIntlClientProvider>
