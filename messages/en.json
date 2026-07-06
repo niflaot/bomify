@@ -32,5 +32,29 @@
     "submitting": "Creating",
     "subtitle": "Create the product shell first. Pieces, materials, and cut maps will attach to it later.",
     "title": "Add product"
+  },
+  "productWorkspace": {
+    "calculate": "Calculate",
+    "canvasEmptyDescription": "This area will host the material maps, piece previews, and production canvas.",
+    "canvasEmptyTitle": "Canvas placeholder",
+    "canvasLabel": "Product canvas",
+    "combinations": "Combinations",
+    "combinationsPanelDescription": "Manage material choices that vary between product versions.",
+    "export": "Export",
+    "home": "Products home",
+    "materials": "Materials",
+    "materialsPanelDescription": "Review roll widths, colors, and material families for this product.",
+    "pieces": "Pieces",
+    "piecesPanelDescription": "Prepare pattern pieces, quantities, dimensions, and future imports.",
+    "product": "Product",
+    "productPanelDescription": "Keep the product reference, photo, and production notes close to the canvas.",
+    "save": "Save",
+    "sidebarTitle": "Workspace panel",
+    "stickers": "Stickers",
+    "stickersPanelDescription": "Preview printable piece labels before generating sticker sheets.",
+    "updated": "Updated",
+    "uploads": "Uploads",
+    "uploadsPanelDescription": "Stage PDFs, DXFs, photos, and production files for this product.",
+    "workspace": "Workspace"
   }
 }

@@ -93,6 +93,21 @@ export async function listProducts(input: ListProductsInput = {}): Promise<Produ
 }
 
 /**
+ * Finds one non-deleted product by id.
+ *
+ * @param id - Product id.
+ * @returns Product record or null when it does not exist.
+ */
+export async function getProductById(id: string): Promise<ProductRecord | null> {
+  return prisma.product.findFirst({
+    where: {
+      deletedAt: null,
+      id
+    }
+  })
+}
+
+/**
  * Updates a product and optionally replaces its photo reference.
  *
  * @param id - Product id.

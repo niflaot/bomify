@@ -1,6 +1,7 @@
 'use client'
 
 import { ImageIcon, Pencil, Trash2 } from 'lucide-react'
+import Link from 'next/link'
 import type { FormEvent, ReactElement } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -57,24 +58,34 @@ export function ProductCard(props: ProductCardProps): ReactElement {
   return (
     <Card className="group overflow-hidden border-border/80 bg-card/95 transition-shadow hover:shadow-md">
       <div className="relative aspect-[4/3] bg-muted">
-        {product.photoUrl ? (
-          // MinIO public hosts vary by environment, so this avoids a brittle next/image remote allowlist.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            alt={product.name}
-            className="h-full w-full object-cover"
-            loading="lazy"
-            src={product.photoUrl}
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-            <ImageIcon aria-hidden="true" className="size-10" />
-          </div>
-        )}
+        <Link className="block h-full" href={`/products/${product.id}`}>
+          {product.photoUrl ? (
+            // MinIO public hosts vary by environment, so this avoids a brittle next/image remote allowlist.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              alt={product.name}
+              className="h-full w-full object-cover"
+              loading="lazy"
+              src={product.photoUrl}
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+              <ImageIcon aria-hidden="true" className="size-10" />
+            </div>
+          )}
+        </Link>
 
-        <div className="absolute right-3 top-3 flex gap-2 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
-          <Button aria-label={editLabel} size="icon" type="button" variant="outline">
-            <Pencil aria-hidden="true" />
+        <div className="absolute right-3 top-3 flex border bg-background/90 shadow-sm opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+          <Button
+            aria-label={editLabel}
+            asChild
+            className="border-0"
+            size="icon-sm"
+            variant="ghost"
+          >
+            <Link href={`/products/${product.id}`}>
+              <Pencil aria-hidden="true" />
+            </Link>
           </Button>
           <form
             action={deleteAction}
@@ -83,7 +94,13 @@ export function ProductCard(props: ProductCardProps): ReactElement {
             }}
           >
             <input name="productId" type="hidden" value={product.id} />
-            <Button aria-label={deleteLabel} size="icon" type="submit" variant="destructive">
+            <Button
+              aria-label={deleteLabel}
+              className="border-0 text-destructive hover:bg-destructive/10"
+              size="icon-sm"
+              type="submit"
+              variant="ghost"
+            >
               <Trash2 aria-hidden="true" />
             </Button>
           </form>
@@ -91,7 +108,11 @@ export function ProductCard(props: ProductCardProps): ReactElement {
       </div>
 
       <CardHeader className="p-4 pb-2">
-        <CardTitle className="truncate">{product.name}</CardTitle>
+        <CardTitle className="truncate">
+          <Link className="hover:underline" href={`/products/${product.id}`}>
+            {product.name}
+          </Link>
+        </CardTitle>
         <CardDescription className="line-clamp-2 min-h-10">
           {product.description || labels.noDescription}
         </CardDescription>
