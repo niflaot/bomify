@@ -8,6 +8,7 @@ const createJestConfig = nextJest({
 const config: Config = {
   clearMocks: true,
   coverageProvider: 'v8',
+  modulePathIgnorePatterns: ['<rootDir>/.next/'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },

@@ -34,10 +34,9 @@ This file centralizes the most relevant coding and collaboration rules for this 
 - Extract pure transforms/selectors into `*.utils.ts` and stateful reusable logic into hooks
 
 ## Configuration rules
-- Never hardcode environment or backend URLs in feature code
+- Never hardcode environment-specific values in feature code
 - Read runtime config from `src/core/config/*`
-- Backend URL comes from `MN_BACKEND_URL` through `app.config.ts`
-- Keep auth/resource wiring centralized in config (do not duplicate in services)
+- Keep auth/resource wiring centralized in config (do not duplicate it across features)
 
 ## API and services
 - Encapsulate API access in service modules under `src/core/services`
@@ -69,24 +68,24 @@ This file centralizes the most relevant coding and collaboration rules for this 
 - Prefer lowercase translation keys
 
 ## Styling and UI system
-- Use SCSS with the 7-1 architecture under `src/styles`
-- Do not colocate component `.scss` files with TSX files
-- Follow BEM naming for custom classes
-- Prefer Radix UI primitives/components for layout and UI consistency
-- Respect existing theme direction (orange accent via Radix Theme)
-- Every button must use `cursor: pointer` unless disabled (`not-allowed`)
+- Use Tailwind CSS and shadcn/ui conventions as the styling foundation
+- Prefer shadcn/ui components and Radix primitives when building reusable UI
+- Keep spacing, sizing, radius, typography, and interaction states consistent across the app
+- Keep design tokens centralized through the Tailwind/shadcn theme setup
+- Use `cn` from `src/core/utils/class-name.utils.ts` for conditional class composition
+- Every interactive control must have clear hover, focus, loading, disabled, and error states
+- Every button must use pointer affordance unless disabled (`not-allowed`)
 - Entity IDs visible in views must provide a reusable copy action: desktop uses a link-style control with translated tooltip states, and responsive/mobile uses a full button with text and no tooltip
 
 ## Forms
-- Use shared form styles (`.form`, `.form__grid`, `.form__actions`)
 - Keep reserved error-message space to avoid layout shift
 - Include loading/disabled states for async submissions
 - Reset dependent fields when controlling fields change format/type
 - Any modifying or destructive action must require an explicit confirm/cancel step
-- **Always use `size="3"` for every `TextField.Root`, `Select.Root`, and `TextArea` in forms** — this matches the established app input style (contacts, orders, segments). Using `size="2"` or omitting `size` produces visually inconsistent, smaller inputs and is not allowed in form views.
+- Use the same shadcn/Tailwind input sizing, spacing, labels, helper text, and validation treatment across all forms
 
 ## Listings
-- Follow standardized list structure/styles (`.list`, `.list__header`, `.list__item`, `.list__footer`)
+- Follow standardized shadcn/Tailwind list, table, and card patterns across equivalent surfaces
 - Keep responsive grid alignment consistent between header and rows
 - Use truncation and `minWidth: 0` guards to prevent overflow regressions
 

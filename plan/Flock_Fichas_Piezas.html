@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Flock — Fichas de piezas</title>
+<style>
+  :root{
+    --paper:   #e9e2d3;
+    --panel:   #ffffff;
+    --ink:     #2a2420;
+    --ink-soft:#6b6255;
+    --line:    #d8cdb8;
+    --leather: #8a5a34;
+    --leather-dark: #6b4527;
+    --danger:  #a33d2f;
+    --ok:      #4a7c4e;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  svg.logo{ display:block; }
+
+  /* ---------- shell ---------- */
+  .app{ max-width: 1400px; margin: 0 auto; padding: 24px 22px 80px; }
+  header.top{
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 14px; margin-bottom: 18px; gap:12px; flex-wrap:wrap;
+  }
+  header.top .brand{ display:flex; align-items:center; gap:10px; }
+  header.top .brand svg{ width:26px; height:26px; color:var(--ink); flex-shrink:0; }
+  header.top h1{ font-size: 21px; letter-spacing: 0.01em; margin:0; font-weight: 800; }
+  header.top h1 span{ color:var(--leather); }
+  header.top .sub{ font-size: 11px; color: var(--ink-soft); letter-spacing: 0.07em; text-transform: uppercase; }
+
+  /* ---------- tabs ---------- */
+  .tabs{ display:flex; gap:4px; margin-bottom:18px; }
+  .tab-btn{
+    font-family:inherit; font-size:13px; font-weight:700; letter-spacing:.02em;
+    padding:10px 18px; border:1px solid var(--ink); background:none; color:var(--ink);
+    cursor:pointer; border-radius:5px 5px 0 0; border-bottom:none;
+    position:relative; top:1px;
+  }
+  .tab-btn.active{ background:var(--ink); color:var(--paper); }
+  .tab-panel{ display:none; border-top:1px solid var(--ink); padding-top:20px; }
+  .tab-panel.active{ display:block; }
+
+  /* ---------- generic panel ---------- */
+  .panel{ background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+  .panel-head{ display:flex; align-items:center; justify-content:space-between; padding: 14px 16px; border-bottom: 1px solid var(--line); flex-wrap:wrap; gap:8px; }
+  .panel-head h2{ font-size:13px; text-transform:uppercase; letter-spacing:.08em; margin:0; color:var(--ink-soft); font-weight:700; }
+  .panel-body{ padding:16px; }
+  .hint{ font-size:12px; color:var(--ink-soft); line-height:1.5; margin:0 0 10px; }
+  .hint code{ background:#f2ede0; padding:1px 5px; border-radius:3px; font-size:11px; }
+
+  textarea{
+    width:100%; min-height:130px; font-family:ui-monospace,monospace; font-size:12px;
+    padding:10px; border:1px solid var(--line); border-radius:5px; resize:vertical;
+    background:#fbf9f4; color:var(--ink);
+  }
+  input[type=text], input[type=number], input[type=color], select, input[type=file]{
+    font-family:inherit; font-size:13px; padding:6px 8px; border:1px solid var(--line);
+    border-radius:4px; background:#fff; color:var(--ink);
+  }
+  input[type=color]{ padding:2px; width:38px; height:30px; cursor:pointer; }
+  input[type=number]{ width:100%; }
+  .row-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+
+  button.primary{ background: var(--ink); color:var(--paper); border:none; border-radius:4px; padding:9px 15px; font-size:13px; font-weight:700; letter-spacing:.02em; cursor:pointer; }
+  button.primary:hover{ background: var(--leather-dark); }
+  button.ghost{ background:none; border:1px solid var(--ink); color:var(--ink); border-radius:4px; padding:9px 15px; font-size:13px; font-weight:700; cursor:pointer; }
+  button.ghost:hover{ background:var(--ink); color:var(--paper); }
+  button.danger-ghost{ background:none; border:1px solid var(--danger); color:var(--danger); border-radius:4px; padding:9px 15px; font-size:12px; font-weight:700; cursor:pointer; }
+  button.danger-ghost:hover{ background:var(--danger); color:#fff; }
+  .msg{ font-size:12px; padding:8px 10px; border-radius:4px; margin-top:10px; display:none; }
+  .msg.ok{ background:#eaf3ea; color:var(--ok); display:block; }
+  .msg.err{ background:#f7e9e7; color:var(--danger); display:block; }
+
+  /* ---------- pieces tab layout ---------- */
+  .pieces-layout{ display:grid; grid-template-columns: minmax(360px,1fr) minmax(300px, 0.8fr); gap:20px; align-items:start; }
+  @media (max-width: 980px){ .pieces-layout{ grid-template-columns: 1fr; } }
+
+  .rows{ max-height: 620px; overflow-y:auto; }
+  .piece{ padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .piece-head{ display:grid; grid-template-columns: 46px 34px 1fr 26px; gap:8px; align-items:center; margin-bottom:8px; }
+  .num-badge{ background: var(--ink); color: var(--paper); font-weight:700; font-size:13px; border-radius:4px; text-align:center; padding:5px 0; border:none; width:100%; }
+  .roman{ font-size:11px; color:var(--ink-soft); text-align:center; }
+  .name-input{ width:100%; font-weight:600; }
+  .del-piece{ background:none; border:none; color:var(--ink-soft); cursor:pointer; font-size:16px; line-height:1; padding:4px; }
+  .del-piece:hover{ color:var(--danger); }
+
+  .mat-lines{ display:flex; flex-direction:column; gap:6px; }
+  .mat-line{ display:grid; grid-template-columns: 14px 1fr 64px 24px; gap:8px; align-items:center; }
+  .chip{ width:11px; height:11px; border-radius:50%; display:inline-block; flex-shrink:0; }
+  .mat-select{ width:100%; }
+  .qty-input{ text-align:center; }
+  .del-line{ background:none; border:none; color:var(--ink-soft); cursor:pointer; font-size:14px; }
+  .del-line:hover{ color:var(--danger); }
+  .add-line-btn{ margin-top:4px; background:none; border:1px dashed var(--line); color:var(--ink-soft); font-size:11px; padding:4px 8px; border-radius:4px; cursor:pointer; align-self:flex-start; }
+  .add-line-btn:hover{ border-color:var(--leather); color:var(--leather); }
+
+  .legend{ display:flex; flex-wrap:wrap; gap:8px 14px; padding: 12px 16px; border-top:1px solid var(--line); font-size:11px; color:var(--ink-soft); }
+  .legend div{ display:flex; align-items:center; gap:5px; }
+
+  /* ---------- materials tab ---------- */
+  table.mat-table{ width:100%; border-collapse:collapse; font-size:13px; }
+  table.mat-table th{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); padding:6px 8px; border-bottom:1px solid var(--ink); }
+  table.mat-table td{ padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  table.mat-table td.key-cell{ font-family:ui-monospace,monospace; color:var(--ink-soft); font-size:12px; }
+  .new-mat-form{ display:grid; grid-template-columns: 38px 1fr 90px; gap:8px; margin-top:12px; align-items:center; }
+
+  /* ---------- sticker sheet (paginado, carta, 2 columnas) ---------- */
+  .sheet-toolbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px; }
+  .count-badge{ font-size:12px; color:var(--ink-soft); }
+
+  :root{
+    --page-w: 215.9mm;
+    --page-h: 279.4mm;
+    --page-inset: 5mm;      /* minimo practico de impresora, no es "margen" de diseño */
+    --st-w: 78mm;
+    --st-h: 46mm;
+    --st-gap: 3mm;
+  }
+
+  .sheet-backdrop{ background:#c9c0aa; padding:8mm; border-radius:4px; display:flex; flex-direction:column; align-items:center; gap:8mm; }
+  .print-page{
+    width: var(--page-w); height: var(--page-h);
+    padding: var(--page-inset);
+    box-sizing: border-box;
+    background:#fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.25);
+    display:grid;
+    grid-template-columns: repeat(2, var(--st-w));
+    grid-auto-rows: var(--st-h);
+    gap: var(--st-gap);
+    justify-content:start;
+    align-content:start;
+    position:relative;
+  }
+  .print-page::after{
+    content: attr(data-label);
+    position:absolute; bottom:2mm; right:4mm;
+    font-size:8px; color:#bbb; font-family: ui-monospace,monospace;
+  }
+
+  .sticker{
+    width: var(--st-w); height: var(--st-h);
+    background: #fff; border: 1px solid #bdb6a6; border-radius: 0;
+    position:relative; padding: 3mm 4mm 3mm 6mm; display:flex; flex-direction:column; justify-content:space-between;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .sticker .row-top{ display:flex; justify-content:space-between; align-items:flex-start; }
+  .sticker .piece-num{ font-size: 21px; font-weight:800; line-height:1; letter-spacing:.01em; }
+  .sticker .piece-roman{ font-size:10px; color:var(--ink-soft); margin-top:2px; }
+  .sticker .brand{ color:var(--ink); }
+  .sticker .brand span{ font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+  .sticker .ref-name{ font-size:14px; font-weight:700; line-height:1.2; margin: 1.5mm 0; }
+  .sticker .mat-list{ display:flex; flex-direction:column; gap:1.3mm; }
+  .sticker .mat-row{ display:flex; justify-content:space-between; align-items:center; }
+  .sticker .mat-row .mat-name{ display:inline-flex; align-items:center; gap:1.8mm; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.02em; }
+  .sticker .mat-row .dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .sticker .mat-row .qty{ font-size:14.5px; font-weight:800; font-family: ui-monospace, monospace; white-space:nowrap; }
+  .sticker .mat-row .qty small{ font-size:8.5px; font-weight:600; color:var(--ink-soft); font-family: inherit; margin-left:1.2px; }
+
+  @media print{
+    body{ background:#fff; }
+    .app > header.top, .tabs, .tab-panel:not(#tab-preview) { display:none !important; }
+    .app{ padding:0 !important; max-width:none !important; margin:0 !important; }
+    #tab-preview{ display:block !important; border:none; padding:0; }
+    #tab-preview .panel{ border:none !important; border-radius:0 !important; }
+    #tab-preview .panel-head{ display:none !important; }
+    #tab-preview .panel-body{ padding:0 !important; }
+    #tab-preview .sheet-toolbar{ display:none; }
+    .sheet-backdrop{ background:#fff; padding:0; gap:0; }
+    .print-page{ box-shadow:none; break-after: page; page-break-after: always; }
+    .print-page:last-child{ break-after:auto; page-break-after:auto; }
+    .print-page::after{ display:none; }
+    @page{ size: letter; margin: 0; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <span id="logoHeader"></span>
+      <div>
+        <h1>Flock <span>· Fichas de piezas</span></h1>
+        <div class="sub">Generador de stickers 8×5cm</div>
+      </div>
+    </div>
+    <div class="sub" id="dateline"></div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="pieces">1. Piezas</button>
+    <button class="tab-btn" data-tab="materials">2. Materiales</button>
+    <button class="tab-btn" data-tab="import">3. Importar</button>
+    <button class="tab-btn" data-tab="preview">4. Vista previa / PDF</button>
+  </div>
+
+  <!-- ============ TAB 1: PIEZAS ============ -->
+  <div class="tab-panel active" id="tab-pieces">
+    <div class="pieces-layout">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Lista de piezas</h2>
+          <span class="count-badge" id="pieceCount"></span>
+        </div>
+        <div class="rows" id="rows"></div>
+        <div class="panel-head" style="border-top:1px solid var(--line); border-bottom:none;">
+          <button class="primary" id="addPiece">+ Agregar pieza</button>
+          <button class="ghost" id="exportPiecesBtn">Exportar JSON</button>
+          <button class="danger-ghost" id="resetBtn">Restaurar lista original</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Materiales en uso</h2></div>
+        <div class="legend" id="legend" style="border-top:none;"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ============ TAB 2: MATERIALES ============ -->
+  <div class="tab-panel" id="tab-materials">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Base de materiales</h2>
+        <span class="count-badge" id="matCount"></span>
+      </div>
+      <div class="panel-body">
+        <table class="mat-table">
+          <thead><tr><th>Color</th><th>Clave</th><th>Nombre visible</th><th></th></tr></thead>
+          <tbody id="matRows"></tbody>
+        </table>
+        <div class="new-mat-form">
+          <input type="color" id="newMatColor" value="#55524b">
+          <input type="text" id="newMatLabel" placeholder="Nombre del material nuevo (ej. Ante)">
+          <button class="primary" id="addMatBtn">+ Agregar</button>
+        </div>
+        <div class="row-actions">
+          <button class="ghost" id="exportMatBtn">Exportar JSON</button>
+          <button class="danger-ghost" id="resetMatBtn">Restaurar base original</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ TAB 3: IMPORTAR ============ -->
+  <div class="tab-panel" id="tab-import">
+    <div class="panel" style="margin-bottom:18px;">
+      <div class="panel-head"><h2>Importar piezas (JSON)</h2></div>
+      <div class="panel-body">
+        <p class="hint">
+          Formato esperado — un arreglo de piezas, cada una con su lista de materiales.
+          El nombre del material se guarda siempre en <b>minúscula</b>; si no existe en tu base de
+          materiales (tab 2) se crea automáticamente con un color neutro para que lo ajustes después.<br>
+          <code>[{"num":1,"name":"FRENTE","materials":[{"material":"cuero","qty":1}]}]</code>
+        </p>
+        <textarea id="importText" placeholder='Pega aquí tu JSON, o carga un archivo abajo...'></textarea>
+        <div class="row-actions">
+          <input type="file" id="importFile" accept="application/json,.json">
+          <button class="primary" id="btnImportReplace">Reemplazar lista</button>
+          <button class="ghost" id="btnImportAppend">Agregar al final</button>
+        </div>
+        <div class="msg" id="importMsg"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>Importar base de materiales (JSON)</h2></div>
+      <div class="panel-body">
+        <p class="hint">
+          <code>[{"key":"cuero","label":"Cuero","color":"#8a5a34"}]</code> — la clave (<b>key</b>)
+          siempre se guarda en minúscula.
+        </p>
+        <textarea id="importMatText" placeholder='Pega aquí el JSON de materiales...'></textarea>
+        <div class="row-actions">
+          <input type="file" id="importMatFile" accept="application/json,.json">
+          <button class="primary" id="btnImportMatReplace">Reemplazar base</button>
+          <button class="ghost" id="btnImportMatAppend">Agregar / actualizar</button>
+        </div>
+        <div class="msg" id="importMatMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 4: PREVIEW / PDF ============ -->
+  <div class="tab-panel" id="tab-preview">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="sheet-toolbar" style="width:100%;">
+          <span class="count-badge" id="stickerCount"></span>
+          <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-soft);">
+            Texto junto al logo:
+            <input type="text" id="brandNameInput" value="KAIROS" style="width:140px; text-transform:uppercase;">
+          </label>
+          <button class="primary" id="printBtn">Imprimir / Guardar PDF</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="sheet-backdrop" id="sheet"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+/* ================= LOGO (SVG inline, recolorable via currentColor) ================= */
+const LOGO_SVG = `<svg class="logo" viewBox="0 0 699.09 634" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <path d="M692.16,378.55c-23.21,135.34-174.59,254.71-323.93,255.45-185.61-2.68-274.07-81.57-364.19-216.91-3.54-5.26-4.8-11.57-3.57-17.82,1.26-6.25,4.86-11.67,10.22-15.21,10.87-7.26,25.64-4.31,32.97,6.56,83.32,125.09,159.78,193.33,324.83,195.79,127.74-.68,257.14-101.61,276.72-215.96,20.56-119.83-10.65-217.16-87.85-274.04-76.89-56.61-191.49-65.13-278.66-20.72-73.5,37.43-113.64,104.44-113.03,188.72.52,80.74,31.52,143.19,87.23,175.88,58.88,34.54,138.6,32.26,208.08-5.94,71.5-39.49,85.14-124.01,61.65-187.15-18.84-50.42-66.24-98.5-142.73-82.25-37.68,9.42-70.27,39.37-82.8,76.24-11.3,33.43-4.52,68.12,19.11,97.6,16.84,21.05,44.88,23.21,65.5,18.22,23.49-5.73,40.94-20.75,44.48-38.29,4.16-17.39,4.65-39.55-16.44-47.74-7.33-2.86-14.25-2.83-18.93-2.09.03.03.06.06.09.09,9.02,9.7,8.53,24.44-1.11,33.61-9.6,8.99-24.69,8.53-33.67-1.02-23.82-25.42-16.84-49.34-8.9-59.59,15.94-21.88,52.97-27.79,84.37-13.45,36.26,16.68,51.99,55.1,41.12,100.31-7.23,35.77-37.8,64.27-79.84,74.43-44.48,10.83-88.12-2.49-113.86-34.75-34.07-42.6-43.68-93.23-26.99-142.64,17.51-51.9,63.53-94,117.18-107.3,88.03-18.75,165.66,25.24,198.04,112.04,30.63,82.34,11.82,193.09-83.35,245.38-84.03,46.29-181.79,48.33-255.11,5.36-70.83-41.52-110.16-118.47-110.84-216.63-.34-54.39,14.37-105.3,42.57-147.22,11.91-17.7,25.98-33.64,42.11-47.74,16.13-14.07,34.32-26.32,54.45-36.57,102.44-52.27,237.5-42.05,328.43,24.84,92.56,68.15,130.45,181.97,106.65,320.49Z"/>
+</svg>`;
+document.getElementById("logoHeader").innerHTML = LOGO_SVG;
+document.querySelector("header.top .brand svg").style.width = "26px";
+
+/* ================= numerales romanos ================= */
+function toRoman(num){
+  if(!num || num<1) return "—";
+  const map = [[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],
+    [50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+  let n = num, out = "";
+  for(const [v,s] of map){ while(n>=v){ out+=s; n-=v; } }
+  return out;
+}
+const norm = s => (s||"").toString().trim().toLowerCase();
+const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
+
+/* ================= base de materiales ================= */
+const DEFAULT_MATERIALS = [
+  {key:"cuero",    label:"Cuero",    color:"#8a5a34"},
+  {key:"forro",    label:"Forro",    color:"#5b7a8c"},
+  {key:"lona",     label:"Lona",     color:"#6f7d4a"},
+  {key:"yumbolon", label:"Yumbolón", color:"#c99a2e"},
+  {key:"cambre",   label:"Cambré",   color:"#b06a72"},
+  {key:"seda",     label:"Seda",     color:"#8b7ab0"},
+  {key:"malla",    label:"Malla",    color:"#2f8f82"},
+  {key:"eva",      label:"EVA",      color:"#d0742f"},
+  {key:"refuerzo", label:"Refuerzo", color:"#8a8478"},
+  {key:"otro",     label:"Otro / definir", color:"#55524b"},
+];
+let MATERIALS = JSON.parse(JSON.stringify(DEFAULT_MATERIALS));
+
+function findMat(key){
+  return MATERIALS.find(m=>m.key===norm(key));
+}
+function matColor(key){ const m=findMat(key); return m ? m.color : "#8a8478"; }
+function matLabel(key){ const m=findMat(key); return m ? m.label : cap(norm(key)||"—"); }
+function ensureMat(key, label){
+  const k = norm(key);
+  if(!k) return "otro";
+  if(!findMat(k)){
+    const palette = ["#a35b3f","#3f6e7a","#7a8f4f","#b8862e","#7a5566","#5d7a9c","#9c6b4f","#4f8f7a"];
+    const color = palette[MATERIALS.length % palette.length];
+    MATERIALS.push({key:k, label: label ? label : cap(k), color});
+  }
+  return k;
+}
+
+/* ================= datos iniciales (piezas) ================= */
+function defaultPieces(){ return [
+  {num:1,  name:"FRENTE", lines:[{m:"cuero",q:1}]},
+  {num:2,  name:"BOLSILLO LATERAL", lines:[{m:"cuero",q:1},{m:"forro",q:1}]},
+  {num:3,  name:"BOLSILLO FRONTAL INFERIOR", lines:[{m:"cuero",q:2},{m:"forro",q:2}]},
+  {num:4,  name:"CENTRO CREMALLERA ESPALDAR", lines:[{m:"cuero",q:1}]},
+  {num:5,  name:"CREMALLERO LATERAL ESPALDAR", lines:[{m:"cuero",q:2}]},
+  {num:6,  name:"A Y B / LADO LATERAL FRENTE", lines:[{m:"cuero",q:2}]},
+  {num:7,  name:'BOLSILLO FRENTE "C.K"', lines:[{m:"cuero",q:1},{m:"forro",q:1}]},
+  {num:8,  name:"FALSO", lines:[{m:"lona",q:1},{m:"forro",q:1}]},
+  {num:9,  name:"CREMALLERO FRENTE", lines:[{m:"cuero",q:1},{m:"forro",q:1}]},
+  {num:10, name:"FALSO CK", lines:[{m:"cuero",q:1},{m:"forro",q:1}]},
+  {num:11, name:"PORTACIERRE PORTATIL", lines:[{m:"lona",q:1},{m:"forro",q:1}]},
+  {num:12, name:"ESPALDAR", lines:[{m:"forro",q:3},{m:"otro",q:1,custom:"MALLA/LONA/CUERO (a elegir)"}]},
+  {num:13, name:"FORRO INTERIOR FRENTE", lines:[{m:"cambre",q:1},{m:"forro",q:1}]},
+  {num:14, name:"— (1×1 doble)", lines:[{m:"forro",q:1,custom:"FORRO 1x1 doble"}]},
+  {num:15, name:"BOLSILLO INTERIOR FRENTE", lines:[{m:"forro",q:1}]},
+  {num:16, name:"BOLSILLO FRENTE", lines:[{m:"forro",q:2}]},
+  {num:17, name:"BOLSILLO DIVISION", lines:[{m:"seda",q:1},{m:"yumbolon",q:1}]},
+  {num:18, name:"PORTACIERRE BOCA EXPLORER", lines:[{m:"forro",q:1}]},
+  {num:19, name:"REFUERZO FRENTE", lines:[{m:"refuerzo",q:1}]},
+  {num:20, name:"—", lines:[{m:"cambre",q:1,custom:"CAMBRÉ 1x1"}]},
+  {num:21, name:"CORREAS", lines:[{m:"yumbolon",q:2}]},
+  {num:22, name:"—", lines:[{m:"yumbolon",q:1}]},
+  {num:23, name:"DIVISION", lines:[{m:"yumbolon",q:2}]},
+  {num:24, name:"DIVISION", lines:[{m:"yumbolon",q:1}]},
+  {num:26, name:"—", lines:[{m:"eva",q:1}]},
+]; }
+let pieces = defaultPieces();
+
+/* ================= tabs ================= */
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
+    if(btn.dataset.tab === "preview") renderSheet();
+  });
+});
+
+/* ================= render: piece rows ================= */
+const rowsEl = document.getElementById("rows");
+function matOptionsHTML(selected){
+  return MATERIALS.map(m=>`<option value="${m.key}" ${m.key===norm(selected)?"selected":""}>${m.label}</option>`).join("");
+}
+function renderRows(){
+  rowsEl.innerHTML = "";
+  pieces.forEach((p, pi)=>{
+    const wrap = document.createElement("div");
+    wrap.className = "piece";
+    wrap.innerHTML = `
+      <div class="piece-head">
+        <input type="number" class="mono num-badge" value="${p.num}" data-role="num" min="0">
+        <div class="roman mono">${toRoman(p.num)}</div>
+        <input type="text" class="name-input" data-role="name" value="${p.name}" placeholder="Nombre de referencia">
+        <button class="del-piece" data-role="delpiece" title="Eliminar pieza">✕</button>
+      </div>
+      <div class="mat-lines" data-role="matlines"></div>
+      <button class="add-line-btn" data-role="addline">+ material</button>
+    `;
+    const matLinesEl = wrap.querySelector('[data-role="matlines"]');
+    p.lines.forEach((ln, li)=>{
+      const row = document.createElement("div");
+      row.className = "mat-line";
+      row.innerHTML = `
+        <span class="chip" style="background:${matColor(ln.m)}"></span>
+        <select class="mat-select" data-role="mat">${matOptionsHTML(ln.m)}</select>
+        <input type="number" class="qty-input mono" data-role="qty" value="${ln.q}" min="1">
+        <button class="del-line" data-role="delline" title="Quitar material">✕</button>
+      `;
+      row.querySelector('[data-role="mat"]').addEventListener("change", e=>{ ln.m = e.target.value; renderAll(); });
+      row.querySelector('[data-role="qty"]').addEventListener("input", e=>{ ln.q = parseInt(e.target.value)||1; });
+      row.querySelector('[data-role="delline"]').addEventListener("click", ()=>{ p.lines.splice(li,1); renderAll(); });
+      matLinesEl.appendChild(row);
+    });
+    wrap.querySelector('[data-role="num"]').addEventListener("input", e=>{ p.num = parseInt(e.target.value)||0; renderRows(); });
+    wrap.querySelector('[data-role="name"]').addEventListener("input", e=>{ p.name = e.target.value; });
+    wrap.querySelector('[data-role="delpiece"]').addEventListener("click", ()=>{ pieces.splice(pi,1); renderAll(); });
+    wrap.querySelector('[data-role="addline"]').addEventListener("click", ()=>{ p.lines.push({m:"cuero", q:1}); renderAll(); });
+    rowsEl.appendChild(wrap);
+  });
+  document.getElementById("pieceCount").textContent = pieces.length + " piezas";
+}
+
+/* ================= render: legend (materiales en uso) ================= */
+function renderLegend(){
+  const used = new Set();
+  pieces.forEach(p=>p.lines.forEach(l=>used.add(norm(l.m))));
+  const el = document.getElementById("legend");
+  el.innerHTML = [...used].map(k=>`<div><span class="chip" style="background:${matColor(k)}"></span>${matLabel(k)}</div>`).join("") || '<span class="hint">Sin piezas cargadas.</span>';
+}
+
+/* ================= render: materials table (tab 2) ================= */
+const matRowsEl = document.getElementById("matRows");
+function renderMatTable(){
+  matRowsEl.innerHTML = "";
+  MATERIALS.forEach((m, mi)=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input type="color" data-role="color" value="${m.color}"></td>
+      <td class="key-cell">${m.key}</td>
+      <td><input type="text" data-role="label" value="${m.label}"></td>
+      <td><button class="del-line" data-role="delmat" title="Eliminar">✕</button></td>
+    `;
+    tr.querySelector('[data-role="color"]').addEventListener("input", e=>{ m.color = e.target.value; renderAll(); });
+    tr.querySelector('[data-role="label"]').addEventListener("input", e=>{ m.label = e.target.value; renderAll(); });
+    tr.querySelector('[data-role="delmat"]').addEventListener("click", ()=>{
+      MATERIALS.splice(mi,1); renderAll();
+    });
+    matRowsEl.appendChild(tr);
+  });
+  document.getElementById("matCount").textContent = MATERIALS.length + " materiales";
+}
+
+/* ================= render: stickers (tab 3, paginado carta 2 col) ================= */
+const sheetEl = document.getElementById("sheet");
+const PAGE_COLS = 2;
+const PAGE_ROWS = 5;
+const PAGE_CAPACITY = PAGE_COLS * PAGE_ROWS; // 10 stickers por hoja carta
+
+let BRAND_NAME = "KAIROS";
+
+function stickerHTML(p){
+  const matRows = p.lines.map(ln=>{
+    const label = ln.custom ? ln.custom : matLabel(ln.m);
+    return `
+      <div class="mat-row">
+        <span class="mat-name"><span class="dot" style="background:${matColor(ln.m)}"></span>${label}</span>
+        <span class="qty">${ln.q} <small>UND.</small></span>
+      </div>`;
+  }).join("");
+  return `
+    <div class="sticker">
+      <div class="row-top">
+        <div>
+          <div class="piece-num mono">PIEZA${String(p.num).padStart(2,"0")}</div>
+          <div class="piece-roman mono">${toRoman(p.num)}</div>
+        </div>
+        <div class="brand"><span>${BRAND_NAME}</span></div>
+      </div>
+      <div class="ref-name">${p.name}</div>
+      <div class="mat-list">${matRows}</div>
+    </div>`;
+}
+
+function renderSheet(){
+  sheetEl.innerHTML = "";
+
+  const totalPages = Math.max(1, Math.ceil(pieces.length / PAGE_CAPACITY));
+  for(let page=0; page<totalPages; page++){
+    const chunk = pieces.slice(page*PAGE_CAPACITY, (page+1)*PAGE_CAPACITY);
+    const pageEl = document.createElement("div");
+    pageEl.className = "print-page";
+    pageEl.dataset.label = `Flock · ${BRAND_NAME} — hoja ${page+1}/${totalPages}`;
+    pageEl.innerHTML = chunk.map(p=>stickerHTML(p)).join("");
+    sheetEl.appendChild(pageEl);
+  }
+
+  document.getElementById("stickerCount").textContent = `${pieces.length} stickers · ${totalPages} hoja${totalPages>1?'s':''} carta`;
+}
+
+function renderAll(){ renderRows(); renderLegend(); renderMatTable(); renderSheet(); }
+
+/* ================= import: piezas ================= */
+function parsePiecesJSON(json){
+  const arr = JSON.parse(json);
+  if(!Array.isArray(arr)) throw new Error("El JSON debe ser un arreglo [ ... ]");
+  let newMats = 0;
+  const parsed = arr.map(item=>{
+    const lines = (item.materials||item.lines||[]).map(l=>{
+      const key = norm(l.material || l.m || "otro");
+      const before = MATERIALS.length;
+      const m = ensureMat(key, l.label);
+      if(MATERIALS.length > before) newMats++;
+      return {m, q: parseInt(l.qty ?? l.q ?? 1)||1, custom: l.custom || undefined};
+    });
+    return { num: parseInt(item.num)||0, name: (item.name||"").toString(), lines: lines.length?lines:[{m:"cuero",q:1}] };
+  });
+  return {parsed, newMats};
+}
+function showMsg(el, text, ok){
+  el.textContent = text;
+  el.className = "msg " + (ok ? "ok" : "err");
+}
+document.getElementById("btnImportReplace").addEventListener("click", ()=>{
+  const msg = document.getElementById("importMsg");
+  try{
+    const {parsed, newMats} = parsePiecesJSON(document.getElementById("importText").value);
+    pieces = parsed;
+    renderAll();
+    showMsg(msg, `Importadas ${parsed.length} piezas.` + (newMats?` Se crearon ${newMats} materiales nuevos — revísalos en la pestaña Materiales.`:""), true);
+  }catch(e){ showMsg(msg, "Error al importar: " + e.message, false); }
+});
+document.getElementById("btnImportAppend").addEventListener("click", ()=>{
+  const msg = document.getElementById("importMsg");
+  try{
+    const {parsed, newMats} = parsePiecesJSON(document.getElementById("importText").value);
+    pieces = pieces.concat(parsed);
+    renderAll();
+    showMsg(msg, `Agregadas ${parsed.length} piezas al final.` + (newMats?` ${newMats} materiales nuevos creados.`:""), true);
+  }catch(e){ showMsg(msg, "Error al importar: " + e.message, false); }
+});
+document.getElementById("importFile").addEventListener("change", e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{ document.getElementById("importText").value = r.result; };
+  r.readAsText(f);
+});
+
+/* ================= import: materiales ================= */
+function parseMatsJSON(json){
+  const arr = JSON.parse(json);
+  if(!Array.isArray(arr)) throw new Error("El JSON debe ser un arreglo [ ... ]");
+  return arr.map(m=>({ key: norm(m.key || m.label), label: (m.label||cap(norm(m.key))||"Material"), color: m.color || "#8a8478" }));
+}
+document.getElementById("btnImportMatReplace").addEventListener("click", ()=>{
+  const msg = document.getElementById("importMatMsg");
+  try{
+    MATERIALS = parseMatsJSON(document.getElementById("importMatText").value);
+    renderAll();
+    showMsg(msg, `Base reemplazada: ${MATERIALS.length} materiales.`, true);
+  }catch(e){ showMsg(msg, "Error al importar: " + e.message, false); }
+});
+document.getElementById("btnImportMatAppend").addEventListener("click", ()=>{
+  const msg = document.getElementById("importMatMsg");
+  try{
+    const incoming = parseMatsJSON(document.getElementById("importMatText").value);
+    incoming.forEach(nm=>{
+      const existing = findMat(nm.key);
+      if(existing){ existing.label = nm.label; existing.color = nm.color; }
+      else MATERIALS.push(nm);
+    });
+    renderAll();
+    showMsg(msg, `${incoming.length} materiales agregados/actualizados.`, true);
+  }catch(e){ showMsg(msg, "Error al importar: " + e.message, false); }
+});
+document.getElementById("importMatFile").addEventListener("change", e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{ document.getElementById("importMatText").value = r.result; };
+  r.readAsText(f);
+});
+
+/* ================= exportar JSON (descarga) ================= */
+function downloadJSON(obj, filename){
+  const blob = new Blob([JSON.stringify(obj, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+document.getElementById("exportPiecesBtn").addEventListener("click", ()=>{
+  const out = pieces.map(p=>({num:p.num, name:p.name, materials:p.lines.map(l=>({material:l.m, qty:l.q, custom:l.custom}))}));
+  downloadJSON(out, "piezas_kairos.json");
+});
+document.getElementById("exportMatBtn").addEventListener("click", ()=> downloadJSON(MATERIALS, "materiales.json"));
+
+/* ================= botones generales ================= */
+document.getElementById("addPiece").addEventListener("click", ()=>{
+  const nextNum = pieces.length ? Math.max(...pieces.map(p=>p.num))+1 : 1;
+  pieces.push({num:nextNum, name:"", lines:[{m:"cuero", q:1}]});
+  renderAll();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  if(confirm("¿Restaurar la lista original de piezas? Se perderán los cambios.")){ pieces = defaultPieces(); renderAll(); }
+});
+document.getElementById("addMatBtn").addEventListener("click", ()=>{
+  const label = document.getElementById("newMatLabel").value.trim();
+  const color = document.getElementById("newMatColor").value;
+  if(!label) return;
+  const key = norm(label);
+  if(findMat(key)){ alert("Ya existe un material con ese nombre."); return; }
+  MATERIALS.push({key, label, color});
+  document.getElementById("newMatLabel").value = "";
+  renderAll();
+});
+document.getElementById("resetMatBtn").addEventListener("click", ()=>{
+  if(confirm("¿Restaurar la base de materiales original?")){ MATERIALS = JSON.parse(JSON.stringify(DEFAULT_MATERIALS)); renderAll(); }
+});
+document.getElementById("printBtn").addEventListener("click", ()=>{ renderSheet(); window.print(); });
+document.getElementById("brandNameInput").addEventListener("input", e=>{
+  BRAND_NAME = e.target.value.trim() || "KAIROS";
+  renderSheet();
+});
+
+document.getElementById("dateline").textContent = new Date().toLocaleDateString("es-CO", {year:"numeric", month:"long", day:"numeric"});
+
+renderAll();
+</script>
+</body>
+</html>

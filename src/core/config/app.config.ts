@@ -1,9 +1,7 @@
 /**
  * Runtime configuration values used across application services.
  */
-export type AppConfig = {
-  readonly backendUrl: string | null
-}
+export type AppConfig = Record<string, never>
 
 /**
  * Reads runtime application configuration from environment variables.
@@ -11,7 +9,5 @@ export type AppConfig = {
  * @returns The normalized application configuration.
  */
 export function getAppConfig(): AppConfig {
-  return {
-    backendUrl: process.env.MN_BACKEND_URL || null
-  }
+  return {}
 }
