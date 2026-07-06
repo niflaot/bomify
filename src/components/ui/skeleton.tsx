@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactElement } from 'react'
 
-import { cn } from '@/core/utils/class-name.utils'
+import { cn } from '@/core/utils/class-name/class-name.utils'
 
 /**
  * Renders a shadcn-style skeleton placeholder.

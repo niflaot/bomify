@@ -3,7 +3,7 @@
 import type { ReactElement } from 'react'
 import { useFormStatus } from 'react-dom'
 
-import { cn } from '@/core/utils/class-name.utils'
+import { cn } from '@/core/utils/class-name/class-name.utils'
 
 type LoadingBarProps = {
   readonly active?: boolean

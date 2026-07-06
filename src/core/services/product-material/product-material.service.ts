@@ -4,8 +4,8 @@ import type {
   UpdateProductMaterialInput
 } from '@/core/types/material.types'
 
-import { toMaterialRecord, toProductMaterialRecord } from './material.service.utils'
-import { prisma } from './prisma.service'
+import { toMaterialRecord, toProductMaterialRecord } from '../material/material.service.utils'
+import { prisma } from '../prisma/prisma.service'
 
 async function ensureActiveMaterial(materialId: string): Promise<void> {
   const material = await prisma.material.findFirst({

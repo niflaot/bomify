@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { createProduct, softDeleteProduct } from '@/core/services/product.service'
+import { createProduct, softDeleteProduct } from '@/core/services/product/product.service'
 import type { ProductFormState, ProductPhotoInput } from '@/core/types/product.types'
 
 function readRequiredText(formData: FormData, key: string): string {

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { parseDxfGeometry } from '@/core/utils/dxf.utils'
+import { parseDxfGeometry } from '@/core/utils/dxf/dxf.utils'
 
 import {
   getSourceKey,

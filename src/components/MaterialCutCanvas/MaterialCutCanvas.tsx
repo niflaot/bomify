@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 
 import { MetricCanvas } from '@/components/MetricCanvas'
-import { packMaterialPieces } from '@/core/utils/material-packing.utils'
+import { packMaterialPieces } from '@/core/utils/material-packing/material-packing.utils'
 
 import { defaultMaterialCutCanvasLabels } from './material-cut-canvas.constants'
 import type { MaterialCutCanvasPiece, MaterialCutCanvasProps } from './material-cut-canvas.types'

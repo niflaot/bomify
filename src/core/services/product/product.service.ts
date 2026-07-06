@@ -1,5 +1,5 @@
-import { prisma } from './prisma.service'
-import { uploadObject } from './storage.service'
+import { prisma } from '../prisma/prisma.service'
+import { uploadObject } from '../storage/storage.service'
 import type {
   CreateProductInput,
   ListProductsInput,

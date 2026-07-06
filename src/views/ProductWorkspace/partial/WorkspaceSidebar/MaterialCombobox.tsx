@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { cn } from '@/core/utils/class-name.utils'
+import { cn } from '@/core/utils/class-name/class-name.utils'
 
 import type {
   ProductWorkspaceLabels,

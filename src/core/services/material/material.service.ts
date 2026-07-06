@@ -12,7 +12,7 @@ import {
   normalizeMaterialWidthCm,
   toMaterialRecord
 } from './material.service.utils'
-import { prisma } from './prisma.service'
+import { prisma } from '../prisma/prisma.service'
 
 async function ensureActiveMaterial(materialId: string): Promise<MaterialRecord> {
   const material = await prisma.material.findFirst({

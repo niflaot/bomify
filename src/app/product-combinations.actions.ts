@@ -6,7 +6,7 @@ import {
   createProductCombination,
   softDeleteProductCombination,
   updateProductCombination
-} from '@/core/services/product-combination.service'
+} from '@/core/services/product-combination/product-combination.service'
 import type { ProductCombinationFormState } from '@/core/types/product-combination.types'
 
 function readRequiredText(formData: FormData, key: string): string {

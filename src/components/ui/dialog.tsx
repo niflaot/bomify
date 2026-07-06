@@ -4,7 +4,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import type { ComponentProps, ReactElement } from 'react'
 
-import { cn } from '@/core/utils/class-name.utils'
+import { cn } from '@/core/utils/class-name/class-name.utils'
 
 /**
  * Props for the shared shadcn dialog content component.

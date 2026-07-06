@@ -12,11 +12,11 @@ import {
   deleteProductMaterialAction,
   updateProductMaterialAction
 } from '@/app/product-materials.actions'
-import { listProductCombinations } from '@/core/services/product-combination.service'
-import { listMaterials } from '@/core/services/material.service'
-import { listProductMaterials } from '@/core/services/product-material.service'
+import { listProductCombinations } from '@/core/services/product-combination/product-combination.service'
+import { listMaterials } from '@/core/services/material/material.service'
+import { listProductMaterials } from '@/core/services/product-material/product-material.service'
 import type { MaterialRecord, ProductMaterialRecord } from '@/core/types/material.types'
-import { getProductById } from '@/core/services/product.service'
+import { getProductById } from '@/core/services/product/product.service'
 import type { ProductCombinationRecord } from '@/core/types/product-combination.types'
 import type { ProductRecord } from '@/core/types/product.types'
 import { ProductWorkspace } from '@/views/ProductWorkspace'

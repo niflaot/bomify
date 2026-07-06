@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 
-import type { DxfGeometry } from '@/core/utils/dxf.utils'
+import type { DxfGeometry } from '@/core/utils/dxf/dxf.utils'
 
 /**
  * Supported source file types for the pattern renderer.

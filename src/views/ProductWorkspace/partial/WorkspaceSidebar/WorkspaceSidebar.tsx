@@ -10,7 +10,7 @@ import type { LucideIcon } from 'lucide-react'
 import type { ReactElement } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { cn } from '@/core/utils/class-name.utils'
+import { cn } from '@/core/utils/class-name/class-name.utils'
 
 import { useProductWorkspace } from '../../product-workspace.context'
 import type {

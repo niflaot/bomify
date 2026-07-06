@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 import type { ComponentProps, ReactElement } from 'react'
 
-import { cn } from '@/core/utils/class-name.utils'
+import { cn } from '@/core/utils/class-name/class-name.utils'
 
 /**
  * Badge visual variants.

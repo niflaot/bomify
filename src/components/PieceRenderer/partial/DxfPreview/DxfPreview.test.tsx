@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 
-import type { DxfGeometry } from '@/core/utils/dxf.utils'
+import type { DxfGeometry } from '@/core/utils/dxf/dxf.utils'
 
 import { DxfPreview } from './DxfPreview'
 

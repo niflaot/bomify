@@ -1,4 +1,4 @@
-import { prisma } from './prisma.service'
+import { prisma } from '../prisma/prisma.service'
 import type {
   CreateProductCombinationInput,
   ListProductCombinationsInput,

@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
-import { cn } from '@/core/utils/class-name.utils'
+import { cn } from '@/core/utils/class-name/class-name.utils'
 
 import type { ProductWorkspaceLabels } from '../../product-workspace.types'
 import { MaterialIcon, materialIconOptions } from './material-icon.utils'

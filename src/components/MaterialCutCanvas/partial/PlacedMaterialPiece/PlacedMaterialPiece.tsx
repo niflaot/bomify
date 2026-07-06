@@ -4,7 +4,7 @@ import type { CSSProperties, ReactElement } from 'react'
 import { memo } from 'react'
 
 import { PieceRenderer } from '@/components/PieceRenderer'
-import type { PackedPiece } from '@/core/utils/material-packing.types'
+import type { PackedPiece } from '@/core/utils/material-packing/material-packing.types'
 
 import type { MaterialCutCanvasLabels, MaterialCutCanvasPiece } from '../../material-cut-canvas.types'
 

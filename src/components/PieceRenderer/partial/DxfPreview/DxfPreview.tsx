@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 import { memo } from 'react'
 
-import type { DxfArcEntity, DxfEntity, DxfGeometry } from '@/core/utils/dxf.utils'
+import type { DxfArcEntity, DxfEntity, DxfGeometry } from '@/core/utils/dxf/dxf.utils'
 
 type DxfPreviewProps = {
   readonly geometry: DxfGeometry

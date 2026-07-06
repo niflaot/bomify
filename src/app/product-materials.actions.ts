@@ -3,12 +3,12 @@
 import { revalidatePath } from 'next/cache'
 
 import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
-import { createMaterial } from '@/core/services/material.service'
+import { createMaterial } from '@/core/services/material/material.service'
 import {
   attachProductMaterial,
   detachProductMaterial,
   updateProductMaterial
-} from '@/core/services/product-material.service'
+} from '@/core/services/product-material/product-material.service'
 import type { MaterialFormState } from '@/core/types/material.types'
 
 function readRequiredText(formData: FormData, key: string): string {

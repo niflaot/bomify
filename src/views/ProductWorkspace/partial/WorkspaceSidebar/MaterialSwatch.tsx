@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 
 import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
-import { getReadableForegroundColor } from '@/core/utils/color-contrast.utils'
+import { getReadableForegroundColor } from '@/core/utils/color/color-contrast.utils'
 
 import { MaterialIcon } from './material-icon.utils'
 

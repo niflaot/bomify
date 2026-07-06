@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 
-import type { PackedPiece } from '@/core/utils/material-packing.types'
+import type { PackedPiece } from '@/core/utils/material-packing/material-packing.types'
 
 import type { MaterialCutCanvasLabels, MaterialCutCanvasPiece } from '../../material-cut-canvas.types'
 import { PlacedMaterialPiece } from './PlacedMaterialPiece'

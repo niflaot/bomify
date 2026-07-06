@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 import { getLocale, getTranslations } from 'next-intl/server'
 
-import { listProducts } from '@/core/services/product.service'
+import { listProducts } from '@/core/services/product/product.service'
 import type { ProductRecord } from '@/core/types/product.types'
 import { ProductsOverview } from '@/views/ProductsOverview'
 import type { ProductOverviewItem, ProductsOverviewLabels } from '@/views/ProductsOverview'
