@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { PieceRenderer } from './PieceRenderer'
 
@@ -45,5 +45,34 @@ describe('PieceRenderer', () => {
       expect(screen.getByText('Width: 120.0 mm')).toBeInTheDocument()
     })
     expect(screen.getByText('Height: 40.0 mm')).toBeInTheDocument()
+  })
+
+  it('applies hover stroke styling when enabled', async () => {
+    const file = new File([rectangleDxf], 'piece.dxf', {
+      type: 'application/dxf'
+    })
+
+    render(
+      <PieceRenderer
+        hoverStrokeColor="#ff0000"
+        hoverStrokeWidth={2}
+        source={file}
+        strokeColor="#111111"
+        strokeWidth={1}
+      />
+    )
+
+    await waitFor(() => {
+      expect(screen.getByTestId('piece-renderer-dxf')).toBeInTheDocument()
+    })
+
+    const figure = screen.getByLabelText('Pattern piece preview')
+    const group = screen.getByTestId('piece-renderer-dxf').querySelector('g')
+    const stage = figure.querySelector('div') as HTMLElement
+
+    expect(group).toHaveAttribute('stroke-width', '1')
+    fireEvent.mouseEnter(figure)
+    expect(group).toHaveAttribute('stroke-width', '2')
+    expect(stage).toHaveStyle({ color: '#ff0000' })
   })
 })

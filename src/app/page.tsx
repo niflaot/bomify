@@ -52,6 +52,10 @@ export default async function Page(): Promise<ReactElement> {
       <section style={{ display: 'grid', gap: '1rem' }}>
         <h2 style={{ margin: 0 }}>{t('cutCanvasTitle')}</h2>
         <MaterialCutCanvas
+          backgroundColor="#fffdfa"
+          borderColor="hsl(24 12% 65%)"
+          gridColor="rgba(143, 101, 56, 0.14)"
+          majorGridColor="rgba(143, 101, 56, 0.26)"
           labels={{
             efficiency: t('efficiency'),
             fallbackError: t('fallbackError'),
@@ -65,6 +69,9 @@ export default async function Page(): Promise<ReactElement> {
           }}
           materialHeightCm={60}
           materialWidthCm={80}
+          pieceHoverStrokeColor="#9a643c"
+          pieceHoverStrokeWidth={1.5}
+          pieceStrokeColor="#2a221c"
           pieces={pieces.map(piece => ({
             heightMm: piece.heightMm,
             id: piece.id,

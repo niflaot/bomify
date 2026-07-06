@@ -47,4 +47,18 @@ describe('MaterialCutCanvas', () => {
     expect(screen.getByLabelText('Front front-1')).toBeInTheDocument()
     expect(screen.getByLabelText('Front front-2')).toBeInTheDocument()
   })
+
+  it('can hide the material canvas while keeping stats visible', () => {
+    render(
+      <MaterialCutCanvas
+        materialHeightCm={10}
+        materialWidthCm={10}
+        pieces={[]}
+        showCanvas={false}
+      />
+    )
+
+    expect(screen.getByText('Efficiency: 0%')).toBeInTheDocument()
+    expect(screen.queryByTestId('metric-canvas-surface')).not.toBeInTheDocument()
+  })
 })

@@ -37,6 +37,10 @@ export type PieceRendererProps = {
   readonly framed?: boolean
   readonly showMeasurements?: boolean
   readonly strokeWidth?: number
+  readonly strokeColor?: string
+  readonly hoverStrokeWidth?: number
+  readonly hoverStrokeColor?: string
+  readonly hoverEnabled?: boolean
   readonly labels?: Partial<PieceRendererLabels>
   readonly className?: string
   readonly style?: CSSProperties

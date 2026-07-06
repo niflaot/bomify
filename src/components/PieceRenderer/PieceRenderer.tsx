@@ -1,6 +1,7 @@
 'use client'
 
 import type { ReactElement } from 'react'
+import { useState } from 'react'
 
 import { defaultLabels } from './piece-renderer.constants'
 import { formatMm } from './piece-renderer.format'
@@ -20,15 +21,20 @@ export function PieceRenderer(props: PieceRendererProps): ReactElement {
     ariaLabel = 'Pattern piece preview',
     className,
     framed = false,
+    hoverEnabled = true,
+    hoverStrokeColor,
+    hoverStrokeWidth,
     labels,
     measurements,
     showMeasurements = true,
     source,
     sourceType: explicitSourceType,
+    strokeColor = '#111',
     strokeWidth = 1,
     style,
     unitScale = 1
   } = props
+  const [hovered, setHovered] = useState(false)
   const copy = {
     ...defaultLabels,
     ...labels
@@ -43,11 +49,20 @@ export function PieceRenderer(props: PieceRendererProps): ReactElement {
   const aspectRatio = currentState.status === 'ready' && currentState.measurements
     ? `${currentState.measurements.widthMm} / ${currentState.measurements.heightMm}`
     : '16 / 9'
+  const activeHover = hovered && hoverEnabled
+  const activeStrokeColor = activeHover && hoverStrokeColor ? hoverStrokeColor : strokeColor
+  const activeStrokeWidth = activeHover && hoverStrokeWidth ? hoverStrokeWidth : strokeWidth
 
   return (
     <figure
       aria-label={ariaLabel}
       className={className}
+      onMouseEnter={() => {
+        setHovered(true)
+      }}
+      onMouseLeave={() => {
+        setHovered(false)
+      }}
       style={{
         display: 'grid',
         gap: '0.75rem',
@@ -62,7 +77,7 @@ export function PieceRenderer(props: PieceRendererProps): ReactElement {
           background: framed ? '#fff' : 'transparent',
           border: framed ? '1px solid hsl(20 10% 82%)' : 0,
           borderRadius: framed ? '0.5rem' : 0,
-          color: '#111',
+          color: activeStrokeColor,
           display: 'flex',
           justifyContent: 'center',
           minHeight: framed ? '180px' : 0,
@@ -73,7 +88,7 @@ export function PieceRenderer(props: PieceRendererProps): ReactElement {
         {currentState.status === 'loading' ? <span>{copy.loading}</span> : null}
         {currentState.status === 'error' ? <span>{currentState.message}</span> : null}
         {currentState.status === 'ready' && currentState.sourceType === 'dxf' && currentState.dxfGeometry ? (
-          <DxfPreview geometry={currentState.dxfGeometry} strokeWidth={strokeWidth} />
+          <DxfPreview geometry={currentState.dxfGeometry} strokeWidth={activeStrokeWidth} />
         ) : null}
         {currentState.status === 'ready' && currentState.sourceType === 'pdf' && currentState.pdfBuffer ? (
           <PdfPreview

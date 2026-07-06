@@ -3,6 +3,7 @@
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 
+import { MetricCanvas } from '@/components/MetricCanvas'
 import { PieceRenderer } from '@/components/PieceRenderer'
 import { packMaterialPieces } from '@/core/utils/material-packing.utils'
 
@@ -35,12 +36,23 @@ function findPiece(pieces: readonly MaterialCutCanvasPiece[], id: string): Mater
  */
 export function MaterialCutCanvas(props: MaterialCutCanvasProps): ReactElement {
   const {
+    backgroundColor,
+    borderColor,
     gapMm = 5,
+    gridColor,
     labels,
+    majorGridColor,
     materialHeightCm,
     materialWidthCm,
+    pieceHoverEnabled = true,
+    pieceHoverStrokeColor,
+    pieceHoverStrokeWidth,
+    pieceStrokeColor,
+    pieceStrokeWidth = 1,
     pieces,
     pixelsPerMm = 0.6,
+    showCanvas = true,
+    showGrid = true,
     showPieceBounds = false,
     showStats = true
   } = props
@@ -79,31 +91,25 @@ export function MaterialCutCanvas(props: MaterialCutCanvasProps): ReactElement {
         </div>
       ) : null}
 
-      <div style={{ overflow: 'auto' }}>
-        <div
+      {showCanvas ? (
+        <MetricCanvas
           aria-label={`${materialWidthCm} x ${materialHeightCm} cm`}
-          style={{
-            backgroundColor: '#fbfaf7',
-            backgroundImage: `
-              linear-gradient(to right, rgba(145, 108, 69, 0.18) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(145, 108, 69, 0.18) 1px, transparent 1px),
-              linear-gradient(to right, rgba(145, 108, 69, 0.28) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(145, 108, 69, 0.28) 1px, transparent 1px)
-            `,
-            backgroundSize: `
-              ${pixelsPerMm * 10}px ${pixelsPerMm * 10}px,
-              ${pixelsPerMm * 10}px ${pixelsPerMm * 10}px,
-              ${pixelsPerMm * 100}px ${pixelsPerMm * 100}px,
-              ${pixelsPerMm * 100}px ${pixelsPerMm * 100}px
-            `,
-            border: '1px solid hsl(20 10% 72%)',
-            height: `${materialHeightMm * pixelsPerMm}px`,
-            position: 'relative',
-            width: `${materialWidthMm * pixelsPerMm}px`
-          }}
+          backgroundColor={backgroundColor}
+          borderColor={borderColor}
+          gridColor={gridColor}
+          heightMm={materialHeightMm}
+          majorGridColor={majorGridColor}
+          pixelsPerMm={pixelsPerMm}
+          showGrid={showGrid}
+          widthMm={materialWidthMm}
         >
           {result.placed.map(placement => {
             const piece = findPiece(pieces, placement.id)
+            const strokeColor = piece.strokeColor ?? pieceStrokeColor
+            const hoverStrokeColor = piece.hoverStrokeColor ?? pieceHoverStrokeColor
+            const strokeWidth = piece.strokeWidth ?? pieceStrokeWidth
+            const hoverStrokeWidth = piece.hoverStrokeWidth ?? pieceHoverStrokeWidth
+            const hoverEnabled = piece.hoverEnabled ?? pieceHoverEnabled
 
             return (
               <div
@@ -134,14 +140,18 @@ export function MaterialCutCanvas(props: MaterialCutCanvasProps): ReactElement {
                   showMeasurements={false}
                   source={piece.source}
                   sourceType={piece.sourceType}
-                  strokeWidth={1}
+                  hoverEnabled={hoverEnabled}
+                  hoverStrokeColor={hoverStrokeColor}
+                  hoverStrokeWidth={hoverStrokeWidth}
+                  strokeColor={strokeColor}
+                  strokeWidth={strokeWidth}
                   style={{ width: '100%' }}
                 />
               </div>
             )
           })}
-        </div>
-      </div>
+        </MetricCanvas>
+      ) : null}
     </section>
   )
 }

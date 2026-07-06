@@ -12,6 +12,11 @@ export type MaterialCutCanvasPiece = {
   readonly heightMm: number
   readonly quantity?: number
   readonly allowRotation?: boolean
+  readonly strokeColor?: string
+  readonly hoverStrokeColor?: string
+  readonly strokeWidth?: number
+  readonly hoverStrokeWidth?: number
+  readonly hoverEnabled?: boolean
 }
 
 /**
@@ -38,7 +43,18 @@ export type MaterialCutCanvasProps = {
   readonly pieces: readonly MaterialCutCanvasPiece[]
   readonly gapMm?: number
   readonly pixelsPerMm?: number
+  readonly showCanvas?: boolean
+  readonly showGrid?: boolean
   readonly showStats?: boolean
   readonly showPieceBounds?: boolean
+  readonly backgroundColor?: string
+  readonly gridColor?: string
+  readonly majorGridColor?: string
+  readonly borderColor?: string
+  readonly pieceStrokeColor?: string
+  readonly pieceHoverStrokeColor?: string
+  readonly pieceStrokeWidth?: number
+  readonly pieceHoverStrokeWidth?: number
+  readonly pieceHoverEnabled?: boolean
   readonly labels?: Partial<MaterialCutCanvasLabels>
 }
