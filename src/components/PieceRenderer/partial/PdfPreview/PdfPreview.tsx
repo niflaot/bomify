@@ -1,7 +1,7 @@
 'use client'
 
 import type { ReactElement } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 
 import type { PdfCanvasRenderJob } from '../../piece-renderer.pdf'
 import { startPdfCanvasRender } from '../../piece-renderer.pdf'
@@ -17,50 +17,51 @@ type PdfRenderError = {
   readonly message: string
 }
 
-/**
- * Renders a PDF page into a canvas without browser viewer chrome.
- *
- * @param props - PDF preview properties.
- * @returns Canvas preview element.
- */
-export function PdfPreview(props: PdfPreviewProps): ReactElement {
+function PdfPreviewComponent(props: PdfPreviewProps): ReactElement {
   const { ariaLabel, buffer, fallbackError } = props
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const lastRenderPromiseRef = useRef<Promise<void>>(Promise.resolve())
   const renderJobRef = useRef<PdfCanvasRenderJob | null>(null)
   const [error, setError] = useState<PdfRenderError | null>(null)
   const message = error?.buffer === buffer ? error.message : null
 
   useEffect(() => {
-    renderJobRef.current?.cancel()
-    renderJobRef.current = null
-
+    let disposed = false
     const canvas = canvasRef.current
 
     if (!canvas) {
       return
     }
 
-    const renderJob = startPdfCanvasRender(canvas, buffer)
-
-    renderJobRef.current = renderJob
     setError(null)
-    void renderJob.promise.catch(renderError => {
-      if (renderJobRef.current !== renderJob) {
+    const renderPromise = lastRenderPromiseRef.current.then(() => {
+      if (disposed) {
         return
       }
 
-      setError({
-        buffer,
-        message: renderError instanceof Error ? renderError.message : fallbackError
+      const renderJob = startPdfCanvasRender(canvas, buffer)
+
+      renderJobRef.current = renderJob
+
+      return renderJob.promise.catch(renderError => {
+        if (disposed || renderJobRef.current !== renderJob) {
+          return
+        }
+
+        setError({
+          buffer,
+          message: renderError instanceof Error ? renderError.message : fallbackError
+        })
       })
     })
 
-    return () => {
-      renderJob.cancel()
+    lastRenderPromiseRef.current = renderPromise.then(() => undefined, () => undefined)
 
-      if (renderJobRef.current === renderJob) {
-        renderJobRef.current = null
-      }
+    return () => {
+      disposed = true
+      renderJobRef.current?.cancel()
+
+      renderJobRef.current = null
     }
   }, [buffer, fallbackError])
 
@@ -82,3 +83,13 @@ export function PdfPreview(props: PdfPreviewProps): ReactElement {
     />
   )
 }
+
+/**
+ * Renders a PDF page into a canvas without browser viewer chrome.
+ *
+ * @param props - PDF preview properties.
+ * @returns Canvas preview element.
+ */
+export const PdfPreview = memo(PdfPreviewComponent)
+
+PdfPreview.displayName = 'PdfPreview'

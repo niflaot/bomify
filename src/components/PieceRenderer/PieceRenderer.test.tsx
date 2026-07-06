@@ -67,12 +67,16 @@ describe('PieceRenderer', () => {
     })
 
     const figure = screen.getByLabelText('Pattern piece preview')
-    const group = screen.getByTestId('piece-renderer-dxf').querySelector('g')
-    const stage = figure.querySelector('div') as HTMLElement
 
-    expect(group).toHaveAttribute('stroke-width', '1')
-    fireEvent.mouseEnter(figure)
-    expect(group).toHaveAttribute('stroke-width', '2')
-    expect(stage).toHaveStyle({ color: '#ff0000' })
+    expect(figure.style.getPropertyValue('--piece-renderer-stroke-width')).toBe('1')
+    expect(figure.style.getPropertyValue('--piece-renderer-stroke-color')).toBe('#111111')
+
+    fireEvent.pointerEnter(figure)
+    expect(figure.style.getPropertyValue('--piece-renderer-stroke-width')).toBe('2')
+    expect(figure.style.getPropertyValue('--piece-renderer-stroke-color')).toBe('#ff0000')
+
+    fireEvent.pointerLeave(figure)
+    expect(figure.style.getPropertyValue('--piece-renderer-stroke-width')).toBe('1')
+    expect(figure.style.getPropertyValue('--piece-renderer-stroke-color')).toBe('#111111')
   })
 })

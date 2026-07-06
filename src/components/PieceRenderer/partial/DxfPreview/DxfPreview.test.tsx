@@ -36,7 +36,7 @@ describe('DxfPreview', () => {
     const line = svg.querySelector('line')
     const circle = svg.querySelector('circle')
 
-    expect(group).toHaveAttribute('stroke-width', '1')
+    expect(group).toHaveStyle({ strokeWidth: 'var(--piece-renderer-stroke-width, 1)' })
     expect(line).toHaveAttribute('vector-effect', 'non-scaling-stroke')
     expect(circle).toHaveAttribute('vector-effect', 'non-scaling-stroke')
   })

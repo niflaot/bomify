@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { memo } from 'react'
 
 import type { DxfArcEntity, DxfEntity, DxfGeometry } from '@/core/utils/dxf.utils'
 
@@ -6,6 +7,8 @@ type DxfPreviewProps = {
   readonly geometry: DxfGeometry
   readonly strokeWidth: number
 }
+
+const entityElementCache = new WeakMap<DxfGeometry, readonly ReactElement[]>()
 
 function arcPath(entity: DxfArcEntity): string {
   const startRadians = (entity.startAngle * Math.PI) / 180
@@ -65,18 +68,27 @@ function renderEntity(entity: DxfEntity, index: number): ReactElement {
   )
 }
 
-/**
- * Renders parsed DXF geometry as a normalized SVG preview.
- *
- * @param props - DXF preview properties.
- * @returns SVG preview element.
- */
-export function DxfPreview(props: DxfPreviewProps): ReactElement {
+function getEntityElements(geometry: DxfGeometry): readonly ReactElement[] {
+  const cached = entityElementCache.get(geometry)
+
+  if (cached) {
+    return cached
+  }
+
+  const elements = geometry.entities.map((entity, index) => renderEntity(entity, index))
+
+  entityElementCache.set(geometry, elements)
+
+  return elements
+}
+
+function DxfPreviewComponent(props: DxfPreviewProps): ReactElement {
   const { geometry, strokeWidth } = props
   const { bounds } = geometry
   const width = Math.max(bounds.width, 1)
   const height = Math.max(bounds.height, 1)
   const padding = Math.max(width, height) / 300
+  const entities = getEntityElements(geometry)
 
   return (
     <svg
@@ -96,11 +108,21 @@ export function DxfPreview(props: DxfPreviewProps): ReactElement {
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth={strokeWidth}
+        style={{ strokeWidth: `var(--piece-renderer-stroke-width, ${strokeWidth})` }}
         transform={`translate(${-bounds.minX} ${bounds.maxY}) scale(1 -1)`}
       >
-        {geometry.entities.map((entity, index) => renderEntity(entity, index))}
+        {entities}
       </g>
     </svg>
   )
 }
+
+/**
+ * Renders parsed DXF geometry as a normalized SVG preview.
+ *
+ * @param props - DXF preview properties.
+ * @returns SVG preview element.
+ */
+export const DxfPreview = memo(DxfPreviewComponent)
+
+DxfPreview.displayName = 'DxfPreview'

@@ -4,11 +4,11 @@ import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 
 import { MetricCanvas } from '@/components/MetricCanvas'
-import { PieceRenderer } from '@/components/PieceRenderer'
 import { packMaterialPieces } from '@/core/utils/material-packing.utils'
 
 import { defaultMaterialCutCanvasLabels } from './material-cut-canvas.constants'
 import type { MaterialCutCanvasPiece, MaterialCutCanvasProps } from './material-cut-canvas.types'
+import { PlacedMaterialPiece } from './partial/PlacedMaterialPiece/PlacedMaterialPiece'
 
 function formatSquareMeters(valueMm2: number): string {
   return `${(valueMm2 / 1_000_000).toFixed(2)} m2`
@@ -18,8 +18,11 @@ function formatPercent(value: number): string {
   return `${Math.round(value * 100)}%`
 }
 
-function findPiece(pieces: readonly MaterialCutCanvasPiece[], id: string): MaterialCutCanvasPiece {
-  const piece = pieces.find(candidate => candidate.id === id)
+function getPlacedPiece(
+  piecesById: ReadonlyMap<string, MaterialCutCanvasPiece>,
+  id: string
+): MaterialCutCanvasPiece {
+  const piece = piecesById.get(id)
 
   if (!piece) {
     throw new Error(`Missing piece ${id}`)
@@ -56,12 +59,19 @@ export function MaterialCutCanvas(props: MaterialCutCanvasProps): ReactElement {
     showPieceBounds = false,
     showStats = true
   } = props
-  const copy = {
-    ...defaultMaterialCutCanvasLabels,
-    ...labels
-  }
+  const copy = useMemo(
+    () => ({
+      ...defaultMaterialCutCanvasLabels,
+      ...labels
+    }),
+    [labels]
+  )
   const materialWidthMm = materialWidthCm * 10
   const materialHeightMm = materialHeightCm * 10
+  const piecesById = useMemo(
+    () => new Map(pieces.map(piece => [piece.id, piece])),
+    [pieces]
+  )
   const result = useMemo(
     () => packMaterialPieces(
       materialWidthMm,
@@ -104,50 +114,22 @@ export function MaterialCutCanvas(props: MaterialCutCanvasProps): ReactElement {
           widthMm={materialWidthMm}
         >
           {result.placed.map(placement => {
-            const piece = findPiece(pieces, placement.id)
-            const strokeColor = piece.strokeColor ?? pieceStrokeColor
-            const hoverStrokeColor = piece.hoverStrokeColor ?? pieceHoverStrokeColor
-            const strokeWidth = piece.strokeWidth ?? pieceStrokeWidth
-            const hoverStrokeWidth = piece.hoverStrokeWidth ?? pieceHoverStrokeWidth
-            const hoverEnabled = piece.hoverEnabled ?? pieceHoverEnabled
+            const piece = getPlacedPiece(piecesById, placement.id)
 
             return (
-              <div
-                aria-label={`${piece.name} ${placement.instanceId}`}
+              <PlacedMaterialPiece
+                defaultHoverEnabled={pieceHoverEnabled}
+                defaultHoverStrokeColor={pieceHoverStrokeColor}
+                defaultHoverStrokeWidth={pieceHoverStrokeWidth}
+                defaultStrokeColor={pieceStrokeColor}
+                defaultStrokeWidth={pieceStrokeWidth}
                 key={placement.instanceId}
-                style={{
-                  height: `${placement.heightMm * pixelsPerMm}px`,
-                  left: `${placement.xMm * pixelsPerMm}px`,
-                  outline: showPieceBounds ? '1px dashed rgba(42, 34, 28, 0.28)' : 0,
-                  position: 'absolute',
-                  top: `${placement.yMm * pixelsPerMm}px`,
-                  width: `${placement.widthMm * pixelsPerMm}px`
-                }}
-                title={`${piece.name} · ${copy.width}: ${piece.widthMm} mm · ${copy.height}: ${piece.heightMm} mm`}
-              >
-                <PieceRenderer
-                  ariaLabel={piece.name}
-                  labels={{
-                    fallbackError: copy.fallbackError,
-                    height: copy.height,
-                    loading: copy.loading,
-                    width: copy.width
-                  }}
-                  measurements={{
-                    widthMm: piece.widthMm,
-                    heightMm: piece.heightMm
-                  }}
-                  showMeasurements={false}
-                  source={piece.source}
-                  sourceType={piece.sourceType}
-                  hoverEnabled={hoverEnabled}
-                  hoverStrokeColor={hoverStrokeColor}
-                  hoverStrokeWidth={hoverStrokeWidth}
-                  strokeColor={strokeColor}
-                  strokeWidth={strokeWidth}
-                  style={{ width: '100%' }}
-                />
-              </div>
+                labels={copy}
+                piece={piece}
+                pixelsPerMm={pixelsPerMm}
+                placement={placement}
+                showPieceBounds={showPieceBounds}
+              />
             )
           })}
         </MetricCanvas>

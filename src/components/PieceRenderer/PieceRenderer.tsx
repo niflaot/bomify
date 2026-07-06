@@ -1,7 +1,7 @@
 'use client'
 
-import type { ReactElement } from 'react'
-import { useState } from 'react'
+import type { CSSProperties, PointerEvent, ReactElement } from 'react'
+import { memo } from 'react'
 
 import { defaultLabels } from './piece-renderer.constants'
 import { formatMm } from './piece-renderer.format'
@@ -10,13 +10,17 @@ import type { PieceRendererProps } from './piece-renderer.types'
 import { DxfPreview } from './partial/DxfPreview/DxfPreview'
 import { PdfPreview } from './partial/PdfPreview/PdfPreview'
 
-/**
- * Renders a single pattern piece from a DXF or PDF source.
- *
- * @param props - Piece renderer properties.
- * @returns A measured piece preview.
- */
-export function PieceRenderer(props: PieceRendererProps): ReactElement {
+type PieceRendererStyle = CSSProperties & {
+  readonly '--piece-renderer-stroke-color': string
+  readonly '--piece-renderer-stroke-width': string
+}
+
+function setStrokeVariables(element: HTMLElement, color: string, width: number): void {
+  element.style.setProperty('--piece-renderer-stroke-color', color)
+  element.style.setProperty('--piece-renderer-stroke-width', width.toString())
+}
+
+function PieceRendererComponent(props: PieceRendererProps): ReactElement {
   const {
     ariaLabel = 'Pattern piece preview',
     className,
@@ -34,7 +38,6 @@ export function PieceRenderer(props: PieceRendererProps): ReactElement {
     style,
     unitScale = 1
   } = props
-  const [hovered, setHovered] = useState(false)
   const copy = {
     ...defaultLabels,
     ...labels
@@ -49,26 +52,36 @@ export function PieceRenderer(props: PieceRendererProps): ReactElement {
   const aspectRatio = currentState.status === 'ready' && currentState.measurements
     ? `${currentState.measurements.widthMm} / ${currentState.measurements.heightMm}`
     : '16 / 9'
-  const activeHover = hovered && hoverEnabled
-  const activeStrokeColor = activeHover && hoverStrokeColor ? hoverStrokeColor : strokeColor
-  const activeStrokeWidth = activeHover && hoverStrokeWidth ? hoverStrokeWidth : strokeWidth
+  const figureStyle: PieceRendererStyle = {
+    display: 'grid',
+    gap: '0.75rem',
+    margin: 0,
+    ...style,
+    '--piece-renderer-stroke-color': strokeColor,
+    '--piece-renderer-stroke-width': strokeWidth.toString()
+  }
+  const applyHoverStroke = (event: PointerEvent<HTMLElement>): void => {
+    if (!hoverEnabled) {
+      return
+    }
+
+    setStrokeVariables(
+      event.currentTarget,
+      hoverStrokeColor ?? strokeColor,
+      hoverStrokeWidth ?? strokeWidth
+    )
+  }
+  const resetStroke = (event: PointerEvent<HTMLElement>): void => {
+    setStrokeVariables(event.currentTarget, strokeColor, strokeWidth)
+  }
 
   return (
     <figure
       aria-label={ariaLabel}
       className={className}
-      onMouseEnter={() => {
-        setHovered(true)
-      }}
-      onMouseLeave={() => {
-        setHovered(false)
-      }}
-      style={{
-        display: 'grid',
-        gap: '0.75rem',
-        margin: 0,
-        ...style
-      }}
+      onPointerEnter={applyHoverStroke}
+      onPointerLeave={resetStroke}
+      style={figureStyle}
     >
       <div
         style={{
@@ -77,7 +90,8 @@ export function PieceRenderer(props: PieceRendererProps): ReactElement {
           background: framed ? '#fff' : 'transparent',
           border: framed ? '1px solid hsl(20 10% 82%)' : 0,
           borderRadius: framed ? '0.5rem' : 0,
-          color: activeStrokeColor,
+          color: 'var(--piece-renderer-stroke-color)',
+          contain: 'layout paint',
           display: 'flex',
           justifyContent: 'center',
           minHeight: framed ? '180px' : 0,
@@ -88,7 +102,7 @@ export function PieceRenderer(props: PieceRendererProps): ReactElement {
         {currentState.status === 'loading' ? <span>{copy.loading}</span> : null}
         {currentState.status === 'error' ? <span>{currentState.message}</span> : null}
         {currentState.status === 'ready' && currentState.sourceType === 'dxf' && currentState.dxfGeometry ? (
-          <DxfPreview geometry={currentState.dxfGeometry} strokeWidth={activeStrokeWidth} />
+          <DxfPreview geometry={currentState.dxfGeometry} strokeWidth={strokeWidth} />
         ) : null}
         {currentState.status === 'ready' && currentState.sourceType === 'pdf' && currentState.pdfBuffer ? (
           <PdfPreview
@@ -116,3 +130,13 @@ export function PieceRenderer(props: PieceRendererProps): ReactElement {
     </figure>
   )
 }
+
+/**
+ * Renders a single pattern piece from a DXF or PDF source.
+ *
+ * @param props - Piece renderer properties.
+ * @returns A measured piece preview.
+ */
+export const PieceRenderer = memo(PieceRendererComponent)
+
+PieceRenderer.displayName = 'PieceRenderer'
