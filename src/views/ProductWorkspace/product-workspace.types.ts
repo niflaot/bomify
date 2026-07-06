@@ -19,6 +19,7 @@ export type ProductWorkspaceItem = {
 export type ProductWorkspaceCombination = {
   readonly hexColor: string
   readonly id: string
+  readonly materialAssignments: readonly ProductWorkspaceCombinationMaterialAssignment[]
   readonly name: string
   readonly updatedAt: string
 }
@@ -39,10 +40,18 @@ export type ProductWorkspaceMaterial = {
  * Product material link rendered in the workspace.
  */
 export type ProductWorkspaceProductMaterial = {
-  readonly combinationId: string | null
   readonly id: string
   readonly material: ProductWorkspaceMaterial
   readonly updatedAt: string
+}
+
+/**
+ * Material assigned to one combination role.
+ */
+export type ProductWorkspaceCombinationMaterialAssignment = {
+  readonly id: string
+  readonly productMaterial: ProductWorkspaceProductMaterial
+  readonly roleId: string
 }
 
 /**
@@ -76,7 +85,6 @@ export type MaterialFormAction = (
 export type ProductWorkspaceMaterialActions = {
   readonly add: MaterialFormAction
   readonly delete: MaterialFormAction
-  readonly update: MaterialFormAction
 }
 
 /**
@@ -116,10 +124,9 @@ export type ProductWorkspaceLabels = {
   readonly deleting: string
   readonly editCombination: string
   readonly addMaterial: string
-  readonly allCombinations: string
+  readonly addCombinationMaterial: string
   readonly createCatalogMaterial: string
   readonly deleteMaterial: string
-  readonly editMaterial: string
   readonly materialCatalogEmptyDescription: string
   readonly materialCatalogSearchLabel: string
   readonly materialCatalogSearchPlaceholder: string
@@ -133,10 +140,15 @@ export type ProductWorkspaceLabels = {
   readonly materialIconSearchPlaceholder: string
   readonly materialNameLabel: string
   readonly materialNamePlaceholder: string
-  readonly materialScopeLabel: string
   readonly materialSelectLabel: string
   readonly materialWidthLabel: string
   readonly materialWidthPlaceholder: string
+  readonly combinationMaterialAssignmentsLabel: string
+  readonly combinationMaterialEmptyDescription: string
+  readonly combinationMaterialMaterialLabel: string
+  readonly combinationMaterialRoleLabel: string
+  readonly combinationMaterialToggleLabel: string
+  readonly removeCombinationMaterial: string
   readonly newCatalogMaterial: string
   readonly saveMaterial: string
   readonly selectExistingMaterial: string

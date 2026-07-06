@@ -10,8 +10,8 @@ import type {
 
 const labels: ProductWorkspaceLabels = {
   addCombination: 'Add combination',
+  addCombinationMaterial: 'Add material role',
   addMaterial: 'Add material',
-  allCombinations: 'All combinations',
   calculate: 'Calculate',
   cancel: 'Cancel',
   canvasEmptyDescription: 'Canvas placeholder description.',
@@ -26,6 +26,11 @@ const labels: ProductWorkspaceLabels = {
   combinationEmptyTitle: 'No combinations yet',
   combinationNameLabel: 'Name',
   combinationNamePlaceholder: 'Leather standard',
+  combinationMaterialAssignmentsLabel: 'Material roles',
+  combinationMaterialEmptyDescription: 'Attach materials first.',
+  combinationMaterialMaterialLabel: 'Material',
+  combinationMaterialRoleLabel: 'Role id',
+  combinationMaterialToggleLabel: 'Toggle assigned materials',
   combinations: 'Combinations',
   combinationsPanelDescription: 'Combination panel.',
   createCatalogMaterial: 'Create catalog material',
@@ -34,7 +39,6 @@ const labels: ProductWorkspaceLabels = {
   deleteMaterial: 'Remove',
   deleting: 'Deleting',
   editCombination: 'Edit',
-  editMaterial: 'Edit material',
   export: 'Export',
   home: 'Products home',
   materials: 'Materials',
@@ -52,7 +56,6 @@ const labels: ProductWorkspaceLabels = {
   materialNameLabel: 'Name',
   materialNamePlaceholder: 'Canvas',
   materialsPanelDescription: 'Materials panel.',
-  materialScopeLabel: 'Applies to',
   materialSelectLabel: 'Material',
   materialWidthLabel: 'Width in cm',
   materialWidthPlaceholder: '140',
@@ -66,6 +69,7 @@ const labels: ProductWorkspaceLabels = {
   saveMaterial: 'Save material',
   saving: 'Saving',
   selectExistingMaterial: 'Use catalog',
+  removeCombinationMaterial: 'Remove material role',
   sidebarTitle: 'Workspace panel',
   stickers: 'Stickers',
   stickersPanelDescription: 'Stickers panel.',
@@ -82,15 +86,6 @@ const product = {
   photoUrl: null,
   updatedAt: '2026-07-06T12:00:00.000Z'
 }
-
-const combinations = [
-  {
-    hexColor: '#111111',
-    id: 'combination-one',
-    name: 'Leather standard',
-    updatedAt: '2026-07-06T12:00:00.000Z'
-  }
-]
 
 const combinationActions: ProductWorkspaceCombinationActions = {
   create: async () => ({ status: 'success' }),
@@ -111,17 +106,31 @@ const catalogMaterials = [
 
 const productMaterials = [
   {
-    combinationId: null,
     id: 'product-material-one',
     material: catalogMaterials[0],
     updatedAt: '2026-07-06T12:00:00.000Z'
   }
 ]
 
+const combinations = [
+  {
+    hexColor: '#111111',
+    id: 'combination-one',
+    materialAssignments: [
+      {
+        id: 'assignment-one',
+        productMaterial: productMaterials[0],
+        roleId: 'lona'
+      }
+    ],
+    name: 'Leather standard',
+    updatedAt: '2026-07-06T12:00:00.000Z'
+  }
+]
+
 const materialActions: ProductWorkspaceMaterialActions = {
   add: async () => ({ status: 'success' }),
-  delete: async () => ({ status: 'success' }),
-  update: async () => ({ status: 'success' })
+  delete: async () => ({ status: 'success' })
 }
 
 function renderWorkspace(): ReturnType<typeof render> {
@@ -176,12 +185,26 @@ describe('ProductWorkspace', () => {
 
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'New combination' })).toBeInTheDocument()
+    expect(screen.getByText('Material roles')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Add material role' }))
+
+    expect(screen.getByLabelText('Role id 1')).toHaveValue('material-1')
+    expect(screen.getByRole('combobox', { name: 'Material' })).toHaveValue(
+      'product-material-one'
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Remove material role 1' }))
+
+    expect(screen.queryByLabelText('Role id 1')).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Close dialog' }))
     await user.click(screen.getByRole('button', { name: 'Edit: Leather standard' }))
 
     expect(screen.getByRole('heading', { name: 'Edit' })).toBeInTheDocument()
     expect(screen.getByLabelText('Name')).toHaveValue('Leather standard')
+    expect(screen.getByLabelText('Role id 1')).toHaveValue('lona')
+    expect(screen.getByText('lona - Canvas')).toBeInTheDocument()
   })
 
   it('opens the materials panel and interactive material icon picker', async () => {
@@ -192,7 +215,7 @@ describe('ProductWorkspace', () => {
     await user.click(screen.getByRole('button', { name: 'Materials' }))
 
     expect(screen.getByText('Canvas')).toBeInTheDocument()
-    expect(screen.getByText('140 cm - All combinations')).toBeInTheDocument()
+    expect(screen.getByText('140 cm')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Add material' }))
     await user.click(screen.getByRole('button', { name: 'New material' }))

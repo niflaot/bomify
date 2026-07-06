@@ -6,7 +6,6 @@ import { useMemo, useState } from 'react'
 import { Input } from '@/components/ui/input'
 
 import type {
-  ProductWorkspaceCombination,
   ProductWorkspaceLabels,
   ProductWorkspaceMaterial,
   ProductWorkspaceMaterialActions,
@@ -14,39 +13,23 @@ import type {
 } from '../../product-workspace.types'
 import { MaterialAddDialog } from './MaterialAddDialog'
 import { MaterialDeleteDialog } from './MaterialDeleteDialog'
-import { MaterialEditDialog } from './MaterialEditDialog'
 import { MaterialSwatch } from './MaterialSwatch'
 
 type MaterialsPanelProps = {
   readonly actions: ProductWorkspaceMaterialActions
   readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
-  readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
   readonly productId: string
   readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
 }
 
-function getScopeLabel(
-  labels: ProductWorkspaceLabels,
-  combinations: readonly ProductWorkspaceCombination[],
-  combinationId: string | null
-): string {
-  if (!combinationId) {
-    return labels.allCombinations
-  }
-
-  return combinations.find(combination => combination.id === combinationId)?.name ?? labels.allCombinations
-}
-
 function MaterialCard(props: {
   readonly actions: ProductWorkspaceMaterialActions
-  readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
-  readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
   readonly productId: string
   readonly productMaterial: ProductWorkspaceProductMaterial
 }): ReactElement {
-  const { actions, catalogMaterials, combinations, labels, productId, productMaterial } = props
+  const { actions, labels, productId, productMaterial } = props
   const { material } = productMaterial
 
   return (
@@ -61,19 +44,11 @@ function MaterialCard(props: {
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{material.name}</p>
           <p className="text-xs text-muted-foreground">
-            {material.widthCm} cm - {getScopeLabel(labels, combinations, productMaterial.combinationId)}
+            {material.widthCm} cm
           </p>
         </div>
       </div>
       <div className="flex justify-end gap-2">
-        <MaterialEditDialog
-          action={actions.update}
-          combinations={combinations}
-          labels={labels}
-          materials={catalogMaterials}
-          productId={productId}
-          productMaterial={productMaterial}
-        />
         <MaterialDeleteDialog
           action={actions.delete}
           labels={labels}
@@ -106,7 +81,6 @@ export function MaterialsPanel(props: MaterialsPanelProps): ReactElement {
   const {
     actions,
     catalogMaterials,
-    combinations,
     labels,
     productId,
     productMaterials
@@ -130,7 +104,6 @@ export function MaterialsPanel(props: MaterialsPanelProps): ReactElement {
       {/* TODO: Move global catalog creation/editing into a dedicated materials admin screen. */}
       <MaterialAddDialog
         action={actions.add}
-        combinations={combinations}
         labels={labels}
         materials={catalogMaterials}
         productId={productId}
@@ -149,8 +122,6 @@ export function MaterialsPanel(props: MaterialsPanelProps): ReactElement {
           {visibleMaterials.map(productMaterial => (
             <MaterialCard
               actions={actions}
-              catalogMaterials={catalogMaterials}
-              combinations={combinations}
               key={productMaterial.id}
               labels={labels}
               productId={productId}

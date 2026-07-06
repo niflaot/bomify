@@ -22,17 +22,14 @@ import type { MaterialFormState } from '@/core/types/material.types'
 
 import type {
   MaterialFormAction,
-  ProductWorkspaceCombination,
   ProductWorkspaceLabels,
   ProductWorkspaceMaterial
 } from '../../product-workspace.types'
 import { MaterialCombobox } from './MaterialCombobox'
 import { MaterialNewFields } from './MaterialNewFields'
-import { MaterialScopeSelect } from './MaterialScopeSelect'
 
 type MaterialAddDialogProps = {
   readonly action: MaterialFormAction
-  readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
   readonly materials: readonly ProductWorkspaceMaterial[]
   readonly productId: string
@@ -53,7 +50,7 @@ function SubmitButton(props: { readonly labels: ProductWorkspaceLabels }): React
 function MaterialAddForm(props: MaterialAddDialogProps & {
   readonly onSuccess: () => void
 }): ReactElement {
-  const { action, combinations, labels, materials, onSuccess, productId } = props
+  const { action, labels, materials, onSuccess, productId } = props
   const hasCatalog = materials.length > 0
   const [mode, setMode] = useState<'existing' | 'new'>(hasCatalog ? 'existing' : 'new')
   const [hexColor, setHexColor] = useState('#111111')
@@ -121,12 +118,6 @@ function MaterialAddForm(props: MaterialAddDialogProps & {
           widthCm={widthCm}
         />
       )}
-
-      <MaterialScopeSelect
-        combinations={combinations}
-        inputId="add-material-scope"
-        labels={labels}
-      />
 
       {state.message ? (
         <p className="border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">

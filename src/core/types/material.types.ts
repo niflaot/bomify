@@ -46,17 +46,8 @@ export type MaterialRecord = {
  * Input used to attach a material to a product.
  */
 export type AttachProductMaterialInput = {
-  readonly combinationId?: string | null
   readonly materialId: string
   readonly productId: string
-}
-
-/**
- * Input used to update a product material link.
- */
-export type UpdateProductMaterialInput = {
-  readonly combinationId?: string | null
-  readonly materialId?: string
 }
 
 /**
@@ -64,7 +55,6 @@ export type UpdateProductMaterialInput = {
  */
 export type ProductMaterialRecord = {
   readonly id: string
-  readonly combinationId: string | null
   readonly createdAt: Date
   readonly material: MaterialRecord
   readonly productId: string

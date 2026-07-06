@@ -6,8 +6,7 @@ import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
 import { createMaterial } from '@/core/services/material/material.service'
 import {
   attachProductMaterial,
-  detachProductMaterial,
-  updateProductMaterial
+  detachProductMaterial
 } from '@/core/services/product-material/product-material.service'
 import type { MaterialFormState } from '@/core/types/material.types'
 
@@ -19,16 +18,6 @@ function readRequiredText(formData: FormData, key: string): string {
   }
 
   return value
-}
-
-function readOptionalText(formData: FormData, key: string): string | undefined {
-  const value = formData.get(key)
-
-  return typeof value === 'string' && value.trim() ? value : undefined
-}
-
-function readOptionalScope(formData: FormData): string | null {
-  return readOptionalText(formData, 'combinationId') ?? null
 }
 
 function readWidthCm(formData: FormData): number {
@@ -76,35 +65,8 @@ export async function addProductMaterialAction(
       : { id: readRequiredText(formData, 'materialId') }
 
     await attachProductMaterial({
-      combinationId: readOptionalScope(formData),
       materialId: material.id,
       productId
-    })
-    revalidatePath(`/products/${productId}`)
-
-    return { status: 'success' }
-  } catch (error) {
-    return toFormState(error)
-  }
-}
-
-/**
- * Updates a product material link.
- *
- * @param _state - Previous form state.
- * @param formData - Product material form payload.
- * @returns Form state describing the mutation result.
- */
-export async function updateProductMaterialAction(
-  _state: MaterialFormState,
-  formData: FormData
-): Promise<MaterialFormState> {
-  try {
-    const productId = readRequiredText(formData, 'productId')
-
-    await updateProductMaterial(productId, readRequiredText(formData, 'productMaterialId'), {
-      combinationId: readOptionalScope(formData),
-      materialId: readRequiredText(formData, 'materialId')
     })
     revalidatePath(`/products/${productId}`)
 

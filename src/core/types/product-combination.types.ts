@@ -1,8 +1,19 @@
+import type { ProductMaterialRecord } from './material.types'
+
+/**
+ * Product material assignment used by one combination role.
+ */
+export type ProductCombinationMaterialAssignmentInput = {
+  readonly productMaterialId: string
+  readonly roleId: string
+}
+
 /**
  * Input used to create a product combination.
  */
 export type CreateProductCombinationInput = {
   readonly hexColor: string
+  readonly materialAssignments?: readonly ProductCombinationMaterialAssignmentInput[]
   readonly name: string
   readonly productId: string
 }
@@ -12,6 +23,7 @@ export type CreateProductCombinationInput = {
  */
 export type UpdateProductCombinationInput = {
   readonly hexColor?: string
+  readonly materialAssignments?: readonly ProductCombinationMaterialAssignmentInput[]
   readonly name?: string
 }
 
@@ -31,9 +43,21 @@ export type ProductCombinationRecord = {
   readonly productId: string
   readonly name: string
   readonly hexColor: string
+  readonly materialAssignments: readonly ProductCombinationMaterialAssignmentRecord[]
   readonly createdAt: Date
   readonly updatedAt: Date
   readonly deletedAt: Date | null
+}
+
+/**
+ * Material assigned to a combination role.
+ */
+export type ProductCombinationMaterialAssignmentRecord = {
+  readonly id: string
+  readonly productMaterial: ProductMaterialRecord
+  readonly roleId: string
+  readonly createdAt: Date
+  readonly updatedAt: Date
 }
 
 /**

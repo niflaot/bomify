@@ -24,14 +24,17 @@ import type { ProductCombinationFormState } from '@/core/types/product-combinati
 import type {
   ProductCombinationFormAction,
   ProductWorkspaceCombination,
-  ProductWorkspaceLabels
+  ProductWorkspaceLabels,
+  ProductWorkspaceProductMaterial
 } from '../../product-workspace.types'
+import { CombinationMaterialAssignmentsField } from './CombinationMaterialAssignmentsField'
 
 type CombinationFormDialogProps = {
   readonly action: ProductCombinationFormAction
   readonly combination?: ProductWorkspaceCombination
   readonly labels: ProductWorkspaceLabels
   readonly productId: string
+  readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
   readonly trigger: ReactElement
   readonly variant: 'create' | 'update'
 }
@@ -57,7 +60,15 @@ function SubmitButton(props: {
 }
 
 function CombinationForm(props: CombinationFormProps): ReactElement {
-  const { action, combination, labels, onSuccess, productId, variant } = props
+  const {
+    action,
+    combination,
+    labels,
+    onSuccess,
+    productId,
+    productMaterials,
+    variant
+  } = props
   const [state, formAction] = useActionState<ProductCombinationFormState, FormData>(
     action,
     {}
@@ -103,6 +114,12 @@ function CombinationForm(props: CombinationFormProps): ReactElement {
         />
       </div>
 
+      <CombinationMaterialAssignmentsField
+        assignments={combination?.materialAssignments ?? []}
+        labels={labels}
+        productMaterials={productMaterials}
+      />
+
       {state.message ? (
         <p className="border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {state.message}
@@ -128,7 +145,7 @@ function CombinationForm(props: CombinationFormProps): ReactElement {
  * @returns Combination form dialog element.
  */
 export function CombinationFormDialog(props: CombinationFormDialogProps): ReactElement {
-  const { action, combination, labels, productId, trigger, variant } = props
+  const { action, combination, labels, productId, productMaterials, trigger, variant } = props
   const [open, setOpen] = useState(false)
   const [formKey, setFormKey] = useState(0)
   const title = variant === 'create' ? labels.combinationCreateTitle : labels.editCombination
@@ -144,7 +161,7 @@ export function CombinationFormDialog(props: CombinationFormDialogProps): ReactE
   return (
     <Dialog onOpenChange={handleOpenChange} open={open}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent closeLabel={labels.closeDialog}>
+      <DialogContent className="max-w-3xl" closeLabel={labels.closeDialog}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{labels.combinationsPanelDescription}</DialogDescription>
@@ -158,6 +175,7 @@ export function CombinationFormDialog(props: CombinationFormDialogProps): ReactE
             setOpen(false)
           }}
           productId={productId}
+          productMaterials={productMaterials}
           variant={variant}
         />
       </DialogContent>

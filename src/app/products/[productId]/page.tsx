@@ -9,8 +9,7 @@ import {
 } from '@/app/product-combinations.actions'
 import {
   addProductMaterialAction,
-  deleteProductMaterialAction,
-  updateProductMaterialAction
+  deleteProductMaterialAction
 } from '@/app/product-materials.actions'
 import { listProductCombinations } from '@/core/services/product-combination/product-combination.service'
 import { listMaterials } from '@/core/services/material/material.service'
@@ -52,6 +51,11 @@ function toWorkspaceCombination(
   return {
     hexColor: combination.hexColor,
     id: combination.id,
+    materialAssignments: combination.materialAssignments.map(assignment => ({
+      id: assignment.id,
+      productMaterial: toWorkspaceProductMaterial(assignment.productMaterial),
+      roleId: assignment.roleId
+    })),
     name: combination.name,
     updatedAt: combination.updatedAt.toISOString()
   }
@@ -72,7 +76,6 @@ function toWorkspaceProductMaterial(
   productMaterial: ProductMaterialRecord
 ): ProductWorkspaceProductMaterial {
   return {
-    combinationId: productMaterial.combinationId,
     id: productMaterial.id,
     material: toWorkspaceMaterial(productMaterial.material),
     updatedAt: productMaterial.updatedAt.toISOString()
@@ -83,7 +86,7 @@ function getWorkspaceLabels(t: Awaited<ReturnType<typeof getTranslations>>): Pro
   return {
     addCombination: t('addCombination'),
     addMaterial: t('addMaterial'),
-    allCombinations: t('allCombinations'),
+    addCombinationMaterial: t('addCombinationMaterial'),
     calculate: t('calculate'),
     cancel: t('cancel'),
     canvasEmptyDescription: t('canvasEmptyDescription'),
@@ -105,7 +108,6 @@ function getWorkspaceLabels(t: Awaited<ReturnType<typeof getTranslations>>): Pro
     deleteMaterial: t('deleteMaterial'),
     deleting: t('deleting'),
     editCombination: t('editCombination'),
-    editMaterial: t('editMaterial'),
     export: t('export'),
     home: t('home'),
     createCatalogMaterial: t('createCatalogMaterial'),
@@ -124,10 +126,15 @@ function getWorkspaceLabels(t: Awaited<ReturnType<typeof getTranslations>>): Pro
     materialNameLabel: t('materialNameLabel'),
     materialNamePlaceholder: t('materialNamePlaceholder'),
     materialsPanelDescription: t('materialsPanelDescription'),
-    materialScopeLabel: t('materialScopeLabel'),
     materialSelectLabel: t('materialSelectLabel'),
     materialWidthLabel: t('materialWidthLabel'),
     materialWidthPlaceholder: t('materialWidthPlaceholder'),
+    combinationMaterialAssignmentsLabel: t('combinationMaterialAssignmentsLabel'),
+    combinationMaterialEmptyDescription: t('combinationMaterialEmptyDescription'),
+    combinationMaterialMaterialLabel: t('combinationMaterialMaterialLabel'),
+    combinationMaterialRoleLabel: t('combinationMaterialRoleLabel'),
+    combinationMaterialToggleLabel: t('combinationMaterialToggleLabel'),
+    removeCombinationMaterial: t('removeCombinationMaterial'),
     newCatalogMaterial: t('newCatalogMaterial'),
     pieces: t('pieces'),
     piecesPanelDescription: t('piecesPanelDescription'),
@@ -182,8 +189,7 @@ export default async function ProductWorkspacePage(
       labels={getWorkspaceLabels(t)}
       materialActions={{
         add: addProductMaterialAction,
-        delete: deleteProductMaterialAction,
-        update: updateProductMaterialAction
+        delete: deleteProductMaterialAction
       }}
       product={toWorkspaceItem(product)}
       productMaterials={productMaterials.map(toWorkspaceProductMaterial)}

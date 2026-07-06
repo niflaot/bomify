@@ -23,7 +23,6 @@ export type MaterialRow = {
 export type ProductMaterialRow = {
   readonly id: string
   readonly productId: string
-  readonly combinationId: string | null
   readonly createdAt: Date
   readonly updatedAt: Date
   readonly material: MaterialRow
@@ -121,7 +120,6 @@ export function toMaterialRecord(material: MaterialRow): MaterialRecord {
  */
 export function toProductMaterialRecord(row: ProductMaterialRow): ProductMaterialRecord {
   return {
-    combinationId: row.combinationId,
     createdAt: row.createdAt,
     id: row.id,
     material: toMaterialRecord(row.material),

@@ -33,8 +33,8 @@ model ProductCombination {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
-  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  materials ProductMaterial[]
+  product             Product                      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  materialAssignments ProductCombinationMaterial[]
 
   @@index([productId, deletedAt])
   @@index([updatedAt])
@@ -58,19 +58,33 @@ model Material {
 }
 
 model ProductMaterial {
-  id            String              @id @default(cuid())
-  productId     String              @map("product_id")
-  materialId    String              @map("material_id")
-  combinationId String?             @map("combination_id")
-  createdAt     DateTime            @default(now()) @map("created_at")
-  updatedAt     DateTime            @updatedAt @map("updated_at")
-  combination   ProductCombination? @relation(fields: [combinationId], references: [id], onDelete: Cascade)
-  material      Material            @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  product       Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id                     String                       @id @default(cuid())
+  productId              String                       @map("product_id")
+  materialId             String                       @map("material_id")
+  createdAt              DateTime                     @default(now()) @map("created_at")
+  updatedAt              DateTime                     @updatedAt @map("updated_at")
+  combinationAssignments ProductCombinationMaterial[]
+  material               Material                     @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  product                Product                      @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId])
   @@index([materialId])
-  @@index([combinationId])
-  @@unique([productId, materialId, combinationId])
+  @@unique([productId, materialId])
   @@map("product_materials")
+}
+
+model ProductCombinationMaterial {
+  id                String             @id @default(cuid())
+  combinationId     String             @map("combination_id")
+  productMaterialId String             @map("product_material_id")
+  roleId            String             @map("role_id") @db.VarChar(80)
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  combination       ProductCombination @relation(fields: [combinationId], references: [id], onDelete: Cascade)
+  productMaterial   ProductMaterial    @relation(fields: [productMaterialId], references: [id], onDelete: Cascade)
+
+  @@index([combinationId])
+  @@index([productMaterialId])
+  @@unique([combinationId, roleId])
+  @@map("product_combination_materials")
 }

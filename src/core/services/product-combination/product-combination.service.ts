@@ -5,28 +5,12 @@ import type {
   ProductCombinationRecord,
   UpdateProductCombinationInput
 } from '@/core/types/product-combination.types'
-
-const HEX_COLOR_PATTERN = /^#[0-9a-f]{6}$/i
-
-function normalizeCombinationName(name: string): string {
-  const trimmed = name.trim()
-
-  if (!trimmed) {
-    throw new Error('Combination name is required')
-  }
-
-  return trimmed
-}
-
-function normalizeHexColor(hexColor: string): string {
-  const normalized = hexColor.trim().toUpperCase()
-
-  if (!HEX_COLOR_PATTERN.test(normalized)) {
-    throw new Error('Combination color must be a valid hex color')
-  }
-
-  return normalized
-}
+import {
+  normalizeCombinationName,
+  normalizeHexColor,
+  normalizeMaterialAssignments,
+  toProductCombinationRecord
+} from './product-combination.service.utils'
 
 async function ensureActiveCombination(
   productId: string,
@@ -44,7 +28,30 @@ async function ensureActiveCombination(
     throw new Error('Combination was not found')
   }
 
-  return combination
+  return toProductCombinationRecord(combination)
+}
+
+async function ensureProductMaterialsBelongToProduct(
+  productId: string,
+  productMaterialIds: readonly string[]
+): Promise<void> {
+  const uniqueIds = [...new Set(productMaterialIds)]
+
+  if (uniqueIds.length === 0) {
+    return
+  }
+
+  const count = await prisma.productMaterial.count({
+    where: {
+      id: { in: uniqueIds },
+      material: { deletedAt: null },
+      productId
+    }
+  })
+
+  if (count !== uniqueIds.length) {
+    throw new Error('One or more assigned materials were not found')
+  }
 }
 
 /**
@@ -56,12 +63,43 @@ async function ensureActiveCombination(
 export async function createProductCombination(
   input: CreateProductCombinationInput
 ): Promise<ProductCombinationRecord> {
-  return prisma.productCombination.create({
-    data: {
-      hexColor: normalizeHexColor(input.hexColor),
-      name: normalizeCombinationName(input.name),
-      productId: input.productId
+  const materialAssignments = normalizeMaterialAssignments(input.materialAssignments ?? [])
+
+  await ensureProductMaterialsBelongToProduct(
+    input.productId,
+    materialAssignments.map(assignment => assignment.productMaterialId)
+  )
+
+  return prisma.$transaction(async transaction => {
+    const combination = await transaction.productCombination.create({
+      data: {
+        hexColor: normalizeHexColor(input.hexColor),
+        name: normalizeCombinationName(input.name),
+        productId: input.productId
+      }
+    })
+
+    if (materialAssignments.length > 0) {
+      await transaction.productCombinationMaterial.createMany({
+        data: materialAssignments.map(assignment => ({
+          combinationId: combination.id,
+          productMaterialId: assignment.productMaterialId,
+          roleId: assignment.roleId
+        }))
+      })
     }
+
+    const createdCombination = await transaction.productCombination.findUniqueOrThrow({
+      include: {
+        materialAssignments: {
+          include: { productMaterial: { include: { material: true } } },
+          orderBy: { roleId: 'asc' }
+        }
+      },
+      where: { id: combination.id }
+    })
+
+    return toProductCombinationRecord(createdCombination)
   })
 }
 
@@ -74,13 +112,21 @@ export async function createProductCombination(
 export async function listProductCombinations(
   input: ListProductCombinationsInput
 ): Promise<ProductCombinationRecord[]> {
-  return prisma.productCombination.findMany({
+  const combinations = await prisma.productCombination.findMany({
+    include: {
+      materialAssignments: {
+        include: { productMaterial: { include: { material: true } } },
+        orderBy: { roleId: 'asc' }
+      }
+    },
     orderBy: { updatedAt: 'desc' },
     where: {
       deletedAt: input.includeDeleted ? undefined : null,
       productId: input.productId
     }
   })
+
+  return combinations.map(toProductCombinationRecord)
 }
 
 /**
@@ -97,13 +143,53 @@ export async function updateProductCombination(
   input: UpdateProductCombinationInput
 ): Promise<ProductCombinationRecord> {
   await ensureActiveCombination(productId, id)
+  const materialAssignments = input.materialAssignments === undefined
+    ? undefined
+    : normalizeMaterialAssignments(input.materialAssignments)
 
-  return prisma.productCombination.update({
-    data: {
-      hexColor: input.hexColor === undefined ? undefined : normalizeHexColor(input.hexColor),
-      name: input.name === undefined ? undefined : normalizeCombinationName(input.name)
-    },
-    where: { id }
+  if (materialAssignments) {
+    await ensureProductMaterialsBelongToProduct(
+      productId,
+      materialAssignments.map(assignment => assignment.productMaterialId)
+    )
+  }
+
+  return prisma.$transaction(async transaction => {
+    await transaction.productCombination.update({
+      data: {
+        hexColor: input.hexColor === undefined ? undefined : normalizeHexColor(input.hexColor),
+        name: input.name === undefined ? undefined : normalizeCombinationName(input.name)
+      },
+      where: { id }
+    })
+
+    if (materialAssignments) {
+      await transaction.productCombinationMaterial.deleteMany({
+        where: { combinationId: id }
+      })
+
+      if (materialAssignments.length > 0) {
+        await transaction.productCombinationMaterial.createMany({
+          data: materialAssignments.map(assignment => ({
+            combinationId: id,
+            productMaterialId: assignment.productMaterialId,
+            roleId: assignment.roleId
+          }))
+        })
+      }
+    }
+
+    const combination = await transaction.productCombination.findUniqueOrThrow({
+      include: {
+        materialAssignments: {
+          include: { productMaterial: { include: { material: true } } },
+          orderBy: { roleId: 'asc' }
+        }
+      },
+      where: { id }
+    })
+
+    return toProductCombinationRecord(combination)
   })
 }
 
@@ -120,8 +206,10 @@ export async function softDeleteProductCombination(
 ): Promise<ProductCombinationRecord> {
   await ensureActiveCombination(productId, id)
 
-  return prisma.productCombination.update({
+  const combination = await prisma.productCombination.update({
     data: { deletedAt: new Date() },
     where: { id }
   })
+
+  return toProductCombinationRecord(combination)
 }

@@ -7,6 +7,7 @@ import {
   softDeleteProductCombination,
   updateProductCombination
 } from '@/core/services/product-combination/product-combination.service'
+import type { ProductCombinationMaterialAssignmentInput } from '@/core/types/product-combination.types'
 import type { ProductCombinationFormState } from '@/core/types/product-combination.types'
 
 function readRequiredText(formData: FormData, key: string): string {
@@ -26,6 +27,30 @@ function toFormState(error: unknown): ProductCombinationFormState {
   }
 }
 
+function readMaterialAssignments(
+  formData: FormData
+): readonly ProductCombinationMaterialAssignmentInput[] {
+  const roleIds = formData.getAll('materialRoleId')
+  const productMaterialIds = formData.getAll('materialRoleProductMaterialId')
+
+  if (roleIds.length !== productMaterialIds.length) {
+    throw new Error('Material assignments are incomplete')
+  }
+
+  return roleIds.map((roleId, index) => {
+    const productMaterialId = productMaterialIds[index]
+
+    if (typeof roleId !== 'string' || typeof productMaterialId !== 'string') {
+      throw new Error('Material assignments are invalid')
+    }
+
+    return {
+      productMaterialId: productMaterialId.trim(),
+      roleId: roleId.trim()
+    }
+  })
+}
+
 /**
  * Creates a product combination from a dialog form.
  *
@@ -42,6 +67,7 @@ export async function createProductCombinationAction(
 
     await createProductCombination({
       hexColor: readRequiredText(formData, 'hexColor'),
+      materialAssignments: readMaterialAssignments(formData),
       name: readRequiredText(formData, 'name'),
       productId
     })
@@ -69,6 +95,7 @@ export async function updateProductCombinationAction(
 
     await updateProductCombination(productId, readRequiredText(formData, 'combinationId'), {
       hexColor: readRequiredText(formData, 'hexColor'),
+      materialAssignments: readMaterialAssignments(formData),
       name: readRequiredText(formData, 'name')
     })
     revalidatePath(`/products/${productId}`)

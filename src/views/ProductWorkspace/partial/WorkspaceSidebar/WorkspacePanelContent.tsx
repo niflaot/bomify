@@ -155,7 +155,6 @@ function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
       <MaterialsPanel
         actions={materialActions}
         catalogMaterials={catalogMaterials}
-        combinations={combinations}
         labels={labels}
         productId={product.id}
         productMaterials={productMaterials}
@@ -170,6 +169,7 @@ function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
         combinations={combinations}
         labels={labels}
         productId={product.id}
+        productMaterials={productMaterials}
       />
     )
   }

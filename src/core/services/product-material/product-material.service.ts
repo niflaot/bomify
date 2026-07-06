@@ -1,7 +1,6 @@
 import type {
   AttachProductMaterialInput,
-  ProductMaterialRecord,
-  UpdateProductMaterialInput
+  ProductMaterialRecord
 } from '@/core/types/material.types'
 
 import { toMaterialRecord, toProductMaterialRecord } from '../material/material.service.utils'
@@ -20,27 +19,6 @@ async function ensureActiveMaterial(materialId: string): Promise<void> {
   }
 
   toMaterialRecord(material)
-}
-
-async function ensureProductCombination(
-  productId: string,
-  combinationId?: string | null
-): Promise<void> {
-  if (!combinationId) {
-    return
-  }
-
-  const combination = await prisma.productCombination.findFirst({
-    where: {
-      deletedAt: null,
-      id: combinationId,
-      productId
-    }
-  })
-
-  if (!combination) {
-    throw new Error('Combination was not found')
-  }
 }
 
 async function findProductMaterial(
@@ -83,7 +61,7 @@ export async function listProductMaterials(productId: string): Promise<ProductMa
 }
 
 /**
- * Attaches an active global material to a product, scoped globally or to one combination.
+ * Attaches an active global material to a product.
  *
  * @param input - Product material attachment data.
  * @returns Product material link.
@@ -92,12 +70,10 @@ export async function attachProductMaterial(
   input: AttachProductMaterialInput
 ): Promise<ProductMaterialRecord> {
   await ensureActiveMaterial(input.materialId)
-  await ensureProductCombination(input.productId, input.combinationId)
 
   const existing = await prisma.productMaterial.findFirst({
     include: { material: true },
     where: {
-      combinationId: input.combinationId ?? null,
       materialId: input.materialId,
       productId: input.productId
     }
@@ -109,58 +85,10 @@ export async function attachProductMaterial(
 
   const row = await prisma.productMaterial.create({
     data: {
-      combinationId: input.combinationId ?? null,
       materialId: input.materialId,
       productId: input.productId
     },
     include: { material: true }
-  })
-
-  return toProductMaterialRecord(row)
-}
-
-/**
- * Updates a product material link scope or selected material.
- *
- * @param productId - Product id.
- * @param id - Product material link id.
- * @param input - Product material update data.
- * @returns Updated product material link.
- */
-export async function updateProductMaterial(
-  productId: string,
-  id: string,
-  input: UpdateProductMaterialInput
-): Promise<ProductMaterialRecord> {
-  const current = await findProductMaterial(productId, id)
-  const materialId = input.materialId ?? current.material.id
-  const combinationId = input.combinationId === undefined
-    ? current.combinationId
-    : input.combinationId
-
-  await ensureActiveMaterial(materialId)
-  await ensureProductCombination(productId, combinationId)
-
-  const duplicate = await prisma.productMaterial.findFirst({
-    where: {
-      combinationId: combinationId ?? null,
-      id: { not: id },
-      materialId,
-      productId
-    }
-  })
-
-  if (duplicate) {
-    throw new Error('This material is already attached with that scope')
-  }
-
-  const row = await prisma.productMaterial.update({
-    data: {
-      combinationId,
-      materialId
-    },
-    include: { material: true },
-    where: { id }
   })
 
   return toProductMaterialRecord(row)
