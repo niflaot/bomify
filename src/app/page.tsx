@@ -29,6 +29,8 @@ function getProductsOverviewLabels(t: Awaited<ReturnType<typeof getTranslations>
   return {
     deleteProduct: t.raw('deleteProduct') as string,
     deleteProductConfirmation: t.raw('deleteProductConfirmation') as string,
+    deleteProductError: t('deleteProductError'),
+    deleteProductSuccess: t('deleteProductSuccess'),
     edited: t('edited'),
     editProduct: t.raw('editProduct') as string,
     emptyDescription: t('emptyDescription'),

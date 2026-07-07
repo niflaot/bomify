@@ -6,6 +6,7 @@ import type { ReactElement } from 'react'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { FormStateToast } from '@/components/FormStateToast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -41,15 +42,22 @@ function SubmitButton(props: { readonly labels: ProductCreateLabels }): ReactEle
 export function ProductCreateForm(props: ProductCreateFormProps): ReactElement {
   const { action, labels } = props
   const [state, formAction] = useActionState(action, {})
+  const fieldErrors = state.fieldErrors ?? {}
 
   return (
     <Card>
       <CardContent className="pt-5">
         <form action={formAction} className="grid gap-6">
           <FormLoadingBar />
+          <FormStateToast
+            errorFallback={labels.formErrorToast}
+            state={state}
+            successMessage={labels.submit}
+          />
           <div className="grid gap-2">
             <Label htmlFor="product-name">{labels.nameLabel}</Label>
             <Input
+              aria-invalid={Boolean(fieldErrors.name)}
               autoComplete="off"
               id="product-name"
               name="name"
@@ -61,6 +69,7 @@ export function ProductCreateForm(props: ProductCreateFormProps): ReactElement {
           <div className="grid gap-2">
             <Label htmlFor="product-description">{labels.descriptionLabel}</Label>
             <Textarea
+              aria-invalid={Boolean(fieldErrors.description)}
               id="product-description"
               name="description"
               placeholder={labels.descriptionPlaceholder}
@@ -69,7 +78,10 @@ export function ProductCreateForm(props: ProductCreateFormProps): ReactElement {
 
           <div className="grid gap-2">
             <Label htmlFor="product-photo">{labels.photoLabel}</Label>
-            <div className="grid gap-2 border border-dashed border-border p-4">
+            <div
+              className="grid gap-2 border border-dashed border-border p-4"
+              data-invalid={Boolean(fieldErrors.photo)}
+            >
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <ImageUp aria-hidden="true" className="size-4" />
                 <span>{labels.photoHelp}</span>
@@ -77,12 +89,6 @@ export function ProductCreateForm(props: ProductCreateFormProps): ReactElement {
               <Input accept="image/*" id="product-photo" name="photo" type="file" />
             </div>
           </div>
-
-          {state.message ? (
-            <p className="border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-              {state.message}
-            </p>
-          ) : null}
 
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <Button asChild variant="outline">

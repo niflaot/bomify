@@ -1,3 +1,5 @@
+import type { MutationFormState } from './form-state.types'
+
 /**
  * Product photo upload payload before it is stored in object storage.
  */
@@ -51,6 +53,4 @@ export type ProductRecord = {
 /**
  * Generic state returned by product mutation form actions.
  */
-export type ProductFormState = {
-  readonly message?: string
-}
+export type ProductFormState = MutationFormState

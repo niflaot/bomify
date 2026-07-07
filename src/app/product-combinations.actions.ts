@@ -9,6 +9,12 @@ import {
 } from '@/core/services/product-combination/product-combination.service'
 import type { ProductCombinationMaterialAssignmentInput } from '@/core/types/product-combination.types'
 import type { ProductCombinationFormState } from '@/core/types/product-combination.types'
+import {
+  createErrorState,
+  createSuccessState,
+  getErrorMessage,
+  isUniqueConstraintError
+} from '@/core/utils/form/form-state.utils'
 
 function readRequiredText(formData: FormData, key: string): string {
   const value = formData.get(key)
@@ -21,10 +27,31 @@ function readRequiredText(formData: FormData, key: string): string {
 }
 
 function toFormState(error: unknown): ProductCombinationFormState {
-  return {
-    message: error instanceof Error ? error.message : 'Could not save combination',
-    status: 'error'
+  if (isUniqueConstraintError(error, ['combination_id', 'role_id'])) {
+    return createErrorState('Material role ids must be unique per combination', {
+      materialRoleId: 'Material role ids must be unique per combination'
+    })
   }
+
+  const message = getErrorMessage(error, 'Could not save combination')
+
+  return createErrorState(message, getCombinationFieldErrors(message))
+}
+
+function getCombinationFieldErrors(message: string): Record<string, string> | undefined {
+  if (/name/i.test(message)) {
+    return { name: message }
+  }
+
+  if (/color|hex/i.test(message)) {
+    return { hexColor: message }
+  }
+
+  if (/role|assignment|material/i.test(message)) {
+    return { materialRoleId: message }
+  }
+
+  return undefined
 }
 
 function readMaterialAssignments(
@@ -73,7 +100,7 @@ export async function createProductCombinationAction(
     })
     revalidatePath(`/products/${productId}`)
 
-    return { status: 'success' }
+    return createSuccessState()
   } catch (error) {
     return toFormState(error)
   }
@@ -100,7 +127,7 @@ export async function updateProductCombinationAction(
     })
     revalidatePath(`/products/${productId}`)
 
-    return { status: 'success' }
+    return createSuccessState()
   } catch (error) {
     return toFormState(error)
   }
@@ -123,7 +150,7 @@ export async function deleteProductCombinationAction(
     await softDeleteProductCombination(productId, readRequiredText(formData, 'combinationId'))
     revalidatePath(`/products/${productId}`)
 
-    return { status: 'success' }
+    return createSuccessState()
   } catch (error) {
     return toFormState(error)
   }

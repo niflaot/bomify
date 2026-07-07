@@ -8,6 +8,7 @@ const labels: ProductCreateLabels = {
   descriptionLabel: 'Description',
   descriptionPlaceholder: 'Optional notes.',
   eyebrow: 'Bomify',
+  formErrorToast: 'Could not create product',
   nameLabel: 'Product name',
   namePlaceholder: 'Kairos Backpack',
   photoHelp: 'Photos are stored in MinIO/S3.',

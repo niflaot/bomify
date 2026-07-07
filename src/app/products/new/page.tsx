@@ -12,6 +12,7 @@ function getProductCreateLabels(t: Awaited<ReturnType<typeof getTranslations>>):
     descriptionLabel: t('descriptionLabel'),
     descriptionPlaceholder: t('descriptionPlaceholder'),
     eyebrow: t('eyebrow'),
+    formErrorToast: t('formErrorToast'),
     nameLabel: t('nameLabel'),
     namePlaceholder: t('namePlaceholder'),
     photoHelp: t('photoHelp'),

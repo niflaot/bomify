@@ -22,6 +22,7 @@ type ScopeKey = 'global' | `combination:${string}`
 
 type PieceMaterialRequirementsFieldProps = {
   readonly combinations: readonly ProductWorkspaceCombination[]
+  readonly invalid?: boolean
   readonly labels: ProductWorkspaceLabels
   readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
   readonly requirements: readonly ProductWorkspacePieceMaterialRequirement[]
@@ -89,7 +90,7 @@ function getInitialCombinationRows(
 export function PieceMaterialRequirementsField(
   props: PieceMaterialRequirementsFieldProps
 ): ReactElement {
-  const { combinations, labels, productMaterials, requirements } = props
+  const { combinations, invalid = false, labels, productMaterials, requirements } = props
   const [activeScope, setActiveScope] = useState<ScopeKey>('global')
   const [globalRows, setGlobalRows] = useState<readonly RequirementRow[]>(
     getInitialGlobalRows(requirements)
@@ -166,7 +167,7 @@ export function PieceMaterialRequirementsField(
   }
 
   return (
-    <div className="grid content-start gap-3 self-start">
+    <div className="grid content-start gap-3 self-start" data-invalid={invalid}>
       <Label>{labels.pieceMaterialsLabel}</Label>
       <div className="flex flex-wrap gap-2" role="tablist">
         {scopes.map(scope => (
@@ -192,6 +193,7 @@ export function PieceMaterialRequirementsField(
         onRemove={removeGlobalRow}
         onUpdate={updateGlobalRow}
         productMaterials={productMaterials}
+        invalid={invalid}
         rows={globalRows}
       />
       {combinations.map(combination => (
@@ -203,6 +205,7 @@ export function PieceMaterialRequirementsField(
           onAdd={addCombinationRow}
           onRemove={removeCombinationRow}
           onUpdate={updateCombinationRow}
+          invalid={invalid}
           rows={combinationRows[combination.id] ?? []}
         />
       ))}

@@ -3,6 +3,7 @@
 import { RefreshCw, Upload } from 'lucide-react'
 import type { DragEvent, ReactElement } from 'react'
 import { useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 import { PieceRenderer } from '@/components/PieceRenderer'
 import { Button } from '@/components/ui/button'
@@ -16,6 +17,7 @@ import type {
 
 type PieceDxfDropzoneProps = {
   readonly id: string
+  readonly invalid?: boolean
   readonly labels: ProductWorkspaceLabels
   readonly piece?: ProductWorkspacePiece
   readonly required: boolean
@@ -40,7 +42,7 @@ function createFileList(file: File): FileList {
  * @returns DXF dropzone element.
  */
 export function PieceDxfDropzone(props: PieceDxfDropzoneProps): ReactElement {
-  const { id, labels, piece, required } = props
+  const { id, invalid = false, labels, piece, required } = props
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [dragging, setDragging] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -59,6 +61,7 @@ export function PieceDxfDropzone(props: PieceDxfDropzoneProps): ReactElement {
   function applyFile(file: File): void {
     if (!hasDxfExtension(file)) {
       setError(labels.pieceDxfInvalidFile)
+      toast.error(labels.pieceDxfInvalidFile)
       return
     }
 
@@ -106,6 +109,7 @@ export function PieceDxfDropzone(props: PieceDxfDropzoneProps): ReactElement {
         id={id}
         name="dxf"
         onChange={handleInputChange}
+        aria-invalid={invalid || Boolean(error)}
         ref={inputRef}
         required={required}
         type="file"
@@ -115,6 +119,7 @@ export function PieceDxfDropzone(props: PieceDxfDropzoneProps): ReactElement {
           'grid gap-4 border border-dashed bg-background p-4 transition-colors',
           dragging && 'border-foreground bg-muted/40'
         )}
+        data-invalid={invalid || Boolean(error)}
         onDragLeave={() => { setDragging(false) }}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -169,11 +174,6 @@ export function PieceDxfDropzone(props: PieceDxfDropzoneProps): ReactElement {
             {hasFile ? labels.pieceReplaceDxfLabel : labels.pieceDxfChooseAction}
           </Button>
         </div>
-        {error ? (
-          <p className="border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            {error}
-          </p>
-        ) : null}
       </div>
     </div>
   )

@@ -1,3 +1,4 @@
+import type { MutationFormState } from './form-state.types'
 import type { ProductMaterialRecord } from './material.types'
 
 /**
@@ -63,7 +64,4 @@ export type ProductCombinationMaterialAssignmentRecord = {
 /**
  * Generic state returned by product combination mutation actions.
  */
-export type ProductCombinationFormState = {
-  readonly message?: string
-  readonly status?: 'error' | 'success'
-}
+export type ProductCombinationFormState = MutationFormState

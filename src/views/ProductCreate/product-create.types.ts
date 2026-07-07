@@ -11,6 +11,7 @@ export type ProductCreateLabels = {
   readonly namePlaceholder: string
   readonly descriptionLabel: string
   readonly descriptionPlaceholder: string
+  readonly formErrorToast: string
   readonly photoLabel: string
   readonly photoHelp: string
   readonly submit: string

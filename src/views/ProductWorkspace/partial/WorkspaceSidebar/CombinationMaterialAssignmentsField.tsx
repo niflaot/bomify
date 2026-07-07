@@ -22,6 +22,7 @@ type AssignmentRow = {
 
 type CombinationMaterialAssignmentsFieldProps = {
   readonly assignments: readonly ProductWorkspaceCombinationMaterialAssignment[]
+  readonly invalid?: boolean
   readonly labels: ProductWorkspaceLabels
   readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
 }
@@ -52,7 +53,7 @@ function normalizeRoleInput(roleId: string): string {
 export function CombinationMaterialAssignmentsField(
   props: CombinationMaterialAssignmentsFieldProps
 ): ReactElement {
-  const { assignments, labels, productMaterials } = props
+  const { assignments, invalid = false, labels, productMaterials } = props
   const [rows, setRows] = useState<readonly AssignmentRow[]>(toAssignmentRows(assignments))
   const canAssignMaterials = productMaterials.length > 0
 
@@ -94,7 +95,7 @@ export function CombinationMaterialAssignmentsField(
       </div>
 
       {canAssignMaterials ? (
-        <div className="grid gap-3">
+        <div className="grid gap-3" data-invalid={invalid}>
           {rows.map((row, index) => (
             <div className="grid gap-2 border p-3" key={row.key}>
               <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
@@ -104,6 +105,7 @@ export function CombinationMaterialAssignmentsField(
                   </Label>
                   <Input
                     aria-label={`${labels.combinationMaterialRoleLabel} ${index + 1}`}
+                    aria-invalid={invalid}
                     id={`material-role-${row.key}`}
                     name="materialRoleId"
                     onChange={event => {
@@ -118,6 +120,7 @@ export function CombinationMaterialAssignmentsField(
                     {labels.combinationMaterialMaterialLabel}
                   </Label>
                   <select
+                    aria-invalid={invalid}
                     className="h-10 w-full rounded-none border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
                     id={`material-role-material-${row.key}`}
                     name="materialRoleProductMaterialId"

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { FormStateToast } from '@/components/FormStateToast'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -78,6 +79,7 @@ function PieceForm(props: PieceFormProps): ReactElement {
     variant
   } = props
   const [state, formAction] = useActionState<PieceFormState, FormData>(action, {})
+  const fieldErrors = state.fieldErrors ?? {}
 
   useEffect(() => {
     if (state.status === 'success') {
@@ -88,6 +90,11 @@ function PieceForm(props: PieceFormProps): ReactElement {
   return (
     <form action={formAction} className="grid gap-5">
       <FormLoadingBar />
+      <FormStateToast
+        errorFallback={labels.formErrorToast}
+        state={state}
+        successMessage={labels.pieceSavedToast}
+      />
       <input name="productId" type="hidden" value={productId} />
       {piece ? <input name="pieceId" type="hidden" value={piece.id} /> : null}
 
@@ -95,6 +102,7 @@ function PieceForm(props: PieceFormProps): ReactElement {
         <div className="grid gap-2">
           <Label htmlFor={`${variant}-piece-number`}>{labels.pieceNumberLabel}</Label>
           <Input
+            aria-invalid={Boolean(fieldErrors.number)}
             defaultValue={piece?.number}
             id={`${variant}-piece-number`}
             min={1}
@@ -106,6 +114,7 @@ function PieceForm(props: PieceFormProps): ReactElement {
         <div className="grid gap-2">
           <Label htmlFor={`${variant}-piece-name`}>{labels.pieceNameLabel}</Label>
           <Input
+            aria-invalid={Boolean(fieldErrors.name)}
             autoComplete="off"
             defaultValue={piece?.name}
             id={`${variant}-piece-name`}
@@ -119,6 +128,7 @@ function PieceForm(props: PieceFormProps): ReactElement {
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.95fr)]">
         <PieceMaterialRequirementsField
           combinations={combinations}
+          invalid={Boolean(fieldErrors.materialRequirements)}
           labels={labels}
           productMaterials={productMaterials}
           requirements={piece?.materialRequirements ?? []}
@@ -127,6 +137,7 @@ function PieceForm(props: PieceFormProps): ReactElement {
         <div className="grid content-start gap-4">
           <PieceDxfDropzone
             id={`${variant}-piece-dxf`}
+            invalid={Boolean(fieldErrors.dxf)}
             labels={labels}
             piece={piece}
             required={variant === 'create'}
@@ -136,6 +147,7 @@ function PieceForm(props: PieceFormProps): ReactElement {
             <div className="grid gap-2">
               <Label htmlFor={`${variant}-piece-width`}>{labels.pieceWidthLabel}</Label>
               <Input
+                aria-invalid={Boolean(fieldErrors.widthCm)}
                 defaultValue={piece ? formatCm(piece.widthMm) : undefined}
                 id={`${variant}-piece-width`}
                 min="0.01"
@@ -147,6 +159,7 @@ function PieceForm(props: PieceFormProps): ReactElement {
             <div className="grid gap-2">
               <Label htmlFor={`${variant}-piece-height`}>{labels.pieceHeightLabel}</Label>
               <Input
+                aria-invalid={Boolean(fieldErrors.heightCm)}
                 defaultValue={piece ? formatCm(piece.heightMm) : undefined}
                 id={`${variant}-piece-height`}
                 min="0.01"
@@ -158,12 +171,6 @@ function PieceForm(props: PieceFormProps): ReactElement {
           </div>
         </div>
       </div>
-
-      {state.message ? (
-        <p className="border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {state.message}
-        </p>
-      ) : null}
 
       <div className="flex justify-end gap-3">
         <DialogClose asChild>

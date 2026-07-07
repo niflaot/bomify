@@ -9,6 +9,7 @@ import { prisma } from '../prisma/prisma.service'
 import {
   ensureActivePiece,
   ensureActiveProduct,
+  ensurePieceNumberAvailable,
   ensureRequirementsBelongToProduct,
   pieceInclude,
   toRequirementCreateRows,
@@ -30,6 +31,10 @@ import {
  */
 export async function createPiece(input: CreatePieceInput): Promise<PieceRecord> {
   await ensureActiveProduct(input.productId)
+  const number = normalizePieceNumber(input.number)
+
+  await ensurePieceNumberAvailable(input.productId, number)
+
   const dxf = await uploadPieceDxf(input.dxf)
   const requirements = normalizePieceMaterialRequirements(input.materialRequirements)
 
@@ -43,7 +48,7 @@ export async function createPiece(input: CreatePieceInput): Promise<PieceRecord>
           ? dxf.heightMm
           : normalizeDimensionMm(input.heightMm, 'Piece height'),
         name: normalizePieceName(input.name),
-        number: normalizePieceNumber(input.number),
+        number,
         productId: input.productId,
         widthMm: input.widthMm === undefined
           ? dxf.widthMm
@@ -97,6 +102,14 @@ export async function updatePiece(
   input: UpdatePieceInput
 ): Promise<PieceRecord> {
   await ensureActivePiece(productId, id)
+  const number = input.number === undefined
+    ? undefined
+    : normalizePieceNumber(input.number)
+
+  if (number !== undefined) {
+    await ensurePieceNumberAvailable(productId, number, id)
+  }
+
   const dxf = input.dxf ? await uploadPieceDxf(input.dxf) : undefined
   const requirements = input.materialRequirements === undefined
     ? undefined
@@ -114,7 +127,7 @@ export async function updatePiece(
           ? dxf?.heightMm
           : normalizeDimensionMm(input.heightMm, 'Piece height'),
         name: input.name === undefined ? undefined : normalizePieceName(input.name),
-        number: input.number === undefined ? undefined : normalizePieceNumber(input.number),
+        number,
         widthMm: input.widthMm === undefined
           ? dxf?.widthMm
           : normalizeDimensionMm(input.widthMm, 'Piece width')

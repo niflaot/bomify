@@ -5,6 +5,10 @@ import { redirect } from 'next/navigation'
 
 import { createProduct, softDeleteProduct } from '@/core/services/product/product.service'
 import type { ProductFormState, ProductPhotoInput } from '@/core/types/product.types'
+import {
+  createErrorState,
+  getErrorMessage
+} from '@/core/utils/form/form-state.utils'
 
 function readRequiredText(formData: FormData, key: string): string {
   const value = formData.get(key)
@@ -54,13 +58,29 @@ export async function createProductAction(
       photo: await readProductPhoto(formData)
     })
   } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'Could not create product'
-    }
+    const message = getErrorMessage(error, 'Could not create product')
+
+    return createErrorState(message, getProductFieldErrors(message))
   }
 
   revalidatePath('/')
   redirect('/')
+}
+
+function getProductFieldErrors(message: string): Record<string, string> | undefined {
+  if (/name/i.test(message)) {
+    return { name: message }
+  }
+
+  if (/description/i.test(message)) {
+    return { description: message }
+  }
+
+  if (/photo|image|file/i.test(message)) {
+    return { photo: message }
+  }
+
+  return undefined
 }
 
 /**

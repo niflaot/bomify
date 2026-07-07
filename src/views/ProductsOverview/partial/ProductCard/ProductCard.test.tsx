@@ -6,6 +6,8 @@ import { ProductCard } from './ProductCard'
 const labels: ProductsOverviewLabels = {
   deleteProduct: 'Delete {name}',
   deleteProductConfirmation: 'Delete {name}?',
+  deleteProductError: 'Could not delete product',
+  deleteProductSuccess: 'Product removed',
   edited: 'Edited',
   editProduct: 'Edit {name}',
   emptyDescription: 'Create a product to start.',

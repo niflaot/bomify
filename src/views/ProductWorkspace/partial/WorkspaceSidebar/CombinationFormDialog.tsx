@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { FormStateToast } from '@/components/FormStateToast'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -73,6 +74,7 @@ function CombinationForm(props: CombinationFormProps): ReactElement {
     action,
     {}
   )
+  const fieldErrors = state.fieldErrors ?? {}
 
   useEffect(() => {
     if (state.status === 'success') {
@@ -83,6 +85,11 @@ function CombinationForm(props: CombinationFormProps): ReactElement {
   return (
     <form action={formAction} className="grid gap-5">
       <FormLoadingBar />
+      <FormStateToast
+        errorFallback={labels.formErrorToast}
+        state={state}
+        successMessage={labels.combinationSavedToast}
+      />
       <input name="productId" type="hidden" value={productId} />
       {combination ? (
         <input name="combinationId" type="hidden" value={combination.id} />
@@ -91,6 +98,7 @@ function CombinationForm(props: CombinationFormProps): ReactElement {
       <div className="grid gap-2">
         <Label htmlFor={`${variant}-combination-name`}>{labels.combinationNameLabel}</Label>
         <Input
+          aria-invalid={Boolean(fieldErrors.name)}
           autoComplete="off"
           defaultValue={combination?.name}
           id={`${variant}-combination-name`}
@@ -105,6 +113,7 @@ function CombinationForm(props: CombinationFormProps): ReactElement {
           {labels.combinationColorLabel}
         </Label>
         <Input
+          aria-invalid={Boolean(fieldErrors.hexColor)}
           className="h-11 p-1"
           defaultValue={combination?.hexColor ?? '#111111'}
           id={`${variant}-combination-color`}
@@ -116,15 +125,10 @@ function CombinationForm(props: CombinationFormProps): ReactElement {
 
       <CombinationMaterialAssignmentsField
         assignments={combination?.materialAssignments ?? []}
+        invalid={Boolean(fieldErrors.materialRoleId)}
         labels={labels}
         productMaterials={productMaterials}
       />
-
-      {state.message ? (
-        <p className="border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {state.message}
-        </p>
-      ) : null}
 
       <div className="flex justify-end gap-3">
         <DialogClose asChild>

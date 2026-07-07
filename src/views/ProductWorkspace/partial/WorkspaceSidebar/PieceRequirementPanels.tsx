@@ -39,6 +39,7 @@ function formatCombinationMaterial(
  */
 export function GlobalRequirementsPanel(props: {
   readonly active: boolean
+  readonly invalid: boolean
   readonly labels: ProductWorkspaceLabels
   readonly onAdd: () => void
   readonly onRemove: (key: string) => void
@@ -46,7 +47,7 @@ export function GlobalRequirementsPanel(props: {
   readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
   readonly rows: readonly RequirementRow[]
 }): ReactElement {
-  const { active, labels, onAdd, onRemove, onUpdate, productMaterials, rows } = props
+  const { active, invalid, labels, onAdd, onRemove, onUpdate, productMaterials, rows } = props
   const disabled = productMaterials.length === 0
 
   return (
@@ -56,6 +57,7 @@ export function GlobalRequirementsPanel(props: {
       {rows.map((row, index) => (
         <RequirementRowFields
           idName="globalProductMaterialId"
+          invalid={invalid}
           key={row.key}
           labels={labels}
           materialOptions={productMaterials.map(material => ({
@@ -82,6 +84,7 @@ export function GlobalRequirementsPanel(props: {
 export function CombinationRequirementsPanel(props: {
   readonly active: boolean
   readonly combination: ProductWorkspaceCombination
+  readonly invalid: boolean
   readonly labels: ProductWorkspaceLabels
   readonly onAdd: (combination: ProductWorkspaceCombination) => void
   readonly onRemove: (combinationId: string, key: string) => void
@@ -92,7 +95,7 @@ export function CombinationRequirementsPanel(props: {
   ) => void
   readonly rows: readonly RequirementRow[]
 }): ReactElement {
-  const { active, combination, labels, onAdd, onRemove, onUpdate, rows } = props
+  const { active, combination, invalid, labels, onAdd, onRemove, onUpdate, rows } = props
   const disabled = combination.materialAssignments.length === 0
 
   return (
@@ -106,6 +109,7 @@ export function CombinationRequirementsPanel(props: {
       {rows.map((row, index) => (
         <RequirementRowFields
           idName="combinationMaterialId"
+          invalid={invalid}
           key={row.key}
           labels={labels}
           materialOptions={combination.materialAssignments.map(assignment => ({
@@ -153,6 +157,7 @@ function EmptyScope(props: { readonly text: string }): ReactElement {
 
 function RequirementRowFields(props: {
   readonly idName: string
+  readonly invalid: boolean
   readonly labels: ProductWorkspaceLabels
   readonly materialOptions: ReadonlyArray<{
     readonly label: string
@@ -164,14 +169,25 @@ function RequirementRowFields(props: {
   readonly row: RequirementRow
   readonly rowIndex: number
 }): ReactElement {
-  const { idName, labels, materialOptions, onRemove, onUpdate, quantityName, row, rowIndex } = props
+  const {
+    idName,
+    invalid,
+    labels,
+    materialOptions,
+    onRemove,
+    onUpdate,
+    quantityName,
+    row,
+    rowIndex
+  } = props
 
   return (
-    <div className="grid gap-2 border p-3">
+    <div className="grid gap-2 border p-3" data-invalid={invalid}>
       <div className="grid gap-2 sm:grid-cols-[1fr_5rem_auto]">
         <div className="grid gap-2">
           <Label htmlFor={`${idName}-${row.key}`}>{labels.materialSelectLabel}</Label>
           <select
+            aria-invalid={invalid}
             className={cn(
               'h-10 w-full rounded-none border border-input bg-transparent px-3 text-sm',
               'outline-none focus-visible:border-ring focus-visible:ring-2',
@@ -194,6 +210,7 @@ function RequirementRowFields(props: {
           <Label htmlFor={`${quantityName}-${row.key}`}>{labels.pieceQuantityLabel}</Label>
           <Input
             aria-label={`${labels.pieceQuantityLabel} ${rowIndex + 1}`}
+            aria-invalid={invalid}
             id={`${quantityName}-${row.key}`}
             min={1}
             name={quantityName}

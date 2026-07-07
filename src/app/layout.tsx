@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import type { ReactNode, ReactElement } from 'react'
 
+import { AppToaster } from '@/components/AppToaster'
 import '@/styles/globals.css'
 
 type RootLayoutProps = {
@@ -46,6 +47,7 @@ export default async function RootLayout(
       <body className="font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           {props.children}
+          <AppToaster />
         </NextIntlClientProvider>
       </body>
     </html>

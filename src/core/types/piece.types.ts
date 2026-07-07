@@ -1,5 +1,6 @@
 import type { ProductCombinationMaterialAssignmentRecord } from './product-combination.types'
 import type { ProductMaterialRecord } from './material.types'
+import type { MutationFormState } from './form-state.types'
 
 /**
  * Binary DXF file payload accepted by piece services.
@@ -102,7 +103,4 @@ export type PieceRecord = {
 /**
  * Generic state returned by product piece mutation actions.
  */
-export type PieceFormState = {
-  readonly message?: string
-  readonly status?: 'error' | 'success'
-}
+export type PieceFormState = MutationFormState

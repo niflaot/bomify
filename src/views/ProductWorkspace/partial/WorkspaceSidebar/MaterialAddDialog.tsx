@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { FormStateToast } from '@/components/FormStateToast'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -59,6 +60,7 @@ function MaterialAddForm(props: MaterialAddDialogProps & {
   const [widthCm, setWidthCm] = useState('')
   const [state, formAction] = useActionState<MaterialFormState, FormData>(action, {})
   const activeMode = hasCatalog ? mode : 'new'
+  const fieldErrors = state.fieldErrors ?? {}
 
   useEffect(() => {
     if (state.status === 'success') {
@@ -69,6 +71,11 @@ function MaterialAddForm(props: MaterialAddDialogProps & {
   return (
     <form action={formAction} className="grid gap-5">
       <FormLoadingBar />
+      <FormStateToast
+        errorFallback={labels.formErrorToast}
+        state={state}
+        successMessage={labels.materialSavedToast}
+      />
       <input name="materialMode" type="hidden" value={activeMode} />
       <input name="productId" type="hidden" value={productId} />
 
@@ -101,12 +108,14 @@ function MaterialAddForm(props: MaterialAddDialogProps & {
 
       {activeMode === 'existing' ? (
         <MaterialCombobox
+          invalid={Boolean(fieldErrors.materialId)}
           inputId="add-material-search"
           labels={labels}
           materials={materials}
         />
       ) : (
         <MaterialNewFields
+          fieldErrors={fieldErrors}
           hexColor={hexColor}
           iconKey={iconKey}
           labels={labels}
@@ -118,12 +127,6 @@ function MaterialAddForm(props: MaterialAddDialogProps & {
           widthCm={widthCm}
         />
       )}
-
-      {state.message ? (
-        <p className="border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {state.message}
-        </p>
-      ) : null}
 
       <div className="flex justify-end gap-3">
         <DialogClose asChild>

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { FormStateToast } from '@/components/FormStateToast'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -59,14 +60,13 @@ function MaterialDeleteForm(props: MaterialDeleteDialogProps & {
   return (
     <form action={formAction} className="grid gap-5">
       <FormLoadingBar />
+      <FormStateToast
+        errorFallback={labels.formErrorToast}
+        state={state}
+        successMessage={labels.materialRemovedToast}
+      />
       <input name="productId" type="hidden" value={productId} />
       <input name="productMaterialId" type="hidden" value={productMaterial.id} />
-
-      {state.message ? (
-        <p className="border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {state.message}
-        </p>
-      ) : null}
 
       <div className="flex justify-end gap-3">
         <DialogClose asChild>

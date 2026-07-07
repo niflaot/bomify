@@ -140,4 +140,11 @@
   [role='button']:disabled {
     cursor: not-allowed;
   }
+
+  input[aria-invalid='true'],
+  select[aria-invalid='true'],
+  textarea[aria-invalid='true'],
+  [data-invalid='true'] {
+    @apply border-destructive ring-1 ring-destructive/30;
+  }
 }

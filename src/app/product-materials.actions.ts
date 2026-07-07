@@ -9,6 +9,12 @@ import {
   detachProductMaterial
 } from '@/core/services/product-material/product-material.service'
 import type { MaterialFormState } from '@/core/types/material.types'
+import {
+  createErrorState,
+  createSuccessState,
+  getErrorMessage,
+  isUniqueConstraintError
+} from '@/core/utils/form/form-state.utils'
 
 function readRequiredText(formData: FormData, key: string): string {
   const value = formData.get(key)
@@ -35,10 +41,35 @@ function readIconKey(formData: FormData): MaterialIconKey {
 }
 
 function toFormState(error: unknown): MaterialFormState {
-  return {
-    message: error instanceof Error ? error.message : 'Could not save material',
-    status: 'error'
+  if (isUniqueConstraintError(error, ['product_id', 'material_id'])) {
+    return createErrorState('This material is already attached to this product', {
+      materialId: 'This material is already attached to this product'
+    })
   }
+
+  const message = getErrorMessage(error, 'Could not save material')
+
+  return createErrorState(message, getMaterialFieldErrors(message))
+}
+
+function getMaterialFieldErrors(message: string): Record<string, string> | undefined {
+  if (/name/i.test(message)) {
+    return { name: message }
+  }
+
+  if (/width/i.test(message)) {
+    return { widthCm: message }
+  }
+
+  if (/color|hex/i.test(message)) {
+    return { hexColor: message }
+  }
+
+  if (/materialId|material/i.test(message)) {
+    return { materialId: message }
+  }
+
+  return undefined
 }
 
 /**
@@ -70,7 +101,7 @@ export async function addProductMaterialAction(
     })
     revalidatePath(`/products/${productId}`)
 
-    return { status: 'success' }
+    return createSuccessState()
   } catch (error) {
     return toFormState(error)
   }
@@ -93,7 +124,7 @@ export async function deleteProductMaterialAction(
     await detachProductMaterial(productId, readRequiredText(formData, 'productMaterialId'))
     revalidatePath(`/products/${productId}`)
 
-    return { status: 'success' }
+    return createSuccessState()
   } catch (error) {
     return toFormState(error)
   }

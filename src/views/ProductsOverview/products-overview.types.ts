@@ -23,6 +23,8 @@ export type ProductsOverviewLabels = {
   readonly editProduct: string
   readonly deleteProduct: string
   readonly deleteProductConfirmation: string
+  readonly deleteProductError: string
+  readonly deleteProductSuccess: string
   readonly noDescription: string
   readonly emptyTitle: string
   readonly emptyDescription: string

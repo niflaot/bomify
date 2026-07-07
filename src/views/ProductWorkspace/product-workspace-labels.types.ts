@@ -31,6 +31,8 @@ export type ProductWorkspaceLabels = {
   readonly combinationMaterialToggleLabel: string
   readonly combinationNameLabel: string
   readonly combinationNamePlaceholder: string
+  readonly combinationRemovedToast: string
+  readonly combinationSavedToast: string
   readonly combinations: string
   readonly combinationsPanelDescription: string
   readonly createCatalogMaterial: string
@@ -44,6 +46,7 @@ export type ProductWorkspaceLabels = {
   readonly editCombination: string
   readonly editPiece: string
   readonly export: string
+  readonly formErrorToast: string
   readonly home: string
   readonly materialCatalogEmptyDescription: string
   readonly materialCatalogSearchLabel: string
@@ -58,6 +61,8 @@ export type ProductWorkspaceLabels = {
   readonly materialIconSearchPlaceholder: string
   readonly materialNameLabel: string
   readonly materialNamePlaceholder: string
+  readonly materialRemovedToast: string
+  readonly materialSavedToast: string
   readonly materialSelectLabel: string
   readonly materialWidthLabel: string
   readonly materialWidthPlaceholder: string
@@ -86,9 +91,11 @@ export type ProductWorkspaceLabels = {
   readonly pieceNamePlaceholder: string
   readonly pieceNumberLabel: string
   readonly pieceQuantityLabel: string
+  readonly pieceRemovedToast: string
   readonly pieceRemoveMaterialRequirement: string
   readonly pieceReplaceDxfLabel: string
   readonly pieceSave: string
+  readonly pieceSavedToast: string
   readonly pieceScopeAllLabel: string
   readonly pieceWidthLabel: string
   readonly pieces: string

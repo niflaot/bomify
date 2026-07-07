@@ -5,12 +5,14 @@ import type { ReactElement } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
+import type { FormFieldErrors } from '@/core/types/form-state.types'
 
 import type { ProductWorkspaceLabels } from '../../product-workspace.types'
 import { MaterialIconPicker } from './MaterialIconPicker'
 import { MaterialPreview } from './MaterialPreview'
 
 type MaterialNewFieldsProps = {
+  readonly fieldErrors?: FormFieldErrors
   readonly hexColor: string
   readonly iconKey: MaterialIconKey
   readonly labels: ProductWorkspaceLabels
@@ -31,6 +33,7 @@ type MaterialNewFieldsProps = {
 export function MaterialNewFields(props: MaterialNewFieldsProps): ReactElement {
   const {
     hexColor,
+    fieldErrors = {},
     iconKey,
     labels,
     name,
@@ -47,6 +50,7 @@ export function MaterialNewFields(props: MaterialNewFieldsProps): ReactElement {
         <div className="grid gap-2">
           <Label htmlFor="new-material-name">{labels.materialNameLabel}</Label>
           <Input
+            aria-invalid={Boolean(fieldErrors.name)}
             autoComplete="off"
             id="new-material-name"
             name="name"
@@ -60,6 +64,7 @@ export function MaterialNewFields(props: MaterialNewFieldsProps): ReactElement {
         <div className="grid gap-2">
           <Label htmlFor="new-material-width">{labels.materialWidthLabel}</Label>
           <Input
+            aria-invalid={Boolean(fieldErrors.widthCm)}
             id="new-material-width"
             min="0.01"
             name="widthCm"
@@ -75,6 +80,7 @@ export function MaterialNewFields(props: MaterialNewFieldsProps): ReactElement {
         <div className="grid gap-2">
           <Label htmlFor="new-material-color">{labels.materialColorLabel}</Label>
           <Input
+            aria-invalid={Boolean(fieldErrors.hexColor)}
             className="h-11 p-1"
             id="new-material-color"
             name="hexColor"

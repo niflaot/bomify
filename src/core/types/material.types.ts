@@ -1,4 +1,5 @@
 import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
+import type { MutationFormState } from './form-state.types'
 
 /**
  * Input used to create a global reusable material.
@@ -64,7 +65,4 @@ export type ProductMaterialRecord = {
 /**
  * Generic state returned by material mutation actions.
  */
-export type MaterialFormState = {
-  readonly message?: string
-  readonly status?: 'error' | 'success'
-}
+export type MaterialFormState = MutationFormState

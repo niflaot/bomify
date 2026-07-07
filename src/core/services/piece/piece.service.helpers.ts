@@ -76,6 +76,33 @@ export async function ensureActivePiece(productId: string, id: string): Promise<
 }
 
 /**
+ * Ensures a product does not already have an active piece with the same number.
+ *
+ * @param productId - Product id that owns the piece.
+ * @param number - Piece number to validate.
+ * @param excludedPieceId - Optional piece id excluded during updates.
+ * @returns Nothing when the number is available.
+ */
+export async function ensurePieceNumberAvailable(
+  productId: string,
+  number: number,
+  excludedPieceId?: string
+): Promise<void> {
+  const count = await prisma.piece.count({
+    where: {
+      deletedAt: null,
+      id: excludedPieceId ? { not: excludedPieceId } : undefined,
+      number,
+      productId
+    }
+  })
+
+  if (count > 0) {
+    throw new Error('Piece number already exists for this product')
+  }
+}
+
+/**
  * Ensures every material requirement points to this product.
  *
  * @param productId - Product id.

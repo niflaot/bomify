@@ -15,6 +15,7 @@ import { MaterialSwatch } from './MaterialSwatch'
 
 type MaterialComboboxProps = {
   readonly defaultMaterialId?: string
+  readonly invalid?: boolean
   readonly inputId: string
   readonly labels: ProductWorkspaceLabels
   readonly materials: readonly ProductWorkspaceMaterial[]
@@ -38,7 +39,7 @@ function findInitialMaterialId(
  * @returns Material combobox element.
  */
 export function MaterialCombobox(props: MaterialComboboxProps): ReactElement {
-  const { defaultMaterialId, inputId, labels, materials } = props
+  const { defaultMaterialId, inputId, invalid = false, labels, materials } = props
   const [query, setQuery] = useState('')
   const [selectedMaterialId, setSelectedMaterialId] = useState(
     findInitialMaterialId(materials, defaultMaterialId)
@@ -61,6 +62,7 @@ export function MaterialCombobox(props: MaterialComboboxProps): ReactElement {
       <Label htmlFor={inputId}>{labels.materialSelectLabel}</Label>
       <input name="materialId" type="hidden" value={selectedMaterialId} />
       <Input
+        aria-invalid={invalid}
         autoComplete="off"
         id={inputId}
         onChange={event => {
@@ -70,7 +72,7 @@ export function MaterialCombobox(props: MaterialComboboxProps): ReactElement {
         type="search"
         value={query}
       />
-      <div className="max-h-48 overflow-y-auto border" role="listbox">
+      <div className="max-h-48 overflow-y-auto border" data-invalid={invalid} role="listbox">
         {filteredMaterials.length > 0 ? (
           filteredMaterials.map(material => {
             const selected = material.id === selectedMaterialId

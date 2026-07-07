@@ -2,7 +2,10 @@
 
 import { ImageIcon, Pencil, Trash2 } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { FormEvent, ReactElement } from 'react'
+import { useTransition } from 'react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -37,12 +40,6 @@ function formatUpdatedAt(value: string, locale: string): string {
   }).format(new Date(value))
 }
 
-function confirmDelete(event: FormEvent<HTMLFormElement>, message: string): void {
-  if (!window.confirm(message)) {
-    event.preventDefault()
-  }
-}
-
 /**
  * Renders one product overview card.
  *
@@ -51,9 +48,31 @@ function confirmDelete(event: FormEvent<HTMLFormElement>, message: string): void
  */
 export function ProductCard(props: ProductCardProps): ReactElement {
   const { deleteAction, labels, locale, product } = props
+  const router = useRouter()
+  const [isDeleting, startDeleteTransition] = useTransition()
   const editLabel = formatLabel(labels.editProduct, product.name)
   const deleteLabel = formatLabel(labels.deleteProduct, product.name)
   const deleteConfirmation = formatLabel(labels.deleteProductConfirmation, product.name)
+  const handleDelete = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault()
+
+    if (!window.confirm(deleteConfirmation)) {
+      return
+    }
+
+    const formData = new FormData(event.currentTarget)
+
+    startDeleteTransition(() => {
+      void Promise.resolve(deleteAction(formData))
+        .then(() => {
+          toast.success(labels.deleteProductSuccess)
+          router.refresh()
+        })
+        .catch(() => {
+          toast.error(labels.deleteProductError)
+        })
+    })
+  }
 
   return (
     <Card className="group overflow-hidden border-border/80 bg-card/95 transition-shadow hover:shadow-md">
@@ -87,16 +106,12 @@ export function ProductCard(props: ProductCardProps): ReactElement {
               <Pencil aria-hidden="true" />
             </Link>
           </Button>
-          <form
-            action={deleteAction}
-            onSubmit={event => {
-              confirmDelete(event, deleteConfirmation)
-            }}
-          >
+          <form onSubmit={handleDelete}>
             <input name="productId" type="hidden" value={product.id} />
             <Button
               aria-label={deleteLabel}
               className="border-0 text-destructive hover:bg-destructive/10"
+              disabled={isDeleting}
               size="icon-sm"
               type="submit"
               variant="ghost"
