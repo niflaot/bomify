@@ -24,7 +24,7 @@ import type {
   PieceFormAction,
   ProductWorkspaceLabels,
   ProductWorkspacePiece
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/product-workspace.types'
 
 type PieceDeleteDialogProps = {
   readonly action: PieceFormAction

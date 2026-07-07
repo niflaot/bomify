@@ -4,13 +4,19 @@ import type { ReactElement } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { cn } from '@/core/utils/class-name/class-name.utils'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 
 import type {
   ProductWorkspaceCombination,
   ProductWorkspaceLabels,
   ProductWorkspaceProductMaterial
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/product-workspace.types'
 
 /**
  * Editable material requirement row.
@@ -186,25 +192,26 @@ function RequirementRowFields(props: {
       <div className="grid gap-2 sm:grid-cols-[1fr_5rem_auto]">
         <div className="grid gap-2">
           <Label htmlFor={`${idName}-${row.key}`}>{labels.materialSelectLabel}</Label>
-          <select
-            aria-invalid={invalid}
-            className={cn(
-              'h-10 w-full rounded-none border border-input bg-transparent px-3 text-sm',
-              'outline-none focus-visible:border-ring focus-visible:ring-2',
-              'focus-visible:ring-ring/30'
-            )}
-            id={`${idName}-${row.key}`}
+          <Select
             name={idName}
-            onChange={event => { onUpdate({ materialId: event.target.value }) }}
+            onValueChange={value => { onUpdate({ materialId: value }) }}
             required
             value={row.materialId}
           >
-            {materialOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger
+              aria-invalid={invalid}
+              id={`${idName}-${row.key}`}
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {materialOptions.map(option => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="grid gap-2">
           <Label htmlFor={`${quantityName}-${row.key}`}>{labels.pieceQuantityLabel}</Label>

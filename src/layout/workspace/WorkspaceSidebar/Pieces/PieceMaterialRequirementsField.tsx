@@ -11,7 +11,7 @@ import type {
   ProductWorkspaceLabels,
   ProductWorkspacePieceMaterialRequirement,
   ProductWorkspaceProductMaterial
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/product-workspace.types'
 import {
   CombinationRequirementsPanel,
   GlobalRequirementsPanel,

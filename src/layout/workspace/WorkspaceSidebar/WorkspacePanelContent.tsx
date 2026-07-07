@@ -1,6 +1,7 @@
 import type { LucideIcon } from 'lucide-react'
 import {
   Boxes,
+  ChartNoAxesColumn,
   FileUp,
   Layers3,
   Package,
@@ -20,10 +21,11 @@ import type {
   ProductWorkspacePiece,
   ProductWorkspacePieceActions,
   ProductWorkspaceProductMaterial
-} from '../../product-workspace.types'
-import { CombinationsPanel } from './CombinationsPanel'
-import { MaterialsPanel } from './MaterialsPanel'
-import { PiecesPanel } from './PiecesPanel'
+} from '@/views/ProductWorkspace/product-workspace.types'
+import { CombinationsPanel } from './Combinations/CombinationsPanel'
+import { ConsumptionPanel } from './Consumption/ConsumptionPanel'
+import { MaterialsPanel } from './Materials/MaterialsPanel'
+import { PiecesPanel } from './Pieces/PiecesPanel'
 
 type WorkspacePanelContentProps = {
   readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
@@ -53,6 +55,11 @@ function getPanelCopy(
       description: labels.combinationsPanelDescription,
       icon: Layers3,
       title: labels.combinations
+    },
+    consumption: {
+      description: labels.consumptionPanelDescription,
+      icon: ChartNoAxesColumn,
+      title: labels.consumption
     },
     materials: {
       description: labels.materialsPanelDescription,
@@ -174,6 +181,16 @@ function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
         pieces={pieces}
         productId={product.id}
         productMaterials={productMaterials}
+      />
+    )
+  }
+
+  if (panel === 'consumption') {
+    return (
+      <ConsumptionPanel
+        combinations={combinations}
+        labels={labels}
+        pieces={pieces}
       />
     )
   }

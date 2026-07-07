@@ -12,10 +12,10 @@ import type {
   ProductWorkspaceCombinationActions,
   ProductWorkspaceLabels,
   ProductWorkspaceProductMaterial
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/product-workspace.types'
 import { CombinationFormDialog } from './CombinationFormDialog'
 import { CombinationDeleteDialog } from './CombinationDeleteDialog'
-import { MaterialSwatch } from './MaterialSwatch'
+import { MaterialSwatch } from '../Materials/MaterialSwatch'
 
 type CombinationsPanelProps = {
   readonly actions: ProductWorkspaceCombinationActions

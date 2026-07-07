@@ -10,9 +10,11 @@ type ProductWorkspaceContextValue = {
   readonly activePanel: ProductWorkspacePanel
   readonly activeView: ProductWorkspaceView
   readonly panelOpen: boolean
+  readonly productionUnits: number
   readonly selectCombination: (combinationId: string) => void
   readonly selectPanel: (panel: ProductWorkspacePanel) => void
   readonly selectView: (view: ProductWorkspaceView) => void
+  readonly setProductionUnits: (units: number) => void
 }
 
 type ProductWorkspaceProviderProps = {
@@ -38,6 +40,7 @@ export function ProductWorkspaceProvider(
   const [activePanel, setActivePanel] = useState<ProductWorkspacePanel>('combinations')
   const [activeView, setActiveView] = useState<ProductWorkspaceView>('despiece')
   const [panelOpen, setPanelOpen] = useState(true)
+  const [productionUnits, setProductionUnitState] = useState(1)
 
   const selectCombination = useCallback((combinationId: string): void => {
     setActiveCombinationId(combinationId)
@@ -60,24 +63,32 @@ export function ProductWorkspaceProvider(
     setActiveView(view)
   }, [])
 
+  const setProductionUnits = useCallback((units: number): void => {
+    setProductionUnitState(Math.max(1, Math.floor(units)))
+  }, [])
+
   const value = useMemo<ProductWorkspaceContextValue>(
     () => ({
       activeCombinationId,
       activePanel,
       activeView,
       panelOpen,
+      productionUnits,
       selectCombination,
       selectPanel,
-      selectView
+      selectView,
+      setProductionUnits
     }),
     [
       activeCombinationId,
       activePanel,
       activeView,
       panelOpen,
+      productionUnits,
       selectCombination,
       selectPanel,
-      selectView
+      selectView,
+      setProductionUnits
     ]
   )
 

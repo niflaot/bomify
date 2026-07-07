@@ -26,6 +26,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('metadata')
 
   return {
+    icons: {
+      apple: '/logo.svg',
+      icon: '/logo.svg',
+      shortcut: '/logo.svg'
+    },
     title: t('title')
   }
 }

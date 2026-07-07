@@ -76,6 +76,7 @@ This file centralizes the most relevant coding and collaboration rules for this 
 - Keep theme colors, radii, borders, dark mode tokens, and chart/sidebar tokens in `src/styles/globals.css`
 - Use Inter via `next/font/google` as the app font for both body text and headings
 - Use shadcn primitives from `src/components/ui/*.tsx`; these files may follow the shadcn lowercase filename convention
+- Use the shared shadcn `Select` component from `src/components/ui/select.tsx` for every dropdown; do not render native browser `<select>` elements in app UI
 - Do not add SCSS, BEM-only styling, Radix Theme styling, or unrelated custom design systems
 - Compose layouts with Tailwind utility classes and shadcn tokens such as `bg-background`, `text-foreground`, `border-border`, `bg-card`, and `text-muted-foreground`
 - Use lucide icons in buttons and icon controls when an icon exists

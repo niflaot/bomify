@@ -10,7 +10,7 @@ import { cn } from '@/core/utils/class-name/class-name.utils'
 import type {
   ProductWorkspaceLabels,
   ProductWorkspaceMaterial
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/product-workspace.types'
 import { MaterialSwatch } from './MaterialSwatch'
 
 type MaterialComboboxProps = {

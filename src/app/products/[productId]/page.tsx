@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import type { ReactElement } from 'react'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
@@ -32,6 +33,23 @@ type ProductWorkspacePageProps = {
 }
 
 export const dynamic = 'force-dynamic'
+
+/**
+ * Builds dynamic metadata for a product workspace.
+ *
+ * @param props - Workspace route props.
+ * @returns Product workspace metadata.
+ */
+export async function generateMetadata(
+  props: ProductWorkspacePageProps
+): Promise<Metadata> {
+  const { productId } = await props.params
+  const product = await getProductById(productId)
+
+  return {
+    title: product ? `Bomify - ${product.name}` : 'Bomify'
+  }
+}
 
 /**
  * Renders the product workspace route.

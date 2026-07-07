@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
 import type { FormFieldErrors } from '@/core/types/form-state.types'
 
-import type { ProductWorkspaceLabels } from '../../product-workspace.types'
+import type { ProductWorkspaceLabels } from '@/views/ProductWorkspace/product-workspace.types'
 import { MaterialIconPicker } from './MaterialIconPicker'
 import { MaterialPreview } from './MaterialPreview'
 

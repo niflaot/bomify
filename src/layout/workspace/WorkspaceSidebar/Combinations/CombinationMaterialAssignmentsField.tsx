@@ -7,12 +7,19 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 
 import type {
   ProductWorkspaceCombinationMaterialAssignment,
   ProductWorkspaceLabels,
   ProductWorkspaceProductMaterial
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/product-workspace.types'
 
 type AssignmentRow = {
   readonly key: string
@@ -119,23 +126,28 @@ export function CombinationMaterialAssignmentsField(
                   <Label htmlFor={`material-role-material-${row.key}`}>
                     {labels.combinationMaterialMaterialLabel}
                   </Label>
-                  <select
-                    aria-invalid={invalid}
-                    className="h-10 w-full rounded-none border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
-                    id={`material-role-material-${row.key}`}
+                  <Select
                     name="materialRoleProductMaterialId"
-                    onChange={event => {
-                      updateRow(row.key, { productMaterialId: event.target.value })
+                    onValueChange={value => {
+                      updateRow(row.key, { productMaterialId: value })
                     }}
                     required
                     value={row.productMaterialId}
                   >
-                    {productMaterials.map(productMaterial => (
-                      <option key={productMaterial.id} value={productMaterial.id}>
-                        {productMaterial.material.name}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger
+                      aria-invalid={invalid}
+                      id={`material-role-material-${row.key}`}
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {productMaterials.map(productMaterial => (
+                        <SelectItem key={productMaterial.id} value={productMaterial.id}>
+                          {productMaterial.material.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button
                   aria-label={`${labels.removeCombinationMaterial} ${index + 1}`}

@@ -140,10 +140,11 @@ export type ProductWorkspacePanel =
   | 'pieces'
   | 'materials'
   | 'combinations'
+  | 'consumption'
   | 'uploads'
   | 'stickers'
 
 /**
  * Workspace canvas views available from the header selector.
  */
-export type ProductWorkspaceView = 'despiece'
+export type ProductWorkspaceView = 'despiece' | 'productionCut'

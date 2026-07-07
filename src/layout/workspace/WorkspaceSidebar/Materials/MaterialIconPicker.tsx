@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
 import { cn } from '@/core/utils/class-name/class-name.utils'
 
-import type { ProductWorkspaceLabels } from '../../product-workspace.types'
+import type { ProductWorkspaceLabels } from '@/views/ProductWorkspace/product-workspace.types'
 import { MaterialIcon, materialIconOptions } from './material-icon.utils'
 
 type MaterialIconPickerProps = {

@@ -18,38 +18,41 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 import { FormLoadingBar } from '@/components/ui/loading-bar'
-import type { MaterialFormState } from '@/core/types/material.types'
+import type { ProductCombinationFormState } from '@/core/types/product-combination.types'
 
 import type {
-  MaterialFormAction,
-  ProductWorkspaceLabels,
-  ProductWorkspaceProductMaterial
-} from '../../product-workspace.types'
+  ProductCombinationFormAction,
+  ProductWorkspaceCombination,
+  ProductWorkspaceLabels
+} from '@/views/ProductWorkspace/product-workspace.types'
 
-type MaterialDeleteDialogProps = {
-  readonly action: MaterialFormAction
+type CombinationDeleteDialogProps = {
+  readonly action: ProductCombinationFormAction
+  readonly combination: ProductWorkspaceCombination
   readonly labels: ProductWorkspaceLabels
   readonly productId: string
-  readonly productMaterial: ProductWorkspaceProductMaterial
 }
 
-function SubmitButton(props: { readonly labels: ProductWorkspaceLabels }): ReactElement {
+function DeleteButton(props: { readonly labels: ProductWorkspaceLabels }): ReactElement {
   const { labels } = props
   const { pending } = useFormStatus()
 
   return (
     <Button disabled={pending} type="submit" variant="destructive">
       <Trash2 aria-hidden="true" data-icon="inline-start" />
-      {pending ? labels.deleting : labels.deleteMaterial}
+      {pending ? labels.deleting : labels.deleteCombination}
     </Button>
   )
 }
 
-function MaterialDeleteForm(props: MaterialDeleteDialogProps & {
+function DeleteForm(props: CombinationDeleteDialogProps & {
   readonly onSuccess: () => void
 }): ReactElement {
-  const { action, labels, onSuccess, productId, productMaterial } = props
-  const [state, formAction] = useActionState<MaterialFormState, FormData>(action, {})
+  const { action, combination, labels, onSuccess, productId } = props
+  const [state, formAction] = useActionState<ProductCombinationFormState, FormData>(
+    action,
+    {}
+  )
 
   useEffect(() => {
     if (state.status === 'success') {
@@ -63,10 +66,10 @@ function MaterialDeleteForm(props: MaterialDeleteDialogProps & {
       <FormStateToast
         errorFallback={labels.formErrorToast}
         state={state}
-        successMessage={labels.materialRemovedToast}
+        successMessage={labels.combinationRemovedToast}
       />
       <input name="productId" type="hidden" value={productId} />
-      <input name="productMaterialId" type="hidden" value={productMaterial.id} />
+      <input name="combinationId" type="hidden" value={combination.id} />
 
       <div className="flex justify-end gap-3">
         <DialogClose asChild>
@@ -74,20 +77,22 @@ function MaterialDeleteForm(props: MaterialDeleteDialogProps & {
             {labels.cancel}
           </Button>
         </DialogClose>
-        <SubmitButton labels={labels} />
+        <DeleteButton labels={labels} />
       </div>
     </form>
   )
 }
 
 /**
- * Renders the product material detach confirmation dialog.
+ * Renders a soft-delete confirmation dialog for one combination.
  *
- * @param props - Delete material dialog props.
- * @returns Delete material dialog element.
+ * @param props - Delete dialog props.
+ * @returns Combination delete dialog element.
  */
-export function MaterialDeleteDialog(props: MaterialDeleteDialogProps): ReactElement {
-  const { labels, productMaterial } = props
+export function CombinationDeleteDialog(
+  props: CombinationDeleteDialogProps
+): ReactElement {
+  const { combination, labels } = props
   const [open, setOpen] = useState(false)
   const [formKey, setFormKey] = useState(0)
 
@@ -102,24 +107,19 @@ export function MaterialDeleteDialog(props: MaterialDeleteDialogProps): ReactEle
   return (
     <Dialog onOpenChange={handleOpenChange} open={open}>
       <DialogTrigger asChild>
-        <Button
-          aria-label={`${labels.deleteMaterial}: ${productMaterial.material.name}`}
-          size="icon-xs"
-          type="button"
-          variant="destructive"
-        >
+        <Button aria-label={`${labels.deleteCombination}: ${combination.name}`} size="icon-xs" type="button" variant="destructive">
           <Trash2 aria-hidden="true" />
         </Button>
       </DialogTrigger>
       <DialogContent closeLabel={labels.closeDialog}>
         <DialogHeader>
-          <DialogTitle>{labels.materialDeleteTitle}</DialogTitle>
-          <DialogDescription>{labels.materialDeleteDescription}</DialogDescription>
+          <DialogTitle>{labels.combinationDeleteTitle}</DialogTitle>
+          <DialogDescription>
+            {labels.combinationDeleteDescription}
+          </DialogDescription>
         </DialogHeader>
-        <p className="border bg-muted/40 p-3 text-sm font-medium">
-          {productMaterial.material.name}
-        </p>
-        <MaterialDeleteForm
+        <p className="border bg-muted/40 p-3 text-sm font-medium">{combination.name}</p>
+        <DeleteForm
           {...props}
           key={formKey}
           onSuccess={() => {

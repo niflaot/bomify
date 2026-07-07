@@ -15,6 +15,7 @@ type PinchState = {
  * Handlers and values used by the despiece zoom workspace.
  */
 export type DespieceZoomState = {
+  readonly centerView: () => void
   readonly decreaseZoom: () => void
   readonly handlePointerCancel: (event: PointerEvent<HTMLElement>) => void
   readonly handlePointerDown: (event: PointerEvent<HTMLElement>) => void
@@ -23,6 +24,8 @@ export type DespieceZoomState = {
   readonly handleWheel: (event: WheelEvent<HTMLElement>) => void
   readonly increaseZoom: () => void
   readonly resetZoom: () => void
+  readonly resetZoomAndCenter: () => void
+  readonly setViewportElement: (element: HTMLDivElement | null) => void
   readonly zoom: number
 }
 
@@ -38,6 +41,13 @@ function getDistance(left: ZoomPoint, right: ZoomPoint): number {
   return Math.hypot(left.x - right.x, left.y - right.y)
 }
 
+function isInteractiveTarget(target: EventTarget | null): boolean {
+  return target instanceof Element
+    && Boolean(target.closest(
+      'button, a, input, textarea, [role="button"], [role="combobox"], [data-radix-select-trigger]'
+    ))
+}
+
 /**
  * Manages bounded zoom controls for the despiece workspace.
  *
@@ -46,12 +56,39 @@ function getDistance(left: ZoomPoint, right: ZoomPoint): number {
  */
 export function useDespieceZoom(defaultZoom: number): DespieceZoomState {
   const [zoom, setZoom] = useState(defaultZoom)
+  const viewportRef = useRef<HTMLDivElement | null>(null)
   const pointersRef = useRef(new Map<number, ZoomPoint>())
   const pinchRef = useRef<PinchState | null>(null)
+
+  const setViewportElement = useCallback((element: HTMLDivElement | null): void => {
+    viewportRef.current = element
+  }, [])
+
+  const centerView = useCallback((): void => {
+    globalThis.requestAnimationFrame(() => {
+      const viewport = viewportRef.current
+
+      if (!viewport) {
+        return
+      }
+
+      viewport.scrollTo({
+        left: Math.max((viewport.scrollWidth - viewport.clientWidth) / 2, 0),
+        top: Math.max((viewport.scrollHeight - viewport.clientHeight) / 2, 0)
+      })
+    })
+  }, [])
 
   const resetZoom = useCallback((): void => {
     setZoom(defaultZoom)
   }, [defaultZoom])
+
+  const resetZoomAndCenter = useCallback((): void => {
+    setZoom(defaultZoom)
+    globalThis.requestAnimationFrame(() => {
+      centerView()
+    })
+  }, [centerView, defaultZoom])
 
   const increaseZoom = useCallback((): void => {
     setZoom(current => clampZoom(current + zoomStep))
@@ -71,6 +108,10 @@ export function useDespieceZoom(defaultZoom: number): DespieceZoomState {
   }, [])
 
   const handlePointerDown = useCallback((event: PointerEvent<HTMLElement>): void => {
+    if (isInteractiveTarget(event.target)) {
+      return
+    }
+
     event.currentTarget.setPointerCapture(event.pointerId)
     pointersRef.current.set(event.pointerId, {
       x: event.clientX,
@@ -88,6 +129,10 @@ export function useDespieceZoom(defaultZoom: number): DespieceZoomState {
   }, [zoom])
 
   const handlePointerMove = useCallback((event: PointerEvent<HTMLElement>): void => {
+    if (isInteractiveTarget(event.target)) {
+      return
+    }
+
     if (!pointersRef.current.has(event.pointerId)) {
       return
     }
@@ -123,6 +168,7 @@ export function useDespieceZoom(defaultZoom: number): DespieceZoomState {
   }, [])
 
   return {
+    centerView,
     decreaseZoom,
     handlePointerCancel: endPointer,
     handlePointerDown,
@@ -131,6 +177,8 @@ export function useDespieceZoom(defaultZoom: number): DespieceZoomState {
     handleWheel,
     increaseZoom,
     resetZoom,
+    resetZoomAndCenter,
+    setViewportElement,
     zoom
   }
 }

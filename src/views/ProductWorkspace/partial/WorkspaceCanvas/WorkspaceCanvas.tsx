@@ -7,6 +7,7 @@ import type {
   ProductWorkspacePiece
 } from '../../product-workspace.types'
 import { DespieceView } from './DespieceView'
+import { ProductionCutView } from './ProductionCutView'
 
 type WorkspaceCanvasProps = {
   readonly combinations: readonly ProductWorkspaceCombination[]
@@ -31,6 +32,13 @@ export function WorkspaceCanvas(props: WorkspaceCanvasProps): ReactElement {
     >
       {activeView === 'despiece' ? (
         <DespieceView
+          combinations={combinations}
+          labels={labels}
+          pieces={pieces}
+        />
+      ) : null}
+      {activeView === 'productionCut' ? (
+        <ProductionCutView
           combinations={combinations}
           labels={labels}
           pieces={pieces}

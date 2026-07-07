@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Bomify"
+    "title": "Bomify - Creador de BOM y almacenamiento de molduras esenciales"
   },
   "home": {
     "deleteProductConfirmation": "Delete {name}? This product will be hidden from the overview.",
@@ -70,6 +70,18 @@
     "combinationSavedToast": "Combination saved",
     "combinations": "Combinations",
     "combinationsPanelDescription": "Manage material choices that vary between product versions.",
+    "consumption": "Consumo",
+    "consumptionDecreaseUnits": "Decrease production units",
+    "consumptionEfficiency": "Efficiency",
+    "consumptionEmptyDescription": "Assign pieces to materials to calculate production consumption.",
+    "consumptionLength": "Length",
+    "consumptionMeters": "meters",
+    "consumptionPanelDescription": "Review material length, used area, and waste for production units.",
+    "consumptionSheets": "Sheets",
+    "consumptionUnitsLabel": "Production units",
+    "consumptionIncreaseUnits": "Increase production units",
+    "consumptionUsed": "Used",
+    "consumptionWaste": "Waste",
     "createCatalogMaterial": "Create catalog material",
     "createCombination": "Create combination",
     "deleteCombination": "Delete",
@@ -105,8 +117,10 @@
     "materialWidthPlaceholder": "140",
     "newCatalogMaterial": "New material",
     "noCombination": "No combinations",
+    "nextSheet": "Next sheet",
     "pieces": "Pieces",
     "piecesPanelDescription": "Prepare pattern pieces, quantities, dimensions, and future imports.",
+    "previousSheet": "Previous sheet",
     "pieceAddMaterialRequirement": "Add material",
     "pieceCombinationScopeEmptyDescription": "Assign material roles to this combination before adding piece quantities.",
     "pieceDeleteDescription": "This hides the piece from the workspace without deleting the stored production history.",
@@ -137,6 +151,10 @@
     "pieceWidthLabel": "Width in cm",
     "product": "Product",
     "productPanelDescription": "Keep the product reference, photo, and production notes close to the canvas.",
+    "productionCutView": "Corte producción",
+    "productionMaterialLabel": "Material",
+    "productionNoMaterialDescription": "No material has production pieces for the selected combination.",
+    "productionSheetLabel": "Sheet",
     "save": "Save",
     "saveCombination": "Save combination",
     "saveMaterial": "Save material",
@@ -152,6 +170,7 @@
     "viewLabel": "View",
     "workspace": "Workspace",
     "despieceView": "Despiece",
+    "zoomCenter": "Center view",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "zoomReset": "Reset zoom"

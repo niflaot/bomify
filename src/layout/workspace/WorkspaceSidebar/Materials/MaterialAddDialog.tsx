@@ -25,7 +25,7 @@ import type {
   MaterialFormAction,
   ProductWorkspaceLabels,
   ProductWorkspaceMaterial
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/product-workspace.types'
 import { MaterialCombobox } from './MaterialCombobox'
 import { MaterialNewFields } from './MaterialNewFields'
 

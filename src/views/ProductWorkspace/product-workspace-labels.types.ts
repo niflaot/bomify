@@ -35,6 +35,18 @@ export type ProductWorkspaceLabels = {
   readonly combinationSavedToast: string
   readonly combinations: string
   readonly combinationsPanelDescription: string
+  readonly consumption: string
+  readonly consumptionDecreaseUnits: string
+  readonly consumptionEfficiency: string
+  readonly consumptionEmptyDescription: string
+  readonly consumptionLength: string
+  readonly consumptionMeters: string
+  readonly consumptionPanelDescription: string
+  readonly consumptionSheets: string
+  readonly consumptionUnitsLabel: string
+  readonly consumptionIncreaseUnits: string
+  readonly consumptionUsed: string
+  readonly consumptionWaste: string
   readonly createCatalogMaterial: string
   readonly createCombination: string
   readonly createPiece: string
@@ -70,6 +82,7 @@ export type ProductWorkspaceLabels = {
   readonly materialsPanelDescription: string
   readonly newCatalogMaterial: string
   readonly noCombination: string
+  readonly nextSheet: string
   readonly pieceAddMaterialRequirement: string
   readonly pieceCombinationScopeEmptyDescription: string
   readonly pieceDeleteDescription: string
@@ -100,8 +113,13 @@ export type ProductWorkspaceLabels = {
   readonly pieceWidthLabel: string
   readonly pieces: string
   readonly piecesPanelDescription: string
+  readonly previousSheet: string
   readonly product: string
   readonly productPanelDescription: string
+  readonly productionCutView: string
+  readonly productionMaterialLabel: string
+  readonly productionNoMaterialDescription: string
+  readonly productionSheetLabel: string
   readonly removeCombinationMaterial: string
   readonly saveCombination: string
   readonly saveMaterial: string
@@ -115,6 +133,7 @@ export type ProductWorkspaceLabels = {
   readonly uploadsPanelDescription: string
   readonly viewLabel: string
   readonly workspace: string
+  readonly zoomCenter: string
   readonly zoomIn: string
   readonly zoomOut: string
   readonly zoomReset: string

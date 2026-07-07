@@ -2,9 +2,10 @@
 
 import type { ReactElement } from 'react'
 
+import { WorkspaceHeader } from '@/layout/workspace/WorkspaceHeader/WorkspaceHeader'
+import { WorkspaceSidebar } from '@/layout/workspace/WorkspaceSidebar/WorkspaceSidebar'
+
 import { WorkspaceCanvas } from './partial/WorkspaceCanvas/WorkspaceCanvas'
-import { WorkspaceHeader } from './partial/WorkspaceHeader/WorkspaceHeader'
-import { WorkspaceSidebar } from './partial/WorkspaceSidebar/WorkspaceSidebar'
 import { ProductWorkspaceProvider } from './product-workspace.context'
 import type {
   ProductWorkspaceCombination,

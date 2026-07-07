@@ -8,16 +8,17 @@ describe('ProductWorkspace', () => {
     renderWorkspace()
 
     expect(screen.getByLabelText('Products home')).toHaveAttribute('href', '/')
-    expect(screen.getByRole('combobox', { name: 'Combination' })).toHaveValue(
-      'combination-one'
+    expect(screen.getByRole('combobox', { name: 'Combination' })).toHaveTextContent(
+      'Leather standard'
     )
-    expect(screen.getByRole('combobox', { name: 'View' })).toHaveValue('despiece')
+    expect(screen.getByRole('combobox', { name: 'View' })).toHaveTextContent('Despiece')
     expect(screen.getByRole('button', { name: 'Export' })).toBeInTheDocument()
     expect(screen.getByText('Workspace')).toBeInTheDocument()
     expect(screen.getByLabelText('Product canvas')).toBeInTheDocument()
     expect(screen.getByText('Canvas placeholder')).toBeInTheDocument()
     expect(screen.getByText('Workspace panel')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Combinations' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Consumo' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Product' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Uploads' })).not.toBeInTheDocument()
     expect(screen.getAllByText('Leather standard').length).toBeGreaterThan(0)
@@ -38,6 +39,26 @@ describe('ProductWorkspace', () => {
 
     expect(screen.getByTestId('workspace-sidebar-panel')).toHaveClass('w-80')
     expect(screen.getByRole('heading', { name: 'Materials' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Consumo' }))
+
+    expect(screen.getByRole('heading', { name: 'Consumo' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Production units')).toHaveValue(1)
+  })
+
+  it('switches to the production cut view without affecting the sidebar panel', async () => {
+    const user = userEvent.setup()
+
+    renderWorkspace()
+
+    await user.click(screen.getByRole('combobox', { name: 'View' }))
+    await user.click(screen.getByRole('option', { name: 'Corte producción' }))
+
+    expect(screen.getByRole('combobox', { name: 'View' })).toHaveTextContent(
+      'Corte producción'
+    )
+    expect(screen.getByText('No production materials.')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Combinations' })).toBeInTheDocument()
   })
 
   it('opens combination create and edit dialogs from the panel', async () => {
@@ -54,9 +75,7 @@ describe('ProductWorkspace', () => {
     await user.click(screen.getByRole('button', { name: 'Add material role' }))
 
     expect(screen.getByLabelText('Role id 1')).toHaveValue('material-1')
-    expect(screen.getByRole('combobox', { name: 'Material' })).toHaveValue(
-      'product-material-one'
-    )
+    expect(screen.getByRole('combobox', { name: 'Material' })).toHaveTextContent('Canvas')
 
     await user.click(screen.getByRole('button', { name: 'Remove material role 1' }))
 
@@ -123,14 +142,16 @@ describe('ProductWorkspace', () => {
 
     await user.click(screen.getByRole('button', { name: 'Add material' }))
 
-    expect(screen.getByRole('combobox', { name: 'Material' })).toHaveValue(
-      'product-material-one'
+    expect(screen.getByRole('combobox', { name: 'Material' })).toHaveTextContent(
+      'Canvas (140 cm)'
     )
     expect(screen.getByLabelText('Quantity 1')).toHaveValue(1)
 
     await user.click(screen.getByRole('tab', { name: 'Leather standard' }))
     await user.click(screen.getByRole('button', { name: 'Add material' }))
 
-    expect(screen.getByRole('combobox', { name: 'Material' })).toHaveValue('assignment-one')
+    expect(screen.getByRole('combobox', { name: 'Material' })).toHaveTextContent(
+      'lona - Canvas'
+    )
   })
 })

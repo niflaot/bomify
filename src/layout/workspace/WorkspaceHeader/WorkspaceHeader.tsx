@@ -1,17 +1,24 @@
 import { Download, Home } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
-import type { ChangeEvent, ReactElement } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { cn } from '@/core/utils/class-name/class-name.utils'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 
-import { useProductWorkspace } from '../../product-workspace.context'
+import { useProductWorkspace } from '@/views/ProductWorkspace/product-workspace.context'
 import type {
   ProductWorkspaceCombination,
   ProductWorkspaceItem,
   ProductWorkspaceLabels,
   ProductWorkspaceView
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/product-workspace.types'
 
 type WorkspaceHeaderProps = {
   readonly combinations: readonly ProductWorkspaceCombination[]
@@ -19,15 +26,9 @@ type WorkspaceHeaderProps = {
   readonly product: ProductWorkspaceItem
 }
 
-const selectClassName = cn(
-  'h-9 min-w-40 rounded-none border border-input bg-background px-3 text-sm',
-  'font-medium outline-none focus-visible:border-ring focus-visible:ring-2',
-  'focus-visible:ring-ring/30'
-)
-
 function WorkspaceSelector(props: {
   readonly label: string
-  readonly children: ReactElement | readonly ReactElement[]
+  readonly children: ReactNode
 }): ReactElement {
   return (
     <label className="grid min-w-0 gap-1">
@@ -44,13 +45,24 @@ function WorkspaceTitle(props: {
   readonly product: ProductWorkspaceItem
 }): ReactElement {
   return (
-    <div className="min-w-0 border-l pl-4 pr-2">
-      <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-muted-foreground">
-        {props.labels.workspace}
-      </p>
-      <p className="max-w-48 truncate text-lg font-semibold uppercase tracking-[0.16em]">
-        {props.product.name}
-      </p>
+    <div className="flex min-w-0 items-center gap-3 border-l pl-4 pr-2">
+      <Image
+        alt=""
+        aria-hidden="true"
+        className="size-7 shrink-0"
+        height={28}
+        priority
+        src="/logo.svg"
+        width={28}
+      />
+      <div className="min-w-0">
+        <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-muted-foreground">
+          {props.labels.workspace}
+        </p>
+        <p className="max-w-48 truncate text-lg font-semibold uppercase tracking-[0.16em]">
+          {props.product.name}
+        </p>
+      </div>
     </div>
   )
 }
@@ -70,14 +82,6 @@ export function WorkspaceHeader(props: WorkspaceHeaderProps): ReactElement {
     selectView
   } = useProductWorkspace()
 
-  function handleCombinationChange(event: ChangeEvent<HTMLSelectElement>): void {
-    selectCombination(event.target.value)
-  }
-
-  function handleViewChange(event: ChangeEvent<HTMLSelectElement>): void {
-    selectView(event.target.value as ProductWorkspaceView)
-  }
-
   return (
     <header className="flex min-h-16 shrink-0 items-center justify-between gap-4 border-b bg-background px-3 py-2 sm:px-5">
       <div className="flex min-w-0 flex-wrap items-center gap-3">
@@ -90,36 +94,45 @@ export function WorkspaceHeader(props: WorkspaceHeaderProps): ReactElement {
         <WorkspaceTitle labels={labels} product={product} />
 
         <WorkspaceSelector label={labels.combinationLabel}>
-          <select
+          <Select
             aria-label={labels.combinationLabel}
-            className={selectClassName}
             disabled={combinations.length === 0}
-            onChange={handleCombinationChange}
+            onValueChange={selectCombination}
             value={activeCombinationId ?? ''}
           >
-            {combinations.length === 0 ? (
-              <option value="">{labels.noCombination}</option>
-            ) : null}
-            {combinations.map(combination => (
-              <option key={combination.id} value={combination.id}>
-                {combination.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger
+              aria-label={labels.combinationLabel}
+              className="h-9 min-w-40 font-medium"
+            >
+              <SelectValue placeholder={labels.noCombination} />
+            </SelectTrigger>
+            <SelectContent>
+              {combinations.map(combination => (
+                <SelectItem key={combination.id} value={combination.id}>
+                  {combination.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </WorkspaceSelector>
         <WorkspaceSelector label={labels.viewLabel}>
-          <select
+          <Select
             aria-label={labels.viewLabel}
-            className={selectClassName}
-            onChange={handleViewChange}
+            onValueChange={value => { selectView(value as ProductWorkspaceView) }}
             value={activeView}
           >
-            <option value="despiece">{labels.despieceView}</option>
-          </select>
+            <SelectTrigger
+              aria-label={labels.viewLabel}
+              className="h-9 min-w-40 font-medium"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="despiece">{labels.despieceView}</SelectItem>
+              <SelectItem value="productionCut">{labels.productionCutView}</SelectItem>
+            </SelectContent>
+          </Select>
         </WorkspaceSelector>
-        <span className="max-w-52 truncate text-xs text-muted-foreground">
-          {product.name}
-        </span>
       </div>
 
       <div className="flex items-center gap-2">

@@ -54,7 +54,7 @@ export function normalizePieceName(name: string): string {
     throw new Error('Piece name is required')
   }
 
-  return trimmed
+  return trimmed.toUpperCase()
 }
 
 /**

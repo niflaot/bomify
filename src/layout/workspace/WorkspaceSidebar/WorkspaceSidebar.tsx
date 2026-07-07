@@ -1,5 +1,6 @@
 import {
   Boxes,
+  ChartNoAxesColumn,
   Layers3,
   Printer,
   SwatchBook
@@ -10,7 +11,7 @@ import type { ReactElement } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/core/utils/class-name/class-name.utils'
 
-import { useProductWorkspace } from '../../product-workspace.context'
+import { useProductWorkspace } from '@/views/ProductWorkspace/product-workspace.context'
 import type {
   ProductWorkspaceMaterial,
   ProductWorkspaceMaterialActions,
@@ -22,7 +23,7 @@ import type {
   ProductWorkspacePanel,
   ProductWorkspacePiece,
   ProductWorkspacePieceActions
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/product-workspace.types'
 import { WorkspacePanelContent } from './WorkspacePanelContent'
 
 type WorkspaceSidebarProps = {
@@ -46,6 +47,7 @@ const railItems: readonly WorkspaceRailItem[] = [
   { key: 'combinations', icon: Layers3 },
   { key: 'pieces', icon: Boxes },
   { key: 'materials', icon: SwatchBook },
+  { key: 'consumption', icon: ChartNoAxesColumn },
   { key: 'stickers', icon: Printer }
 ]
 
@@ -55,6 +57,7 @@ function itemLabel(
 ): string {
   const labelMap: Record<ProductWorkspacePanel, string> = {
     combinations: labels.combinations,
+    consumption: labels.consumption,
     materials: labels.materials,
     pieces: labels.pieces,
     product: labels.product,

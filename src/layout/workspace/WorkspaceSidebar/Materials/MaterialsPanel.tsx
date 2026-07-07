@@ -10,7 +10,7 @@ import type {
   ProductWorkspaceMaterial,
   ProductWorkspaceMaterialActions,
   ProductWorkspaceProductMaterial
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/product-workspace.types'
 import { MaterialAddDialog } from './MaterialAddDialog'
 import { MaterialDeleteDialog } from './MaterialDeleteDialog'
 import { MaterialSwatch } from './MaterialSwatch'

@@ -27,7 +27,7 @@ import type {
   ProductWorkspaceCombination,
   ProductWorkspaceLabels,
   ProductWorkspaceProductMaterial
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/product-workspace.types'
 import { CombinationMaterialAssignmentsField } from './CombinationMaterialAssignmentsField'
 
 type CombinationFormDialogProps = {

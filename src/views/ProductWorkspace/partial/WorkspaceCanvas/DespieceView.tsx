@@ -1,6 +1,6 @@
 'use client'
 
-import { Gauge, RotateCcw, Ruler, Trash2, ZoomIn, ZoomOut } from 'lucide-react'
+import { Focus, Gauge, RotateCcw, Ruler, Trash2, ZoomIn, ZoomOut } from 'lucide-react'
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 
@@ -42,13 +42,14 @@ function formatSquareMeters(valueMm2: number): string {
 
 function DespieceToolbar(props: {
   readonly labels: ProductWorkspaceLabels
+  readonly onCenterView: () => void
   readonly onResetZoom: () => void
   readonly onZoomIn: () => void
   readonly onZoomOut: () => void
   readonly stats: DespieceStats
   readonly zoom: number
 }): ReactElement {
-  const { labels, onResetZoom, onZoomIn, onZoomOut, stats, zoom } = props
+  const { labels, onCenterView, onResetZoom, onZoomIn, onZoomOut, stats, zoom } = props
 
   return (
     <div className="fixed bottom-6 right-6 z-40 flex max-w-[calc(100vw-3rem)] flex-wrap items-center gap-1 border bg-background p-1 shadow-lg">
@@ -85,6 +86,9 @@ function DespieceToolbar(props: {
       <Button aria-label={labels.zoomReset} onClick={onResetZoom} size="icon-sm" type="button" variant="ghost">
         <RotateCcw aria-hidden="true" />
       </Button>
+      <Button aria-label={labels.zoomCenter} onClick={onCenterView} size="icon-sm" type="button" variant="ghost">
+        <Focus aria-hidden="true" />
+      </Button>
     </div>
   )
 }
@@ -98,7 +102,19 @@ function DespieceToolbar(props: {
 export function DespieceView(props: DespieceViewProps): ReactElement {
   const { combinations, labels, pieces } = props
   const { activeCombinationId } = useProductWorkspace()
-  const zoomState = useDespieceZoom(defaultZoom)
+  const {
+    decreaseZoom,
+    handlePointerCancel,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleWheel,
+    increaseZoom,
+    resetZoom,
+    resetZoomAndCenter,
+    setViewportElement,
+    zoom
+  } = useDespieceZoom(defaultZoom)
   const activeCombination = combinations.find(combination =>
     combination.id === activeCombinationId
   ) ?? null
@@ -126,11 +142,12 @@ export function DespieceView(props: DespieceViewProps): ReactElement {
   return (
     <div
       className="relative h-full min-h-[36rem] overflow-auto bg-muted/40"
-      onPointerCancel={zoomState.handlePointerCancel}
-      onPointerDown={zoomState.handlePointerDown}
-      onPointerMove={zoomState.handlePointerMove}
-      onPointerUp={zoomState.handlePointerUp}
-      onWheel={zoomState.handleWheel}
+      onPointerCancel={handlePointerCancel}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onWheel={handleWheel}
+      ref={setViewportElement}
       style={{ touchAction: 'none' }}
     >
       <div className="grid w-max gap-10 p-10 pb-28">
@@ -138,18 +155,19 @@ export function DespieceView(props: DespieceViewProps): ReactElement {
           <DespieceSheet
             key={sheet.id}
             labels={labels}
-            pixelsPerMm={zoomState.zoom}
+            pixelsPerMm={zoom}
             sheet={sheet}
           />
         ))}
       </div>
       <DespieceToolbar
         labels={labels}
-        onResetZoom={zoomState.resetZoom}
-        onZoomIn={zoomState.increaseZoom}
-        onZoomOut={zoomState.decreaseZoom}
+        onCenterView={resetZoomAndCenter}
+        onResetZoom={resetZoom}
+        onZoomIn={increaseZoom}
+        onZoomOut={decreaseZoom}
         stats={stats}
-        zoom={zoomState.zoom}
+        zoom={zoom}
       />
     </div>
   )
