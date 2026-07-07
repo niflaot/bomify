@@ -1,9 +1,17 @@
 import type { ReactElement } from 'react'
 
-import type { ProductWorkspaceLabels } from '../../product-workspace.types'
+import { useProductWorkspace } from '../../product-workspace.context'
+import type {
+  ProductWorkspaceCombination,
+  ProductWorkspaceLabels,
+  ProductWorkspacePiece
+} from '../../product-workspace.types'
+import { DespieceView } from './DespieceView'
 
 type WorkspaceCanvasProps = {
+  readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
+  readonly pieces: readonly ProductWorkspacePiece[]
 }
 
 /**
@@ -13,25 +21,21 @@ type WorkspaceCanvasProps = {
  * @returns Workspace canvas element.
  */
 export function WorkspaceCanvas(props: WorkspaceCanvasProps): ReactElement {
-  const { labels } = props
+  const { combinations, labels, pieces } = props
+  const { activeView } = useProductWorkspace()
 
   return (
     <section
       aria-label={labels.canvasLabel}
-      className="min-h-0 overflow-auto bg-muted/60 p-4 sm:p-6"
+      className="min-h-0 overflow-hidden bg-muted/60"
     >
-      <div className="grid min-h-full place-items-center">
-        <div className="grid h-[min(72vh,760px)] w-[min(100%,1040px)] place-items-center border bg-background shadow-sm">
-          <div className="max-w-md px-8 text-center">
-            <h2 className="text-lg font-semibold uppercase tracking-widest">
-              {labels.canvasEmptyTitle}
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              {labels.canvasEmptyDescription}
-            </p>
-          </div>
-        </div>
-      </div>
+      {activeView === 'despiece' ? (
+        <DespieceView
+          combinations={combinations}
+          labels={labels}
+          pieces={pieces}
+        />
+      ) : null}
     </section>
   )
 }

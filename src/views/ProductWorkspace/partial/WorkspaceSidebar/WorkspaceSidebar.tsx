@@ -1,8 +1,6 @@
 import {
   Boxes,
-  FileUp,
   Layers3,
-  Package,
   Printer,
   SwatchBook
 } from 'lucide-react'
@@ -46,10 +44,8 @@ type WorkspaceRailItem = {
 
 const railItems: readonly WorkspaceRailItem[] = [
   { key: 'combinations', icon: Layers3 },
-  { key: 'product', icon: Package },
   { key: 'pieces', icon: Boxes },
   { key: 'materials', icon: SwatchBook },
-  { key: 'uploads', icon: FileUp },
   { key: 'stickers', icon: Printer }
 ]
 

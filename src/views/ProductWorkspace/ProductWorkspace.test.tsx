@@ -7,12 +7,20 @@ describe('ProductWorkspace', () => {
   it('renders the product workspace shell', () => {
     renderWorkspace()
 
-    expect(screen.getByRole('heading', { name: 'Explorer' })).toBeInTheDocument()
     expect(screen.getByLabelText('Products home')).toHaveAttribute('href', '/')
+    expect(screen.getByRole('combobox', { name: 'Combination' })).toHaveValue(
+      'combination-one'
+    )
+    expect(screen.getByRole('combobox', { name: 'View' })).toHaveValue('despiece')
+    expect(screen.getByRole('button', { name: 'Export' })).toBeInTheDocument()
+    expect(screen.getByText('Workspace')).toBeInTheDocument()
     expect(screen.getByLabelText('Product canvas')).toBeInTheDocument()
+    expect(screen.getByText('Canvas placeholder')).toBeInTheDocument()
     expect(screen.getByText('Workspace panel')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Combinations' })).toBeInTheDocument()
-    expect(screen.getByText('Leather standard')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Product' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Uploads' })).not.toBeInTheDocument()
+    expect(screen.getAllByText('Leather standard').length).toBeGreaterThan(0)
   })
 
   it('toggles and switches the active left workspace panel', async () => {
@@ -70,7 +78,7 @@ describe('ProductWorkspace', () => {
 
     await user.click(screen.getByRole('button', { name: 'Materials' }))
 
-    expect(screen.getByText('Canvas')).toBeInTheDocument()
+    expect(screen.getAllByText('Canvas').length).toBeGreaterThan(0)
     expect(screen.getByText('140 cm')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Add material' }))

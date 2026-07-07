@@ -22,10 +22,8 @@ import { listProductCombinations } from '@/core/services/product-combination/pro
 import { getProductById } from '@/core/services/product/product.service'
 import { listProductMaterials } from '@/core/services/product-material/product-material.service'
 import { ProductWorkspace } from '@/views/ProductWorkspace'
-import {
-  getWorkspaceLabels,
-  toProductWorkspaceData
-} from '@/views/ProductWorkspace/product-workspace.mappers'
+import { getWorkspaceLabels } from '@/views/ProductWorkspace/product-workspace.labels'
+import { toProductWorkspaceData } from '@/views/ProductWorkspace/product-workspace.mappers'
 
 type ProductWorkspacePageProps = {
   readonly params: Promise<{

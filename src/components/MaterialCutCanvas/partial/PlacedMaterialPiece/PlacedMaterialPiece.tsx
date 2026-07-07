@@ -7,6 +7,7 @@ import { PieceRenderer } from '@/components/PieceRenderer'
 import type { PackedPiece } from '@/core/utils/material-packing/material-packing.types'
 
 import type { MaterialCutCanvasLabels, MaterialCutCanvasPiece } from '../../material-cut-canvas.types'
+import { PieceHoverCard } from './PieceHoverCard'
 
 type PlacedMaterialPieceProps = {
   readonly placement: PackedPiece
@@ -22,12 +23,16 @@ type PlacedMaterialPieceProps = {
 }
 
 function buildPieceStyle(
+  piece: MaterialCutCanvasPiece,
   placement: PackedPiece,
   pixelsPerMm: number,
   showPieceBounds: boolean
 ): CSSProperties {
   return {
-    contain: 'layout paint',
+    backgroundColor: piece.fillColor
+      ? `color-mix(in srgb, ${piece.fillColor} 14%, transparent)`
+      : undefined,
+    contain: 'layout',
     height: `${placement.heightMm * pixelsPerMm}px`,
     left: 0,
     outline: showPieceBounds ? '1px dashed rgba(42, 34, 28, 0.28)' : 0,
@@ -36,10 +41,6 @@ function buildPieceStyle(
     transform: `translate3d(${placement.xMm * pixelsPerMm}px, ${placement.yMm * pixelsPerMm}px, 0)`,
     width: `${placement.widthMm * pixelsPerMm}px`
   }
-}
-
-function buildPieceTitle(piece: MaterialCutCanvasPiece, labels: MaterialCutCanvasLabels): string {
-  return `${piece.name} · ${labels.width}: ${piece.widthMm} mm · ${labels.height}: ${piece.heightMm} mm`
 }
 
 function PlacedMaterialPieceComponent(props: PlacedMaterialPieceProps): ReactElement {
@@ -64,8 +65,8 @@ function PlacedMaterialPieceComponent(props: PlacedMaterialPieceProps): ReactEle
   return (
     <div
       aria-label={`${piece.name} ${placement.instanceId}`}
-      style={buildPieceStyle(placement, pixelsPerMm, showPieceBounds)}
-      title={buildPieceTitle(piece, labels)}
+      className="group hover:z-50"
+      style={buildPieceStyle(piece, placement, pixelsPerMm, showPieceBounds)}
     >
       <PieceRenderer
         ariaLabel={piece.name}
@@ -89,6 +90,7 @@ function PlacedMaterialPieceComponent(props: PlacedMaterialPieceProps): ReactEle
         strokeWidth={strokeWidth}
         style={{ width: '100%' }}
       />
+      <PieceHoverCard fallback={piece.tooltip} tooltip={piece.tooltipDetails} />
     </div>
   )
 }

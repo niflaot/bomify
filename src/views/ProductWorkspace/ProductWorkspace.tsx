@@ -50,9 +50,13 @@ export function ProductWorkspace(props: ProductWorkspaceProps): ReactElement {
   } = props
 
   return (
-    <ProductWorkspaceProvider>
+    <ProductWorkspaceProvider defaultCombinationId={combinations[0]?.id ?? null}>
       <main className="grid h-dvh grid-rows-[auto_1fr] overflow-hidden bg-background text-foreground">
-        <WorkspaceHeader labels={labels} product={product} />
+        <WorkspaceHeader
+          combinations={combinations}
+          labels={labels}
+          product={product}
+        />
         <div className="grid min-h-0 grid-cols-[auto_1fr]">
           <WorkspaceSidebar
             catalogMaterials={catalogMaterials}
@@ -65,7 +69,11 @@ export function ProductWorkspace(props: ProductWorkspaceProps): ReactElement {
             product={product}
             productMaterials={productMaterials}
           />
-          <WorkspaceCanvas labels={labels} />
+          <WorkspaceCanvas
+            combinations={combinations}
+            labels={labels}
+            pieces={pieces}
+          />
         </div>
       </main>
     </ProductWorkspaceProvider>

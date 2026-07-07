@@ -41,7 +41,13 @@
     "cancel": "Cancel",
     "canvasEmptyDescription": "This area will host the material maps, piece previews, and production canvas.",
     "canvasEmptyTitle": "Canvas placeholder",
+    "canvasEfficiency": "Efficiency",
+    "canvasFallbackError": "Could not render piece",
     "canvasLabel": "Product canvas",
+    "canvasLoadingPiece": "Loading piece...",
+    "canvasUnplaced": "Unplaced",
+    "canvasUsed": "Used",
+    "canvasWaste": "Waste",
     "closeDialog": "Close dialog",
     "combinationColorLabel": "Hex color",
     "combinationCreateTitle": "New combination",
@@ -49,6 +55,7 @@
     "combinationDeleteTitle": "Delete combination",
     "combinationEmptyDescription": "Create the first material/color version for this product.",
     "combinationEmptyTitle": "No combinations yet",
+    "combinationLabel": "Combination",
     "combinationNameLabel": "Name",
     "combinationNamePlaceholder": "Leather standard",
     "combinationMaterialAssignmentsLabel": "Material roles",
@@ -89,6 +96,7 @@
     "materialWidthLabel": "Width in cm",
     "materialWidthPlaceholder": "140",
     "newCatalogMaterial": "New material",
+    "noCombination": "No combinations",
     "pieces": "Pieces",
     "piecesPanelDescription": "Prepare pattern pieces, quantities, dimensions, and future imports.",
     "pieceAddMaterialRequirement": "Add material",
@@ -131,6 +139,11 @@
     "updated": "Updated",
     "uploads": "Uploads",
     "uploadsPanelDescription": "Stage PDFs, DXFs, photos, and production files for this product.",
-    "workspace": "Workspace"
+    "viewLabel": "View",
+    "workspace": "Workspace",
+    "despieceView": "Despiece",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "zoomReset": "Reset zoom"
   }
 }

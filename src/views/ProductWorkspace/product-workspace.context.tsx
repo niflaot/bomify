@@ -3,16 +3,21 @@
 import type { ReactElement, ReactNode } from 'react'
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
-import type { ProductWorkspacePanel } from './product-workspace.types'
+import type { ProductWorkspacePanel, ProductWorkspaceView } from './product-workspace.types'
 
 type ProductWorkspaceContextValue = {
+  readonly activeCombinationId: string | null
   readonly activePanel: ProductWorkspacePanel
+  readonly activeView: ProductWorkspaceView
   readonly panelOpen: boolean
+  readonly selectCombination: (combinationId: string) => void
   readonly selectPanel: (panel: ProductWorkspacePanel) => void
+  readonly selectView: (view: ProductWorkspaceView) => void
 }
 
 type ProductWorkspaceProviderProps = {
   readonly children: ReactNode
+  readonly defaultCombinationId?: string | null
 }
 
 const ProductWorkspaceContext = createContext<ProductWorkspaceContextValue | null>(null)
@@ -26,9 +31,17 @@ const ProductWorkspaceContext = createContext<ProductWorkspaceContextValue | nul
 export function ProductWorkspaceProvider(
   props: ProductWorkspaceProviderProps
 ): ReactElement {
-  const { children } = props
+  const { children, defaultCombinationId = null } = props
+  const [activeCombinationId, setActiveCombinationId] = useState<string | null>(
+    defaultCombinationId
+  )
   const [activePanel, setActivePanel] = useState<ProductWorkspacePanel>('combinations')
+  const [activeView, setActiveView] = useState<ProductWorkspaceView>('despiece')
   const [panelOpen, setPanelOpen] = useState(true)
+
+  const selectCombination = useCallback((combinationId: string): void => {
+    setActiveCombinationId(combinationId)
+  }, [])
 
   const selectPanel = useCallback(
     (panel: ProductWorkspacePanel): void => {
@@ -43,13 +56,29 @@ export function ProductWorkspaceProvider(
     [activePanel]
   )
 
+  const selectView = useCallback((view: ProductWorkspaceView): void => {
+    setActiveView(view)
+  }, [])
+
   const value = useMemo<ProductWorkspaceContextValue>(
     () => ({
+      activeCombinationId,
       activePanel,
+      activeView,
       panelOpen,
-      selectPanel
+      selectCombination,
+      selectPanel,
+      selectView
     }),
-    [activePanel, panelOpen, selectPanel]
+    [
+      activeCombinationId,
+      activePanel,
+      activeView,
+      panelOpen,
+      selectCombination,
+      selectPanel,
+      selectView
+    ]
   )
 
   return (

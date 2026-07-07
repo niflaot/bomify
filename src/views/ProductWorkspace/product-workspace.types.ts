@@ -3,6 +3,8 @@ import type { MaterialFormState } from '@/core/types/material.types'
 import type { PieceFormState } from '@/core/types/piece.types'
 import type { ProductCombinationFormState } from '@/core/types/product-combination.types'
 
+export type { ProductWorkspaceLabels } from './product-workspace-labels.types'
+
 /**
  * Product data rendered by the workspace shell.
  */
@@ -142,105 +144,6 @@ export type ProductWorkspacePanel =
   | 'stickers'
 
 /**
- * Text labels used by the product workspace.
+ * Workspace canvas views available from the header selector.
  */
-export type ProductWorkspaceLabels = {
-  readonly home: string
-  readonly workspace: string
-  readonly save: string
-  readonly export: string
-  readonly calculate: string
-  readonly sidebarTitle: string
-  readonly addCombination: string
-  readonly cancel: string
-  readonly closeDialog: string
-  readonly combinationColorLabel: string
-  readonly combinationCreateTitle: string
-  readonly combinationDeleteDescription: string
-  readonly combinationDeleteTitle: string
-  readonly combinationEmptyDescription: string
-  readonly combinationEmptyTitle: string
-  readonly combinationNameLabel: string
-  readonly combinationNamePlaceholder: string
-  readonly createCombination: string
-  readonly deleteCombination: string
-  readonly deleting: string
-  readonly editCombination: string
-  readonly addPiece: string
-  readonly createPiece: string
-  readonly deletePiece: string
-  readonly editPiece: string
-  readonly pieceAddMaterialRequirement: string
-  readonly pieceCombinationScopeEmptyDescription: string
-  readonly pieceDeleteDescription: string
-  readonly pieceDeleteTitle: string
-  readonly pieceDxfChooseAction: string
-  readonly pieceDxfCurrentLabel: string
-  readonly pieceDxfDropHint: string
-  readonly pieceDxfInvalidFile: string
-  readonly pieceDxfLabel: string
-  readonly pieceDxfPreviewLabel: string
-  readonly pieceDxfSelectedLabel: string
-  readonly pieceEmptyDescription: string
-  readonly pieceEmptyTitle: string
-  readonly pieceGlobalScopeEmptyDescription: string
-  readonly pieceGlobalScopeLabel: string
-  readonly pieceHeightLabel: string
-  readonly pieceMaterialsLabel: string
-  readonly pieceNameLabel: string
-  readonly pieceNamePlaceholder: string
-  readonly pieceNumberLabel: string
-  readonly pieceQuantityLabel: string
-  readonly pieceRemoveMaterialRequirement: string
-  readonly pieceReplaceDxfLabel: string
-  readonly pieceSave: string
-  readonly pieceScopeAllLabel: string
-  readonly pieceWidthLabel: string
-  readonly addMaterial: string
-  readonly addCombinationMaterial: string
-  readonly createCatalogMaterial: string
-  readonly deleteMaterial: string
-  readonly materialCatalogEmptyDescription: string
-  readonly materialCatalogSearchLabel: string
-  readonly materialCatalogSearchPlaceholder: string
-  readonly materialColorLabel: string
-  readonly materialDeleteDescription: string
-  readonly materialDeleteTitle: string
-  readonly materialEmptyDescription: string
-  readonly materialEmptyTitle: string
-  readonly materialIconLabel: string
-  readonly materialIconSearchLabel: string
-  readonly materialIconSearchPlaceholder: string
-  readonly materialNameLabel: string
-  readonly materialNamePlaceholder: string
-  readonly materialSelectLabel: string
-  readonly materialWidthLabel: string
-  readonly materialWidthPlaceholder: string
-  readonly combinationMaterialAssignmentsLabel: string
-  readonly combinationMaterialEmptyDescription: string
-  readonly combinationMaterialMaterialLabel: string
-  readonly combinationMaterialRoleLabel: string
-  readonly combinationMaterialToggleLabel: string
-  readonly removeCombinationMaterial: string
-  readonly newCatalogMaterial: string
-  readonly saveMaterial: string
-  readonly selectExistingMaterial: string
-  readonly product: string
-  readonly productPanelDescription: string
-  readonly pieces: string
-  readonly piecesPanelDescription: string
-  readonly materials: string
-  readonly materialsPanelDescription: string
-  readonly combinations: string
-  readonly combinationsPanelDescription: string
-  readonly uploads: string
-  readonly uploadsPanelDescription: string
-  readonly stickers: string
-  readonly stickersPanelDescription: string
-  readonly saveCombination: string
-  readonly saving: string
-  readonly canvasLabel: string
-  readonly canvasEmptyTitle: string
-  readonly canvasEmptyDescription: string
-  readonly updated: string
-}
+export type ProductWorkspaceView = 'despiece'

@@ -1,4 +1,24 @@
 import type { PieceRendererSourceType } from '@/components/PieceRenderer'
+import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
+
+/**
+ * One hover detail row shown for a placed piece.
+ */
+export type MaterialCutCanvasPieceTooltipRow = {
+  readonly color?: string
+  readonly icon: 'material' | 'piece' | 'quantity'
+  readonly iconKey?: MaterialIconKey
+  readonly label: string
+  readonly value: string
+}
+
+/**
+ * Rich hover copy shown for a placed piece.
+ */
+export type MaterialCutCanvasPieceTooltip = {
+  readonly title: string
+  readonly rows: readonly MaterialCutCanvasPieceTooltipRow[]
+}
 
 /**
  * Source-backed piece to place on a material canvas.
@@ -17,6 +37,9 @@ export type MaterialCutCanvasPiece = {
   readonly strokeWidth?: number
   readonly hoverStrokeWidth?: number
   readonly hoverEnabled?: boolean
+  readonly fillColor?: string
+  readonly tooltip?: string
+  readonly tooltipDetails?: MaterialCutCanvasPieceTooltip
 }
 
 /**

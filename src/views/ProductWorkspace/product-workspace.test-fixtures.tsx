@@ -8,16 +8,21 @@ import type {
   ProductWorkspacePieceActions
 } from './product-workspace.types'
 
-const labels: ProductWorkspaceLabels = {
+export const labels: ProductWorkspaceLabels = {
   addCombination: 'Add combination',
   addCombinationMaterial: 'Add material role',
   addMaterial: 'Add material',
   addPiece: 'Add piece',
-  calculate: 'Calculate',
   cancel: 'Cancel',
   canvasEmptyDescription: 'Canvas placeholder description.',
   canvasEmptyTitle: 'Canvas placeholder',
+  canvasEfficiency: 'Efficiency',
+  canvasFallbackError: 'Could not render piece',
   canvasLabel: 'Product canvas',
+  canvasLoadingPiece: 'Loading piece...',
+  canvasUnplaced: 'Unplaced',
+  canvasUsed: 'Used',
+  canvasWaste: 'Waste',
   closeDialog: 'Close dialog',
   combinationColorLabel: 'Hex color',
   combinationCreateTitle: 'New combination',
@@ -25,6 +30,7 @@ const labels: ProductWorkspaceLabels = {
   combinationDeleteTitle: 'Delete combination',
   combinationEmptyDescription: 'Create a combination.',
   combinationEmptyTitle: 'No combinations yet',
+  combinationLabel: 'Combination',
   combinationMaterialAssignmentsLabel: 'Material roles',
   combinationMaterialEmptyDescription: 'Attach materials first.',
   combinationMaterialMaterialLabel: 'Material',
@@ -41,6 +47,7 @@ const labels: ProductWorkspaceLabels = {
   deleteMaterial: 'Remove',
   deletePiece: 'Delete',
   deleting: 'Deleting',
+  despieceView: 'Despiece',
   editCombination: 'Edit',
   editPiece: 'Edit',
   export: 'Export',
@@ -64,6 +71,7 @@ const labels: ProductWorkspaceLabels = {
   materials: 'Materials',
   materialsPanelDescription: 'Materials panel.',
   newCatalogMaterial: 'New material',
+  noCombination: 'No combinations',
   pieceAddMaterialRequirement: 'Add material',
   pieceCombinationScopeEmptyDescription: 'Assign roles first.',
   pieceDeleteDescription: 'Delete piece confirmation.',
@@ -95,7 +103,6 @@ const labels: ProductWorkspaceLabels = {
   product: 'Product',
   productPanelDescription: 'Product panel.',
   removeCombinationMaterial: 'Remove material role',
-  save: 'Save',
   saveCombination: 'Save combination',
   saveMaterial: 'Save material',
   saving: 'Saving',
@@ -106,7 +113,11 @@ const labels: ProductWorkspaceLabels = {
   updated: 'Updated',
   uploads: 'Uploads',
   uploadsPanelDescription: 'Uploads panel.',
-  workspace: 'Workspace'
+  viewLabel: 'View',
+  workspace: 'Workspace',
+  zoomIn: 'Zoom in',
+  zoomOut: 'Zoom out',
+  zoomReset: 'Reset zoom'
 }
 
 const product = {

@@ -96,10 +96,16 @@ async function readOptionalDxf(formData: FormData): Promise<PieceDxfInput | unde
 }
 
 function readMaterialRequirements(formData: FormData): readonly PieceMaterialRequirementInput[] {
-  return [
+  const requirements = [
     ...readGlobalRequirements(formData),
     ...readCombinationRequirements(formData)
   ]
+
+  if (requirements.length === 0) {
+    throw new Error('At least one material assignment is required')
+  }
+
+  return requirements
 }
 
 function readGlobalRequirements(formData: FormData): PieceMaterialRequirementInput[] {
@@ -117,9 +123,15 @@ function readGlobalRequirements(formData: FormData): PieceMaterialRequirementInp
       throw new Error('Global material quantity is required')
     }
 
+    const amount = Number(quantity)
+
+    if (!Number.isInteger(amount) || amount < 1) {
+      throw new Error('Global material quantity must be a positive integer')
+    }
+
     return [{
       productMaterialId: id.trim(),
-      quantity: Number(quantity)
+      quantity: amount
     }]
   })
 }
@@ -139,9 +151,15 @@ function readCombinationRequirements(formData: FormData): PieceMaterialRequireme
       throw new Error('Combination material quantity is required')
     }
 
+    const amount = Number(quantity)
+
+    if (!Number.isInteger(amount) || amount < 1) {
+      throw new Error('Combination material quantity must be a positive integer')
+    }
+
     return [{
       combinationMaterialId: id.trim(),
-      quantity: Number(quantity)
+      quantity: amount
     }]
   })
 }
