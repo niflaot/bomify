@@ -25,7 +25,9 @@ function isPrismaClientCompatible(client: PrismaClient | undefined): client is P
       'productCombination' in client &&
       'productCombinationMaterial' in client &&
       'material' in client &&
-      'productMaterial' in client
+      'productMaterial' in client &&
+      'piece' in client &&
+      'pieceMaterialRequirement' in client
   )
 }
 

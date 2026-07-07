@@ -107,6 +107,24 @@ export function normalizeMaterialAssignments(
 }
 
 /**
+ * Maps a Prisma combination material assignment row to a service record.
+ *
+ * @param row - Combination material assignment row.
+ * @returns Product combination material assignment record.
+ */
+export function toProductCombinationMaterialAssignmentRecord(
+  row: ProductCombinationMaterialAssignmentRow
+): ProductCombinationRecord['materialAssignments'][number] {
+  return {
+    createdAt: row.createdAt,
+    id: row.id,
+    productMaterial: toProductMaterialRecord(row.productMaterial),
+    roleId: row.roleId,
+    updatedAt: row.updatedAt
+  }
+}
+
+/**
  * Maps a Prisma combination row to a service record.
  *
  * @param row - Product combination row.
@@ -120,13 +138,9 @@ export function toProductCombinationRecord(
     deletedAt: row.deletedAt,
     hexColor: row.hexColor,
     id: row.id,
-    materialAssignments: (row.materialAssignments ?? []).map(assignment => ({
-      createdAt: assignment.createdAt,
-      id: assignment.id,
-      productMaterial: toProductMaterialRecord(assignment.productMaterial),
-      roleId: assignment.roleId,
-      updatedAt: assignment.updatedAt
-    })),
+    materialAssignments: (row.materialAssignments ?? []).map(
+      toProductCombinationMaterialAssignmentRecord
+    ),
     name: row.name,
     productId: row.productId,
     updatedAt: row.updatedAt

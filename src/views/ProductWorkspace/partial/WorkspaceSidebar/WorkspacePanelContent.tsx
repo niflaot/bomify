@@ -17,10 +17,13 @@ import type {
   ProductWorkspaceItem,
   ProductWorkspaceLabels,
   ProductWorkspacePanel,
+  ProductWorkspacePiece,
+  ProductWorkspacePieceActions,
   ProductWorkspaceProductMaterial
 } from '../../product-workspace.types'
 import { CombinationsPanel } from './CombinationsPanel'
 import { MaterialsPanel } from './MaterialsPanel'
+import { PiecesPanel } from './PiecesPanel'
 
 type WorkspacePanelContentProps = {
   readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
@@ -29,6 +32,8 @@ type WorkspacePanelContentProps = {
   readonly labels: ProductWorkspaceLabels
   readonly materialActions: ProductWorkspaceMaterialActions
   readonly panel: ProductWorkspacePanel
+  readonly pieceActions: ProductWorkspacePieceActions
+  readonly pieces: readonly ProductWorkspacePiece[]
   readonly product: ProductWorkspaceItem
   readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
 }
@@ -96,22 +101,6 @@ function ProductPanelBody(): ReactElement {
   )
 }
 
-function PiecesPanelBody(): ReactElement {
-  return (
-    <div className="grid gap-3">
-      {[0, 1, 2].map(index => (
-        <div className="grid grid-cols-[3rem_1fr] gap-3 border p-3" key={index}>
-          <div className="aspect-square border bg-muted/50" />
-          <div className="grid content-center gap-2">
-            <PlaceholderLine className="h-3 w-3/4 bg-muted" />
-            <PlaceholderLine className="h-3 w-1/2 bg-muted" />
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
 function UploadsPanelBody(): ReactElement {
   return (
     <div className="grid gap-4">
@@ -142,6 +131,8 @@ function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
     labels,
     materialActions,
     panel,
+    pieceActions,
+    pieces,
     product,
     productMaterials
   } = props
@@ -174,6 +165,19 @@ function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
     )
   }
 
+  if (panel === 'pieces') {
+    return (
+      <PiecesPanel
+        actions={pieceActions}
+        combinations={combinations}
+        labels={labels}
+        pieces={pieces}
+        productId={product.id}
+        productMaterials={productMaterials}
+      />
+    )
+  }
+
   if (panel === 'uploads') {
     return <UploadsPanelBody />
   }
@@ -182,7 +186,7 @@ function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
     return <StickersPanelBody />
   }
 
-  return <PiecesPanelBody />
+  return <ProductPanelBody />
 }
 
 /**

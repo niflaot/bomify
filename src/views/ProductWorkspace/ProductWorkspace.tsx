@@ -13,6 +13,8 @@ import type {
   ProductWorkspaceLabels,
   ProductWorkspaceMaterial,
   ProductWorkspaceMaterialActions,
+  ProductWorkspacePiece,
+  ProductWorkspacePieceActions,
   ProductWorkspaceProductMaterial
 } from './product-workspace.types'
 
@@ -22,6 +24,8 @@ type ProductWorkspaceProps = {
   readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
   readonly materialActions: ProductWorkspaceMaterialActions
+  readonly pieceActions: ProductWorkspacePieceActions
+  readonly pieces: readonly ProductWorkspacePiece[]
   readonly product: ProductWorkspaceItem
   readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
 }
@@ -39,6 +43,8 @@ export function ProductWorkspace(props: ProductWorkspaceProps): ReactElement {
     combinations,
     labels,
     materialActions,
+    pieceActions,
+    pieces,
     product,
     productMaterials
   } = props
@@ -54,6 +60,8 @@ export function ProductWorkspace(props: ProductWorkspaceProps): ReactElement {
             combinations={combinations}
             labels={labels}
             materialActions={materialActions}
+            pieceActions={pieceActions}
+            pieces={pieces}
             product={product}
             productMaterials={productMaterials}
           />

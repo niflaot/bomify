@@ -1,151 +1,7 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { ProductWorkspace } from './ProductWorkspace'
-import type {
-  ProductWorkspaceCombinationActions,
-  ProductWorkspaceLabels,
-  ProductWorkspaceMaterialActions
-} from './product-workspace.types'
-
-const labels: ProductWorkspaceLabels = {
-  addCombination: 'Add combination',
-  addCombinationMaterial: 'Add material role',
-  addMaterial: 'Add material',
-  calculate: 'Calculate',
-  cancel: 'Cancel',
-  canvasEmptyDescription: 'Canvas placeholder description.',
-  canvasEmptyTitle: 'Canvas placeholder',
-  canvasLabel: 'Product canvas',
-  closeDialog: 'Close dialog',
-  combinationColorLabel: 'Hex color',
-  combinationCreateTitle: 'New combination',
-  combinationDeleteDescription: 'Delete confirmation.',
-  combinationDeleteTitle: 'Delete combination',
-  combinationEmptyDescription: 'Create a combination.',
-  combinationEmptyTitle: 'No combinations yet',
-  combinationNameLabel: 'Name',
-  combinationNamePlaceholder: 'Leather standard',
-  combinationMaterialAssignmentsLabel: 'Material roles',
-  combinationMaterialEmptyDescription: 'Attach materials first.',
-  combinationMaterialMaterialLabel: 'Material',
-  combinationMaterialRoleLabel: 'Role id',
-  combinationMaterialToggleLabel: 'Toggle assigned materials',
-  combinations: 'Combinations',
-  combinationsPanelDescription: 'Combination panel.',
-  createCatalogMaterial: 'Create catalog material',
-  createCombination: 'Create combination',
-  deleteCombination: 'Delete',
-  deleteMaterial: 'Remove',
-  deleting: 'Deleting',
-  editCombination: 'Edit',
-  export: 'Export',
-  home: 'Products home',
-  materials: 'Materials',
-  materialCatalogEmptyDescription: 'No materials match.',
-  materialCatalogSearchLabel: 'Search materials',
-  materialCatalogSearchPlaceholder: 'Search material catalog',
-  materialColorLabel: 'Color',
-  materialDeleteDescription: 'Remove only from this product.',
-  materialDeleteTitle: 'Remove material',
-  materialEmptyDescription: 'Attach a material.',
-  materialEmptyTitle: 'No materials attached',
-  materialIconLabel: 'Icon',
-  materialIconSearchLabel: 'Search icons',
-  materialIconSearchPlaceholder: 'Search Lucide icons',
-  materialNameLabel: 'Name',
-  materialNamePlaceholder: 'Canvas',
-  materialsPanelDescription: 'Materials panel.',
-  materialSelectLabel: 'Material',
-  materialWidthLabel: 'Width in cm',
-  materialWidthPlaceholder: '140',
-  newCatalogMaterial: 'New material',
-  pieces: 'Pieces',
-  piecesPanelDescription: 'Pieces panel.',
-  product: 'Product',
-  productPanelDescription: 'Product panel.',
-  save: 'Save',
-  saveCombination: 'Save combination',
-  saveMaterial: 'Save material',
-  saving: 'Saving',
-  selectExistingMaterial: 'Use catalog',
-  removeCombinationMaterial: 'Remove material role',
-  sidebarTitle: 'Workspace panel',
-  stickers: 'Stickers',
-  stickersPanelDescription: 'Stickers panel.',
-  updated: 'Updated',
-  uploads: 'Uploads',
-  uploadsPanelDescription: 'Uploads panel.',
-  workspace: 'Workspace'
-}
-
-const product = {
-  description: 'A product',
-  id: 'product-one',
-  name: 'Explorer',
-  photoUrl: null,
-  updatedAt: '2026-07-06T12:00:00.000Z'
-}
-
-const combinationActions: ProductWorkspaceCombinationActions = {
-  create: async () => ({ status: 'success' }),
-  delete: async () => ({ status: 'success' }),
-  update: async () => ({ status: 'success' })
-}
-
-const catalogMaterials = [
-  {
-    hexColor: '#222222',
-    iconKey: 'SwatchBook' as const,
-    id: 'material-one',
-    name: 'Canvas',
-    updatedAt: '2026-07-06T12:00:00.000Z',
-    widthCm: 140
-  }
-]
-
-const productMaterials = [
-  {
-    id: 'product-material-one',
-    material: catalogMaterials[0],
-    updatedAt: '2026-07-06T12:00:00.000Z'
-  }
-]
-
-const combinations = [
-  {
-    hexColor: '#111111',
-    id: 'combination-one',
-    materialAssignments: [
-      {
-        id: 'assignment-one',
-        productMaterial: productMaterials[0],
-        roleId: 'lona'
-      }
-    ],
-    name: 'Leather standard',
-    updatedAt: '2026-07-06T12:00:00.000Z'
-  }
-]
-
-const materialActions: ProductWorkspaceMaterialActions = {
-  add: async () => ({ status: 'success' }),
-  delete: async () => ({ status: 'success' })
-}
-
-function renderWorkspace(): ReturnType<typeof render> {
-  return render(
-    <ProductWorkspace
-      catalogMaterials={catalogMaterials}
-      combinationActions={combinationActions}
-      combinations={combinations}
-      labels={labels}
-      materialActions={materialActions}
-      product={product}
-      productMaterials={productMaterials}
-    />
-  )
-}
+import { renderWorkspace } from './product-workspace.test-fixtures'
 
 describe('ProductWorkspace', () => {
   it('renders the product workspace shell', () => {
@@ -237,5 +93,36 @@ describe('ProductWorkspace', () => {
       'aria-pressed',
       'true'
     )
+  })
+
+  it('opens the pieces panel and edits scoped material requirements', async () => {
+    const user = userEvent.setup()
+
+    renderWorkspace()
+
+    await user.click(screen.getByRole('button', { name: 'Pieces' }))
+
+    expect(screen.getByRole('heading', { name: 'Pieces' })).toBeInTheDocument()
+    expect(screen.getByText('1. Front pocket')).toBeInTheDocument()
+    expect(screen.getByText('30.5 cm x 10 cm')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Add piece' }))
+
+    expect(screen.getByRole('heading', { name: 'Add piece' })).toBeInTheDocument()
+    expect(screen.getByLabelText('DXF file')).toBeRequired()
+    expect(screen.getAllByText('Drag a DXF here.').length).toBeGreaterThan(0)
+    expect(screen.getByRole('button', { name: 'Choose DXF' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Add material' }))
+
+    expect(screen.getByRole('combobox', { name: 'Material' })).toHaveValue(
+      'product-material-one'
+    )
+    expect(screen.getByLabelText('Quantity 1')).toHaveValue(1)
+
+    await user.click(screen.getByRole('tab', { name: 'Leather standard' }))
+    await user.click(screen.getByRole('button', { name: 'Add material' }))
+
+    expect(screen.getByRole('combobox', { name: 'Material' })).toHaveValue('assignment-one')
   })
 })

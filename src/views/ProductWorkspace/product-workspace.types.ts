@@ -1,5 +1,6 @@
 import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
 import type { MaterialFormState } from '@/core/types/material.types'
+import type { PieceFormState } from '@/core/types/piece.types'
 import type { ProductCombinationFormState } from '@/core/types/product-combination.types'
 
 /**
@@ -55,6 +56,31 @@ export type ProductWorkspaceCombinationMaterialAssignment = {
 }
 
 /**
+ * Material quantity required by one piece.
+ */
+export type ProductWorkspacePieceMaterialRequirement = {
+  readonly combinationMaterial: ProductWorkspaceCombinationMaterialAssignment | null
+  readonly id: string
+  readonly productMaterial: ProductWorkspaceProductMaterial | null
+  readonly quantity: number
+}
+
+/**
+ * Product piece data rendered in the workspace.
+ */
+export type ProductWorkspacePiece = {
+  readonly dxfFileName: string
+  readonly dxfUrl: string | null
+  readonly heightMm: number
+  readonly id: string
+  readonly materialRequirements: readonly ProductWorkspacePieceMaterialRequirement[]
+  readonly name: string
+  readonly number: number
+  readonly updatedAt: string
+  readonly widthMm: number
+}
+
+/**
  * Server action shape used by combination forms.
  */
 export type ProductCombinationFormAction = (
@@ -85,6 +111,23 @@ export type MaterialFormAction = (
 export type ProductWorkspaceMaterialActions = {
   readonly add: MaterialFormAction
   readonly delete: MaterialFormAction
+}
+
+/**
+ * Server action shape used by piece forms.
+ */
+export type PieceFormAction = (
+  state: PieceFormState,
+  formData: FormData
+) => Promise<PieceFormState>
+
+/**
+ * Server actions used by the pieces panel.
+ */
+export type ProductWorkspacePieceActions = {
+  readonly create: PieceFormAction
+  readonly delete: PieceFormAction
+  readonly update: PieceFormAction
 }
 
 /**
@@ -123,6 +166,36 @@ export type ProductWorkspaceLabels = {
   readonly deleteCombination: string
   readonly deleting: string
   readonly editCombination: string
+  readonly addPiece: string
+  readonly createPiece: string
+  readonly deletePiece: string
+  readonly editPiece: string
+  readonly pieceAddMaterialRequirement: string
+  readonly pieceCombinationScopeEmptyDescription: string
+  readonly pieceDeleteDescription: string
+  readonly pieceDeleteTitle: string
+  readonly pieceDxfChooseAction: string
+  readonly pieceDxfCurrentLabel: string
+  readonly pieceDxfDropHint: string
+  readonly pieceDxfInvalidFile: string
+  readonly pieceDxfLabel: string
+  readonly pieceDxfPreviewLabel: string
+  readonly pieceDxfSelectedLabel: string
+  readonly pieceEmptyDescription: string
+  readonly pieceEmptyTitle: string
+  readonly pieceGlobalScopeEmptyDescription: string
+  readonly pieceGlobalScopeLabel: string
+  readonly pieceHeightLabel: string
+  readonly pieceMaterialsLabel: string
+  readonly pieceNameLabel: string
+  readonly pieceNamePlaceholder: string
+  readonly pieceNumberLabel: string
+  readonly pieceQuantityLabel: string
+  readonly pieceRemoveMaterialRequirement: string
+  readonly pieceReplaceDxfLabel: string
+  readonly pieceSave: string
+  readonly pieceScopeAllLabel: string
+  readonly pieceWidthLabel: string
   readonly addMaterial: string
   readonly addCombinationMaterial: string
   readonly createCatalogMaterial: string

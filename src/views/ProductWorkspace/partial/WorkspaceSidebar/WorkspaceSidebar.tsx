@@ -21,7 +21,9 @@ import type {
   ProductWorkspaceCombinationActions,
   ProductWorkspaceItem,
   ProductWorkspaceLabels,
-  ProductWorkspacePanel
+  ProductWorkspacePanel,
+  ProductWorkspacePiece,
+  ProductWorkspacePieceActions
 } from '../../product-workspace.types'
 import { WorkspacePanelContent } from './WorkspacePanelContent'
 
@@ -31,6 +33,8 @@ type WorkspaceSidebarProps = {
   readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
   readonly materialActions: ProductWorkspaceMaterialActions
+  readonly pieceActions: ProductWorkspacePieceActions
+  readonly pieces: readonly ProductWorkspacePiece[]
   readonly product: ProductWorkspaceItem
   readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
 }
@@ -78,6 +82,8 @@ export function WorkspaceSidebar(props: WorkspaceSidebarProps): ReactElement {
     combinations,
     labels,
     materialActions,
+    pieceActions,
+    pieces,
     product,
     productMaterials
   } = props
@@ -139,6 +145,8 @@ export function WorkspaceSidebar(props: WorkspaceSidebarProps): ReactElement {
               labels={labels}
               materialActions={materialActions}
               panel={activePanel}
+              pieceActions={pieceActions}
+              pieces={pieces}
               product={product}
               productMaterials={productMaterials}
             />

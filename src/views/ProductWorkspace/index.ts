@@ -8,5 +8,7 @@ export type {
   ProductWorkspaceMaterial,
   ProductWorkspaceMaterialActions,
   ProductWorkspacePanel,
+  ProductWorkspacePiece,
+  ProductWorkspacePieceActions,
   ProductWorkspaceProductMaterial
 } from './product-workspace.types'

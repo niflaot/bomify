@@ -19,6 +19,7 @@ model Product {
   deletedAt      DateTime? @map("deleted_at")
   combinations   ProductCombination[]
   materials      ProductMaterial[]
+  pieces          Piece[]
 
   @@index([deletedAt])
   @@index([updatedAt])
@@ -64,6 +65,7 @@ model ProductMaterial {
   createdAt              DateTime                     @default(now()) @map("created_at")
   updatedAt              DateTime                     @updatedAt @map("updated_at")
   combinationAssignments ProductCombinationMaterial[]
+  pieceRequirements      PieceMaterialRequirement[]
   material               Material                     @relation(fields: [materialId], references: [id], onDelete: Cascade)
   product                Product                      @relation(fields: [productId], references: [id], onDelete: Cascade)
 
@@ -82,9 +84,53 @@ model ProductCombinationMaterial {
   updatedAt         DateTime           @updatedAt @map("updated_at")
   combination       ProductCombination @relation(fields: [combinationId], references: [id], onDelete: Cascade)
   productMaterial   ProductMaterial    @relation(fields: [productMaterialId], references: [id], onDelete: Cascade)
+  pieceRequirements PieceMaterialRequirement[]
 
   @@index([combinationId])
   @@index([productMaterialId])
   @@unique([combinationId, roleId])
   @@map("product_combination_materials")
+}
+
+model Piece {
+  id           String                     @id @default(cuid())
+  productId    String                     @map("product_id")
+  number       Int
+  name         String                     @db.VarChar(140)
+  widthMm      Float                      @map("width_mm")
+  heightMm     Float                      @map("height_mm")
+  dxfBucket    String                     @map("dxf_bucket") @db.VarChar(255)
+  dxfObjectKey String                     @map("dxf_object_key") @db.VarChar(1024)
+  dxfUrl       String?                    @map("dxf_url") @db.VarChar(2048)
+  dxfFileName  String                     @map("dxf_file_name") @db.VarChar(255)
+  createdAt    DateTime                   @default(now()) @map("created_at")
+  updatedAt    DateTime                   @updatedAt @map("updated_at")
+  deletedAt    DateTime?                  @map("deleted_at")
+  product      Product                    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  requirements PieceMaterialRequirement[]
+
+  @@index([productId, deletedAt])
+  @@index([updatedAt])
+  @@unique([productId, number])
+  @@map("pieces")
+}
+
+model PieceMaterialRequirement {
+  id                    String                      @id @default(cuid())
+  pieceId               String                      @map("piece_id")
+  productMaterialId     String?                     @map("product_material_id")
+  combinationMaterialId String?                     @map("combination_material_id")
+  quantity              Int
+  createdAt             DateTime                    @default(now()) @map("created_at")
+  updatedAt             DateTime                    @updatedAt @map("updated_at")
+  combinationMaterial   ProductCombinationMaterial? @relation(fields: [combinationMaterialId], references: [id], onDelete: Cascade)
+  piece                 Piece                       @relation(fields: [pieceId], references: [id], onDelete: Cascade)
+  productMaterial       ProductMaterial?            @relation(fields: [productMaterialId], references: [id], onDelete: Cascade)
+
+  @@index([combinationMaterialId])
+  @@index([pieceId])
+  @@index([productMaterialId])
+  @@unique([pieceId, combinationMaterialId])
+  @@unique([pieceId, productMaterialId])
+  @@map("piece_material_requirements")
 }
