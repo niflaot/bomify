@@ -1,3 +1,4 @@
+import { getSheetMarginMm } from '@/core/config/production-cut.config'
 import { packMaterialPieces } from '@/core/utils/material-packing/material-packing.utils'
 
 import type {
@@ -44,7 +45,8 @@ function buildSheets(materialGroup: ProductionMaterialPieces): readonly Producti
       materialGroup.materialWidthCm * 10,
       productionSheetHeightCm * 10,
       remaining,
-      productionCutGapMm
+      productionCutGapMm,
+      getSheetMarginMm()
     )
 
     if (result.placed.length === 0) {

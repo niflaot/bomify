@@ -1,8 +1,8 @@
 import { getRequestConfig } from 'next-intl/server'
 
-import en from '../../messages/en.json'
+import es from '../../messages/es.json'
 
 export default getRequestConfig(() => ({
-  locale: 'en',
-  messages: en
+  locale: 'es',
+  messages: es
 }))

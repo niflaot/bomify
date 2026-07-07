@@ -29,21 +29,23 @@ type PlacementCandidate = {
  * @param materialHeightMm - Material height in millimeters.
  * @param pieces - Piece definitions to pack.
  * @param gapMm - Gap between pieces in millimeters.
+ * @param marginMm - Empty border kept around the sheet edges, counted as waste.
  * @returns Placement result and usage statistics.
  */
 export function packMaterialPieces(
   materialWidthMm: number,
   materialHeightMm: number,
   pieces: readonly PackablePiece[],
-  gapMm = 0
+  gapMm = 0,
+  marginMm = 0
 ): MaterialPackingResult {
   const expandedPieces = expandPieces(pieces)
   const orderedPieces = sortPieces(expandedPieces)
   const freeRects: PackingRect[] = [{
-    xMm: 0,
-    yMm: 0,
-    widthMm: materialWidthMm,
-    heightMm: materialHeightMm
+    xMm: marginMm,
+    yMm: marginMm,
+    widthMm: Math.max(materialWidthMm - marginMm * 2, 0),
+    heightMm: Math.max(materialHeightMm - marginMm * 2, 0)
   }]
   const placed: PackedPiece[] = []
   const unplaced: UnplacedPiece[] = []

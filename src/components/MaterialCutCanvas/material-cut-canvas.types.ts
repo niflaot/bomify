@@ -65,6 +65,7 @@ export type MaterialCutCanvasProps = {
   readonly materialHeightCm: number
   readonly pieces: readonly MaterialCutCanvasPiece[]
   readonly gapMm?: number
+  readonly marginMm?: number
   readonly pixelsPerMm?: number
   readonly showCanvas?: boolean
   readonly showGrid?: boolean

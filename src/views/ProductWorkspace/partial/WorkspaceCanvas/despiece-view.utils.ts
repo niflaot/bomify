@@ -2,6 +2,7 @@ import type {
   MaterialCutCanvasPiece,
   MaterialCutCanvasPieceTooltip
 } from '@/components/MaterialCutCanvas'
+import { getSheetMarginMm } from '@/core/config/production-cut.config'
 import type { MaterialPackingStats, PackedPiece } from '@/core/utils/material-packing/material-packing.types'
 import { packMaterialPieces } from '@/core/utils/material-packing/material-packing.utils'
 
@@ -203,7 +204,8 @@ function splitIntoPliegos(
         quantity: 1,
         widthMm: piece.widthMm
       })),
-      despieceGapMm
+      despieceGapMm,
+      getSheetMarginMm()
     )
     const placedIds = new Set(result.placed.map(placement => placement.id))
 

@@ -49,6 +49,16 @@ function isInteractiveTarget(target: EventTarget | null): boolean {
 }
 
 /**
+ * Detects pointer events that bubbled from a React portal (e.g. an open
+ * Select or Dialog). Portaled content lives outside the viewport in the real
+ * DOM, but React still bubbles its events through the component tree, so
+ * `currentTarget` receives them even though it never contains `target`.
+ */
+function isFromPortal(currentTarget: EventTarget & Element, target: EventTarget | null): boolean {
+  return target instanceof Node && !currentTarget.contains(target)
+}
+
+/**
  * Manages bounded zoom controls for the despiece workspace.
  *
  * @param defaultZoom - Initial zoom in pixels per millimeter.
@@ -99,7 +109,7 @@ export function useDespieceZoom(defaultZoom: number): DespieceZoomState {
   }, [])
 
   const handleWheel = useCallback((event: WheelEvent<HTMLElement>): void => {
-    if (!event.ctrlKey && !event.metaKey) {
+    if ((!event.ctrlKey && !event.metaKey) || isFromPortal(event.currentTarget, event.target)) {
       return
     }
 
@@ -108,7 +118,7 @@ export function useDespieceZoom(defaultZoom: number): DespieceZoomState {
   }, [])
 
   const handlePointerDown = useCallback((event: PointerEvent<HTMLElement>): void => {
-    if (isInteractiveTarget(event.target)) {
+    if (isInteractiveTarget(event.target) || isFromPortal(event.currentTarget, event.target)) {
       return
     }
 
@@ -129,7 +139,7 @@ export function useDespieceZoom(defaultZoom: number): DespieceZoomState {
   }, [zoom])
 
   const handlePointerMove = useCallback((event: PointerEvent<HTMLElement>): void => {
-    if (isInteractiveTarget(event.target)) {
+    if (isInteractiveTarget(event.target) || isFromPortal(event.currentTarget, event.target)) {
       return
     }
 

@@ -45,6 +45,7 @@ export function MaterialCutCanvas(props: MaterialCutCanvasProps): ReactElement {
     gridColor,
     labels,
     majorGridColor,
+    marginMm = 0,
     materialHeightCm,
     materialWidthCm,
     pieceHoverEnabled = true,
@@ -83,9 +84,10 @@ export function MaterialCutCanvas(props: MaterialCutCanvasProps): ReactElement {
         quantity: piece.quantity,
         allowRotation: piece.allowRotation
       })),
-      gapMm
+      gapMm,
+      marginMm
     ),
-    [gapMm, materialHeightMm, materialWidthMm, pieces]
+    [gapMm, marginMm, materialHeightMm, materialWidthMm, pieces]
   )
 
   return (
