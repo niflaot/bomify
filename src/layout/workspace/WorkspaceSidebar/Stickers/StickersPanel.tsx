@@ -78,25 +78,26 @@ export function StickersPanel(props: StickersPanelProps): ReactElement {
     [activeCombination, pieces]
   )
 
-  function rebuildPdf(nextGapMm: number): void {
-    setBlob(buildLabelsPdf({ gapMm: nextGapMm, productName, stickers }))
+  async function rebuildPdf(nextGapMm: number): Promise<void> {
+    setBlob(null)
+    setBlob(await buildLabelsPdf({ gapMm: nextGapMm, productName, stickers }))
   }
 
-  function handleOpenChange(nextOpen: boolean): void {
+  async function handleOpenChange(nextOpen: boolean): Promise<void> {
     setOpen(nextOpen)
 
     if (nextOpen) {
-      rebuildPdf(gapMm)
+      await rebuildPdf(gapMm)
     }
   }
 
-  function handleGapChange(value: number): void {
+  async function handleGapChange(value: number): Promise<void> {
     setGapMm(value)
-    rebuildPdf(value)
+    await rebuildPdf(value)
   }
 
   return (
-    <Dialog onOpenChange={handleOpenChange} open={open}>
+    <Dialog onOpenChange={value => { void handleOpenChange(value) }} open={open}>
       <DialogTrigger asChild>
         <Button className="w-full" disabled={stickers.length === 0} type="button">
           <Download aria-hidden="true" data-icon="inline-start" />
@@ -115,7 +116,7 @@ export function StickersPanel(props: StickersPanelProps): ReactElement {
             max={20}
             min={0}
             onChange={event => {
-              handleGapChange(Number(event.target.value))
+              void handleGapChange(Number(event.target.value))
             }}
             step={0.5}
             type="number"

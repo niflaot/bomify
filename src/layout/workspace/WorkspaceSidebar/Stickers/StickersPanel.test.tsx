@@ -59,7 +59,7 @@ const pieces: ProductWorkspacePiece[] = [{
 describe('StickersPanel', () => {
   beforeEach(() => {
     downloadBlobMock.mockReset()
-    buildLabelsPdfMock.mockReset().mockReturnValue(new Blob(['pdf'], { type: 'application/pdf' }))
+    buildLabelsPdfMock.mockReset().mockResolvedValue(new Blob(['pdf'], { type: 'application/pdf' }))
     renderPdfPagesToImagesMock.mockReset().mockResolvedValue([])
   })
 

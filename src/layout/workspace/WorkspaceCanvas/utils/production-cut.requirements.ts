@@ -18,6 +18,10 @@ type MaterialDraft = {
   roles: string[]
 }
 
+function roundToTwoDecimals(value: number): number {
+  return Math.round(value * 100) / 100
+}
+
 function formatRequirementLabel(requirement: ProductWorkspacePieceMaterialRequirement): string {
   if (requirement.combinationMaterial) {
     return `${requirement.combinationMaterial.roleId} - ${requirement.combinationMaterial.productMaterial.material.name}`
@@ -73,7 +77,7 @@ function buildTooltip(
     }, {
       icon: 'piece',
       label: labels.pieces,
-      value: `${piece.widthMm / 10} x ${piece.heightMm / 10} cm`
+      value: `${roundToTwoDecimals(piece.widthMm / 10)} x ${roundToTwoDecimals(piece.heightMm / 10)} cm`
     }]
   }
 }

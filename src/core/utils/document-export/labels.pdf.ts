@@ -1,5 +1,8 @@
 import { jsPDF } from 'jspdf'
 
+import { hexToRgb } from './hex-color.utils'
+import { rasterizeLogo } from './logo.utils'
+import type { RasterizedLogo } from './logo.utils'
 import { computeStickerLayout, paginateStickers } from './sticker-layout.utils'
 
 /**
@@ -34,24 +37,32 @@ export const labelsPageMarginMm = 8
 export const stickerWidthMm = 100
 export const stickerHeightMm = 60
 
-function hexToRgb(hex: string): readonly [number, number, number] {
-  const normalized = hex.replace('#', '')
-  const value = Number.parseInt(normalized, 16)
-
-  return [(value >> 16) & 255, (value >> 8) & 255, value & 255]
-}
-
 function drawSticker(
   doc: jsPDF,
   sticker: LabelSticker,
   x: number,
   y: number,
-  productName: string
+  productName: string,
+  logo: RasterizedLogo | null
 ): void {
   const paddingMm = 5
 
   doc.setDrawColor(0, 0, 0)
   doc.rect(x, y, stickerWidthMm, stickerHeightMm)
+
+  if (logo) {
+    const logoHeightMm = 9
+    const logoWidthMm = logoHeightMm * (logo.width / logo.height)
+
+    doc.addImage(
+      logo.dataUrl,
+      'PNG',
+      x + stickerWidthMm - paddingMm - logoWidthMm,
+      y + paddingMm - 1,
+      logoWidthMm,
+      logoHeightMm
+    )
+  }
 
   let cursorY = y + paddingMm + 5
 
@@ -59,10 +70,10 @@ function drawSticker(
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(16)
   doc.text(sticker.pieceLabel, x + paddingMm, cursorY)
-  cursorY += 7
+  cursorY += 8
 
-  doc.setFont('helvetica', 'normal')
-  doc.setFontSize(11)
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(14)
   doc.text(productName, x + paddingMm, cursorY)
   cursorY += 5
   doc.line(x + paddingMm, cursorY, x + stickerWidthMm - paddingMm, cursorY)
@@ -89,7 +100,7 @@ function drawSticker(
  * @param input - Labels content and layout options.
  * @returns The generated PDF as a Blob.
  */
-export function buildLabelsPdf(input: LabelsPdfInput): Blob {
+export async function buildLabelsPdf(input: LabelsPdfInput): Promise<Blob> {
   const { gapMm, productName, stickers } = input
   const layout = computeStickerLayout({
     gapMm,
@@ -101,6 +112,7 @@ export function buildLabelsPdf(input: LabelsPdfInput): Blob {
   })
   const pages = paginateStickers(stickers, layout.capacity)
   const doc = new jsPDF({ format: 'letter', orientation: 'portrait', unit: 'mm' })
+  const logo = await rasterizeLogo()
 
   pages.forEach((page, pageIndex) => {
     if (pageIndex > 0) {
@@ -113,7 +125,7 @@ export function buildLabelsPdf(input: LabelsPdfInput): Blob {
       const x = labelsPageMarginMm + column * (stickerWidthMm + gapMm)
       const y = labelsPageMarginMm + row * (stickerHeightMm + gapMm)
 
-      drawSticker(doc, sticker, x, y, productName)
+      drawSticker(doc, sticker, x, y, productName, logo)
     })
   })
 

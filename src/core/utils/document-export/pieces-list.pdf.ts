@@ -4,6 +4,7 @@ import { drawDxfEntity } from '@/core/utils/document-export/draw-dxf-entity.util
 import type { DxfGeometry } from '@/core/utils/dxf/dxf.types'
 import { transformPieceEntities } from '@/core/utils/sheet-export/sheet-export.transform'
 
+import { hexToRgb } from './hex-color.utils'
 import { groupPieceMaterialRows } from './pieces-list.grouping'
 import type { PieceMaterialRow, PiecesListGroupBy } from './pieces-list.types'
 
@@ -32,6 +33,9 @@ const marginMm = 18
 const thumbnailSizeMm = 12
 const rowHeightMm = 9
 const rowHeightWithThumbnailMm = thumbnailSizeMm + 3
+const colorDotRadiusMm = 1.5
+const colorDotDiameterMm = colorDotRadiusMm * 2
+const colorDotGapMm = 2
 
 function drawThumbnail(doc: jsPDF, row: PieceMaterialRow, x: number, y: number, geometryByUrl: ReadonlyMap<string, DxfGeometry>): void {
   doc.rect(x, y, thumbnailSizeMm, thumbnailSizeMm)
@@ -95,12 +99,18 @@ export function buildPiecesListPdf(input: PiecesListPdfInput): Blob {
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(10)
 
-      const textX = showThumbnails ? marginMm + thumbnailSizeMm + 4 : marginMm
+      const baseX = showThumbnails ? marginMm + thumbnailSizeMm + 4 : marginMm
       const textY = showThumbnails ? cursorY + thumbnailSizeMm / 2 + 1 : cursorY
+      const textX = baseX + colorDotDiameterMm + colorDotGapMm
 
       if (showThumbnails) {
         drawThumbnail(doc, item, marginMm, cursorY, geometryByUrl)
       }
+
+      const [red, green, blue] = hexToRgb(item.materialColor)
+
+      doc.setFillColor(red, green, blue)
+      doc.circle(baseX + colorDotRadiusMm, textY - 1.3, colorDotRadiusMm, 'F')
 
       const itemLabel = groupBy === 'material' ? item.pieceLabel : item.materialLabel
 
