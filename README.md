@@ -116,6 +116,8 @@ docker pull ghcr.io/niflaot/bomify:latest
 docker run -p 3000:3000 --env-file .env ghcr.io/niflaot/bomify:latest
 ```
 
+On every container start, the entrypoint runs `prisma migrate deploy` before starting the server, so pending migrations are applied automatically — no manual step required after pulling a new image. `prisma migrate deploy` only applies pending migrations and is safe to run on every boot.
+
 To build locally:
 
 ```bash
