@@ -2,6 +2,7 @@ import { render } from '@testing-library/react'
 
 import { ProductWorkspace } from '../ProductWorkspace'
 import type {
+  ProductWorkspaceAdditionActions,
   ProductWorkspaceCombinationActions,
   ProductWorkspaceLabels,
   ProductWorkspaceMaterialActions,
@@ -9,8 +10,27 @@ import type {
 } from '../types/product-workspace.types'
 
 export const labels: ProductWorkspaceLabels = {
+  addAddition: 'Add addition',
   addCombination: 'Add combination',
   addCombinationMaterial: 'Add material role',
+  additionCategoryHerrajes: 'Hardware',
+  additionCategoryLabel: 'Category',
+  additionCategoryManoDeObra: 'Labor',
+  additionCategoryVarios: 'Miscellaneous',
+  additionDeleteDescription: 'This removes the addition from this product.',
+  additionDeleteTitle: 'Remove addition',
+  additionEmptyDescription: 'Add hardware, labor, or other costs for this product.',
+  additionEmptyTitle: 'No additions yet',
+  additionNameLabel: 'Name',
+  additionNamePlaceholder: 'Zipper',
+  additionQuantityColumnLabel: 'Quantity',
+  additionQuantityLabel: 'Quantity',
+  additionRemovedToast: 'Addition removed',
+  additions: 'Additions',
+  additionSavedToast: 'Addition saved',
+  additionsPanelDescription: 'Additions panel.',
+  additionsSectionTitle: 'Additions',
+  additionUnitPriceLabel: 'Unit price (COP)',
   addMaterial: 'Add material',
   addPiece: 'Add piece',
   cancel: 'Cancel',
@@ -39,6 +59,8 @@ export const labels: ProductWorkspaceLabels = {
   combinationNameLabel: 'Name',
   combinationNamePlaceholder: 'Leather standard',
   combinationRemovedToast: 'Combination removed',
+  combinationSalePriceLabel: 'Sale price (COP)',
+  combinationSalePricePlaceholder: '150000',
   combinationSavedToast: 'Combination saved',
   combinations: 'Combinations',
   combinationsPanelDescription: 'Combination panel.',
@@ -58,6 +80,7 @@ export const labels: ProductWorkspaceLabels = {
   createCatalogMaterial: 'Create catalog material',
   createCombination: 'Create combination',
   createPiece: 'Create piece',
+  deleteAddition: 'Delete addition',
   deleteCombination: 'Delete',
   deleteMaterial: 'Remove',
   deletePiece: 'Delete',
@@ -76,6 +99,7 @@ export const labels: ProductWorkspaceLabels = {
   downloadScopePerPliego: 'One file per pliego',
   downloadScopePerSheet: 'One file per sheet',
   downloading: 'Downloading',
+  editAddition: 'Edit',
   editCombination: 'Edit',
   editMaterial: 'Edit',
   editPiece: 'Edit',
@@ -162,6 +186,7 @@ export const labels: ProductWorkspaceLabels = {
   productionNoMaterialDescription: 'No production materials.',
   productionSheetLabel: 'Sheet',
   removeCombinationMaterial: 'Remove material role',
+  saveAddition: 'Save addition',
   saveCombination: 'Save combination',
   saveMaterial: 'Save material',
   saving: 'Saving',
@@ -173,6 +198,12 @@ export const labels: ProductWorkspaceLabels = {
   stickersDownload: 'Download labels',
   stickersGapLabel: 'Gap between labels',
   stickersPanelDescription: 'Stickers panel.',
+  techSheetCostLabel: 'Cost',
+  techSheetDialogDescription: 'Technical sheet dialog.',
+  techSheetDialogTitle: 'Technical sheet',
+  techSheetDownload: 'Technical sheet',
+  techSheetProfitLabel: 'Profit',
+  techSheetSaleLabel: 'Sale price',
   updated: 'Updated',
   uploads: 'Uploads',
   uploadsPanelDescription: 'Uploads panel.',
@@ -197,6 +228,23 @@ const combinationActions: ProductWorkspaceCombinationActions = {
   delete: async () => ({ status: 'success' }),
   update: async () => ({ status: 'success' })
 }
+
+const additionActions: ProductWorkspaceAdditionActions = {
+  create: async () => ({ status: 'success' }),
+  delete: async () => ({ status: 'success' }),
+  update: async () => ({ status: 'success' })
+}
+
+const additions = [
+  {
+    category: 'herrajes' as const,
+    id: 'addition-one',
+    name: 'Zipper',
+    quantity: 1.5,
+    unitPriceCop: 1200,
+    updatedAt: '2026-07-06T12:00:00.000Z'
+  }
+]
 
 const catalogMaterials = [
   {
@@ -231,6 +279,7 @@ const combinations = [
       }
     ],
     name: 'Leather standard',
+    salePriceCop: 150000,
     updatedAt: '2026-07-06T12:00:00.000Z'
   }
 ]
@@ -282,6 +331,8 @@ const pieces = [
 export function renderWorkspace(): ReturnType<typeof render> {
   return render(
     <ProductWorkspace
+      additionActions={additionActions}
+      additions={additions}
       catalogMaterials={catalogMaterials}
       combinationActions={combinationActions}
       combinations={combinations}

@@ -33,6 +33,7 @@ const combination: ProductWorkspaceCombination = {
   id: 'combination-one',
   materialAssignments: [],
   name: 'Blue',
+  salePriceCop: null,
   updatedAt: '2026-07-06T12:00:00.000Z'
 }
 

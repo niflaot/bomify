@@ -8,18 +8,19 @@ datasource db {
 }
 
 model Product {
-  id             String    @id @default(cuid())
-  name           String    @db.VarChar(160)
-  description    String?   @db.Text
-  photoBucket    String?   @map("photo_bucket") @db.VarChar(255)
-  photoObjectKey String?   @map("photo_object_key") @db.VarChar(1024)
-  photoUrl       String?   @map("photo_url") @db.VarChar(2048)
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @updatedAt @map("updated_at")
-  deletedAt      DateTime? @map("deleted_at")
+  id             String               @id @default(cuid())
+  name           String               @db.VarChar(160)
+  description    String?              @db.Text
+  photoBucket    String?              @map("photo_bucket") @db.VarChar(255)
+  photoObjectKey String?              @map("photo_object_key") @db.VarChar(1024)
+  photoUrl       String?              @map("photo_url") @db.VarChar(2048)
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @updatedAt @map("updated_at")
+  deletedAt      DateTime?            @map("deleted_at")
   combinations   ProductCombination[]
   materials      ProductMaterial[]
-  pieces          Piece[]
+  pieces         Piece[]
+  additions      ProductAddition[]
 
   @@index([deletedAt])
   @@index([updatedAt])
@@ -27,19 +28,36 @@ model Product {
 }
 
 model ProductCombination {
-  id        String    @id @default(cuid())
-  productId String    @map("product_id")
-  name      String    @db.VarChar(120)
-  hexColor  String    @map("hex_color") @db.VarChar(7)
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  id                  String                       @id @default(cuid())
+  productId           String                       @map("product_id")
+  name                String                       @db.VarChar(120)
+  hexColor            String                       @map("hex_color") @db.VarChar(7)
+  salePriceCop        Int?                         @map("sale_price_cop")
+  createdAt           DateTime                     @default(now()) @map("created_at")
+  updatedAt           DateTime                     @updatedAt @map("updated_at")
+  deletedAt           DateTime?                    @map("deleted_at")
   product             Product                      @relation(fields: [productId], references: [id], onDelete: Cascade)
   materialAssignments ProductCombinationMaterial[]
 
   @@index([productId, deletedAt])
   @@index([updatedAt])
   @@map("product_combinations")
+}
+
+model ProductAddition {
+  id           String    @id @default(cuid())
+  productId    String    @map("product_id")
+  category     String    @db.VarChar(20)
+  name         String    @db.VarChar(140)
+  quantity     Float
+  unitPriceCop Int       @map("unit_price_cop")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+  product      Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, deletedAt])
+  @@map("product_additions")
 }
 
 model Material {
@@ -71,26 +89,26 @@ model ProductMaterial {
   material               Material                     @relation(fields: [materialId], references: [id], onDelete: Cascade)
   product                Product                      @relation(fields: [productId], references: [id], onDelete: Cascade)
 
+  @@unique([productId, materialId])
   @@index([productId])
   @@index([materialId])
-  @@unique([productId, materialId])
   @@map("product_materials")
 }
 
 model ProductCombinationMaterial {
-  id                String             @id @default(cuid())
-  combinationId     String             @map("combination_id")
-  productMaterialId String             @map("product_material_id")
-  roleId            String             @map("role_id") @db.VarChar(80)
-  createdAt         DateTime           @default(now()) @map("created_at")
-  updatedAt         DateTime           @updatedAt @map("updated_at")
-  combination       ProductCombination @relation(fields: [combinationId], references: [id], onDelete: Cascade)
-  productMaterial   ProductMaterial    @relation(fields: [productMaterialId], references: [id], onDelete: Cascade)
+  id                String                     @id @default(cuid())
+  combinationId     String                     @map("combination_id")
+  productMaterialId String                     @map("product_material_id")
+  roleId            String                     @map("role_id") @db.VarChar(80)
+  createdAt         DateTime                   @default(now()) @map("created_at")
+  updatedAt         DateTime                   @updatedAt @map("updated_at")
+  combination       ProductCombination         @relation(fields: [combinationId], references: [id], onDelete: Cascade)
+  productMaterial   ProductMaterial            @relation(fields: [productMaterialId], references: [id], onDelete: Cascade)
   pieceRequirements PieceMaterialRequirement[]
 
+  @@unique([combinationId, roleId])
   @@index([combinationId])
   @@index([productMaterialId])
-  @@unique([combinationId, roleId])
   @@map("product_combination_materials")
 }
 
@@ -111,9 +129,9 @@ model Piece {
   product      Product                    @relation(fields: [productId], references: [id], onDelete: Cascade)
   requirements PieceMaterialRequirement[]
 
+  @@unique([productId, number])
   @@index([productId, deletedAt])
   @@index([updatedAt])
-  @@unique([productId, number])
   @@map("pieces")
 }
 
@@ -129,10 +147,10 @@ model PieceMaterialRequirement {
   piece                 Piece                       @relation(fields: [pieceId], references: [id], onDelete: Cascade)
   productMaterial       ProductMaterial?            @relation(fields: [productMaterialId], references: [id], onDelete: Cascade)
 
+  @@unique([pieceId, combinationMaterialId])
+  @@unique([pieceId, productMaterialId])
   @@index([combinationMaterialId])
   @@index([pieceId])
   @@index([productMaterialId])
-  @@unique([pieceId, combinationMaterialId])
-  @@unique([pieceId, productMaterialId])
   @@map("piece_material_requirements")
 }

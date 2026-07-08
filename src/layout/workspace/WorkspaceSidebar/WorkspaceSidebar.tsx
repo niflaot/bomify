@@ -2,6 +2,7 @@ import {
   Boxes,
   ChartNoAxesColumn,
   Layers3,
+  PackagePlus,
   Printer,
   SwatchBook
 } from 'lucide-react'
@@ -13,6 +14,8 @@ import { cn } from '@/core/utils/class-name/class-name.utils'
 
 import { useProductWorkspace } from '@/views/ProductWorkspace/context/product-workspace.context'
 import type {
+  ProductWorkspaceAddition,
+  ProductWorkspaceAdditionActions,
   ProductWorkspaceMaterial,
   ProductWorkspaceMaterialActions,
   ProductWorkspaceProductMaterial,
@@ -27,6 +30,8 @@ import type {
 import { WorkspacePanelContent } from './WorkspacePanelContent'
 
 type WorkspaceSidebarProps = {
+  readonly additionActions: ProductWorkspaceAdditionActions
+  readonly additions: readonly ProductWorkspaceAddition[]
   readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
   readonly combinationActions: ProductWorkspaceCombinationActions
   readonly combinations: readonly ProductWorkspaceCombination[]
@@ -47,6 +52,7 @@ const railItems: readonly WorkspaceRailItem[] = [
   { key: 'combinations', icon: Layers3 },
   { key: 'pieces', icon: Boxes },
   { key: 'materials', icon: SwatchBook },
+  { key: 'additions', icon: PackagePlus },
   { key: 'consumption', icon: ChartNoAxesColumn },
   { key: 'stickers', icon: Printer }
 ]
@@ -56,6 +62,7 @@ function itemLabel(
   key: ProductWorkspacePanel
 ): string {
   const labelMap: Record<ProductWorkspacePanel, string> = {
+    additions: labels.additions,
     combinations: labels.combinations,
     consumption: labels.consumption,
     materials: labels.materials,
@@ -76,6 +83,8 @@ function itemLabel(
  */
 export function WorkspaceSidebar(props: WorkspaceSidebarProps): ReactElement {
   const {
+    additionActions,
+    additions,
     catalogMaterials,
     combinationActions,
     combinations,
@@ -138,6 +147,8 @@ export function WorkspaceSidebar(props: WorkspaceSidebarProps): ReactElement {
           </header>
           <div className="min-h-0 overflow-y-auto">
             <WorkspacePanelContent
+              additionActions={additionActions}
+              additions={additions}
               catalogMaterials={catalogMaterials}
               combinationActions={combinationActions}
               combinations={combinations}

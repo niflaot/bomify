@@ -17,6 +17,7 @@ export type CreateProductCombinationInput = {
   readonly materialAssignments?: readonly ProductCombinationMaterialAssignmentInput[]
   readonly name: string
   readonly productId: string
+  readonly salePriceCop?: number | null
 }
 
 /**
@@ -26,6 +27,7 @@ export type UpdateProductCombinationInput = {
   readonly hexColor?: string
   readonly materialAssignments?: readonly ProductCombinationMaterialAssignmentInput[]
   readonly name?: string
+  readonly salePriceCop?: number | null
 }
 
 /**
@@ -44,6 +46,7 @@ export type ProductCombinationRecord = {
   readonly productId: string
   readonly name: string
   readonly hexColor: string
+  readonly salePriceCop: number | null
   readonly materialAssignments: readonly ProductCombinationMaterialAssignmentRecord[]
   readonly createdAt: Date
   readonly updatedAt: Date

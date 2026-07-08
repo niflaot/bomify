@@ -10,6 +10,7 @@ import { formatCop } from '@/core/utils/currency/currency.utils'
 
 import { useProductWorkspace } from '@/views/ProductWorkspace/context/product-workspace.context'
 import type {
+  ProductWorkspaceAddition,
   ProductWorkspaceCombination,
   ProductWorkspaceItem,
   ProductWorkspaceLabels,
@@ -22,6 +23,7 @@ import { MaterialSwatch } from '../Materials/MaterialSwatch'
 import { MaterialsListDialog } from './MaterialsListDialog'
 
 type ConsumptionPanelProps = {
+  readonly additions: readonly ProductWorkspaceAddition[]
   readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
   readonly pieces: readonly ProductWorkspacePiece[]
@@ -147,7 +149,7 @@ function Metric(props: {
  * @returns Consumption panel content.
  */
 export function ConsumptionPanel(props: ConsumptionPanelProps): ReactElement {
-  const { combinations, labels, pieces, product } = props
+  const { additions, combinations, labels, pieces, product } = props
   const {
     activeCombinationId,
     productionUnits,
@@ -177,9 +179,11 @@ export function ConsumptionPanel(props: ConsumptionPanelProps): ReactElement {
         </div>
       ) : null}
       <MaterialsListDialog
+        additions={additions}
         combinationName={activeCombination?.name ?? null}
         labels={labels}
         product={product}
+        productionUnits={productionUnits}
         summaries={summaries}
       />
       {summaries.length > 0 ? (

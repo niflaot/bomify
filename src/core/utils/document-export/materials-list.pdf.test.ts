@@ -6,6 +6,11 @@ jest.mock('./logo.utils')
 const rasterizeLogoMock = logoUtils.rasterizeLogo as jest.Mock
 
 const labels = {
+  additionCategoryHerrajes: 'Hardware',
+  additionCategoryManoDeObra: 'Labor',
+  additionCategoryVarios: 'Miscellaneous',
+  additionQuantityColumnLabel: 'Quantity',
+  additionsSectionTitle: 'Additions',
   combinationLabel: 'Combination',
   costColumnLabel: 'Cost',
   materialColumnLabel: 'Material',
@@ -51,6 +56,59 @@ describe('buildMaterialsListPdf', () => {
       labels,
       productName: 'Kairos Backpack',
       rows: []
+    })
+
+    expect(blob.size).toBeGreaterThan(0)
+  })
+
+  it('builds a PDF with additions grouped by category, skipping empty categories', async () => {
+    const blob = await buildMaterialsListPdf({
+      additions: [
+        { category: 'herrajes', costCop: 1000, name: 'Zipper', quantity: 1 },
+        { category: 'varios', costCop: 1800, name: 'Thread', quantity: 1.5 }
+      ],
+      combinationName: 'Blue',
+      labels,
+      productName: 'Kairos Backpack',
+      rows: []
+    })
+
+    expect(blob.size).toBeGreaterThan(0)
+  })
+
+  it('builds a PDF with a cost/sale/profit summary block', async () => {
+    const blob = await buildMaterialsListPdf({
+      combinationName: 'Blue',
+      labels,
+      productName: 'Kairos Backpack',
+      rows: [{ costCop: 50000, lengthMeters: 3.5, materialName: 'Canvas' }],
+      summary: {
+        costCop: 50000,
+        costLabel: 'Cost',
+        profitCop: 100000,
+        profitLabel: 'Profit',
+        saleCop: 150000,
+        saleLabel: 'Sale price'
+      }
+    })
+
+    expect(blob.size).toBeGreaterThan(0)
+  })
+
+  it('renders a dash for sale/profit in the summary when there is no sale price', async () => {
+    const blob = await buildMaterialsListPdf({
+      combinationName: 'Blue',
+      labels,
+      productName: 'Kairos Backpack',
+      rows: [],
+      summary: {
+        costCop: 50000,
+        costLabel: 'Cost',
+        profitCop: null,
+        profitLabel: 'Profit',
+        saleCop: null,
+        saleLabel: 'Sale price'
+      }
     })
 
     expect(blob.size).toBeGreaterThan(0)

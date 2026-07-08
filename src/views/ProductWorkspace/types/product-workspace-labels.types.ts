@@ -2,8 +2,27 @@
  * Text labels used by the product workspace.
  */
 export type ProductWorkspaceLabels = {
+  readonly addAddition: string
   readonly addCombination: string
   readonly addCombinationMaterial: string
+  readonly additionCategoryHerrajes: string
+  readonly additionCategoryLabel: string
+  readonly additionCategoryManoDeObra: string
+  readonly additionCategoryVarios: string
+  readonly additionDeleteDescription: string
+  readonly additionDeleteTitle: string
+  readonly additionEmptyDescription: string
+  readonly additionEmptyTitle: string
+  readonly additionNameLabel: string
+  readonly additionNamePlaceholder: string
+  readonly additionQuantityColumnLabel: string
+  readonly additionQuantityLabel: string
+  readonly additionRemovedToast: string
+  readonly additions: string
+  readonly additionSavedToast: string
+  readonly additionsPanelDescription: string
+  readonly additionsSectionTitle: string
+  readonly additionUnitPriceLabel: string
   readonly addMaterial: string
   readonly addPiece: string
   readonly cancel: string
@@ -32,6 +51,8 @@ export type ProductWorkspaceLabels = {
   readonly combinationNameLabel: string
   readonly combinationNamePlaceholder: string
   readonly combinationRemovedToast: string
+  readonly combinationSalePriceLabel: string
+  readonly combinationSalePricePlaceholder: string
   readonly combinationSavedToast: string
   readonly combinations: string
   readonly combinationsPanelDescription: string
@@ -51,6 +72,7 @@ export type ProductWorkspaceLabels = {
   readonly createCatalogMaterial: string
   readonly createCombination: string
   readonly createPiece: string
+  readonly deleteAddition: string
   readonly deleteCombination: string
   readonly deleteMaterial: string
   readonly deletePiece: string
@@ -69,6 +91,7 @@ export type ProductWorkspaceLabels = {
   readonly downloadScopePerPliego: string
   readonly downloadScopePerSheet: string
   readonly downloading: string
+  readonly editAddition: string
   readonly editCombination: string
   readonly editMaterial: string
   readonly editPiece: string
@@ -155,6 +178,7 @@ export type ProductWorkspaceLabels = {
   readonly productionNoMaterialDescription: string
   readonly productionSheetLabel: string
   readonly removeCombinationMaterial: string
+  readonly saveAddition: string
   readonly saveCombination: string
   readonly saveMaterial: string
   readonly saving: string
@@ -166,6 +190,12 @@ export type ProductWorkspaceLabels = {
   readonly stickersDownload: string
   readonly stickersGapLabel: string
   readonly stickersPanelDescription: string
+  readonly techSheetCostLabel: string
+  readonly techSheetDialogDescription: string
+  readonly techSheetDialogTitle: string
+  readonly techSheetDownload: string
+  readonly techSheetProfitLabel: string
+  readonly techSheetSaleLabel: string
   readonly updated: string
   readonly uploads: string
   readonly uploadsPanelDescription: string

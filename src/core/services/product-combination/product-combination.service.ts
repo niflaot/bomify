@@ -9,6 +9,7 @@ import {
   normalizeCombinationName,
   normalizeHexColor,
   normalizeMaterialAssignments,
+  normalizeSalePriceCop,
   toProductCombinationRecord
 } from './product-combination.service.utils'
 
@@ -75,7 +76,8 @@ export async function createProductCombination(
       data: {
         hexColor: normalizeHexColor(input.hexColor),
         name: normalizeCombinationName(input.name),
-        productId: input.productId
+        productId: input.productId,
+        salePriceCop: normalizeSalePriceCop(input.salePriceCop)
       }
     })
 
@@ -158,7 +160,10 @@ export async function updateProductCombination(
     await transaction.productCombination.update({
       data: {
         hexColor: input.hexColor === undefined ? undefined : normalizeHexColor(input.hexColor),
-        name: input.name === undefined ? undefined : normalizeCombinationName(input.name)
+        name: input.name === undefined ? undefined : normalizeCombinationName(input.name),
+        salePriceCop: input.salePriceCop === undefined
+          ? undefined
+          : normalizeSalePriceCop(input.salePriceCop)
       },
       where: { id }
     })

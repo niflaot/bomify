@@ -29,6 +29,7 @@ export type ProductCombinationRow = {
   readonly materialAssignments?: readonly ProductCombinationMaterialAssignmentRow[]
   readonly name: string
   readonly productId: string
+  readonly salePriceCop: number | null
   readonly updatedAt: Date
 }
 
@@ -107,6 +108,24 @@ export function normalizeMaterialAssignments(
 }
 
 /**
+ * Normalizes and validates a combination sale price in whole Colombian pesos.
+ *
+ * @param salePriceCop - Sale price in COP, or `null`/`undefined` when unset.
+ * @returns Normalized non-negative integer price, or `null`.
+ */
+export function normalizeSalePriceCop(salePriceCop: number | null | undefined): number | null {
+  if (salePriceCop === null || salePriceCop === undefined) {
+    return null
+  }
+
+  if (!Number.isFinite(salePriceCop) || salePriceCop < 0) {
+    throw new Error('Sale price must be a non-negative number')
+  }
+
+  return Math.round(salePriceCop)
+}
+
+/**
  * Maps a Prisma combination material assignment row to a service record.
  *
  * @param row - Combination material assignment row.
@@ -143,6 +162,7 @@ export function toProductCombinationRecord(
     ),
     name: row.name,
     productId: row.productId,
+    salePriceCop: row.salePriceCop,
     updatedAt: row.updatedAt
   }
 }

@@ -14,7 +14,9 @@ import {
 
 import { useProductWorkspace } from '@/views/ProductWorkspace/context/product-workspace.context'
 import { DownloadDialog } from '@/views/ProductWorkspace/partial/DownloadDialog/DownloadDialog'
+import { TechSheetDialog } from '@/views/ProductWorkspace/partial/TechSheetDialog/TechSheetDialog'
 import type {
+  ProductWorkspaceAddition,
   ProductWorkspaceCombination,
   ProductWorkspaceItem,
   ProductWorkspaceLabels,
@@ -23,6 +25,7 @@ import type {
 } from '@/views/ProductWorkspace/types/product-workspace.types'
 
 type WorkspaceHeaderProps = {
+  readonly additions: readonly ProductWorkspaceAddition[]
   readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
   readonly pieces: readonly ProductWorkspacePiece[]
@@ -77,7 +80,7 @@ function WorkspaceTitle(props: {
  * @returns Header element.
  */
 export function WorkspaceHeader(props: WorkspaceHeaderProps): ReactElement {
-  const { combinations, labels, pieces, product } = props
+  const { additions, combinations, labels, pieces, product } = props
   const {
     activeCombinationId,
     activeView,
@@ -139,6 +142,13 @@ export function WorkspaceHeader(props: WorkspaceHeaderProps): ReactElement {
       </div>
 
       <div className="flex items-center gap-2">
+        <TechSheetDialog
+          additions={additions}
+          combinations={combinations}
+          labels={labels}
+          pieces={pieces}
+          product={product}
+        />
         <DownloadDialog
           combinations={combinations}
           labels={labels}

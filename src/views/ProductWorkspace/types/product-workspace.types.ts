@@ -1,6 +1,7 @@
 import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
 import type { MaterialFormState } from '@/core/types/material.types'
 import type { PieceFormState } from '@/core/types/piece.types'
+import type { ProductAdditionCategory, ProductAdditionFormState } from '@/core/types/product-addition.types'
 import type { ProductCombinationFormState } from '@/core/types/product-combination.types'
 
 export type { ProductWorkspaceLabels } from './product-workspace-labels.types'
@@ -24,6 +25,7 @@ export type ProductWorkspaceCombination = {
   readonly id: string
   readonly materialAssignments: readonly ProductWorkspaceCombinationMaterialAssignment[]
   readonly name: string
+  readonly salePriceCop: number | null
   readonly updatedAt: string
 }
 
@@ -85,6 +87,18 @@ export type ProductWorkspacePiece = {
 }
 
 /**
+ * Product addition (hardware/labor/misc line item) rendered in the workspace.
+ */
+export type ProductWorkspaceAddition = {
+  readonly category: ProductAdditionCategory
+  readonly id: string
+  readonly name: string
+  readonly quantity: number
+  readonly unitPriceCop: number
+  readonly updatedAt: string
+}
+
+/**
  * Server action shape used by combination forms.
  */
 export type ProductCombinationFormAction = (
@@ -136,12 +150,30 @@ export type ProductWorkspacePieceActions = {
 }
 
 /**
+ * Server action shape used by addition forms.
+ */
+export type ProductAdditionFormAction = (
+  state: ProductAdditionFormState,
+  formData: FormData
+) => Promise<ProductAdditionFormState>
+
+/**
+ * Server actions used by the additions panel.
+ */
+export type ProductWorkspaceAdditionActions = {
+  readonly create: ProductAdditionFormAction
+  readonly delete: ProductAdditionFormAction
+  readonly update: ProductAdditionFormAction
+}
+
+/**
  * Workspace panel keys available from the left rail.
  */
 export type ProductWorkspacePanel =
   | 'product'
   | 'pieces'
   | 'materials'
+  | 'additions'
   | 'combinations'
   | 'consumption'
   | 'uploads'

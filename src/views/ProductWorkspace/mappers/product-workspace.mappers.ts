@@ -1,9 +1,11 @@
 import type { MaterialRecord, ProductMaterialRecord } from '@/core/types/material.types'
 import type { PieceRecord } from '@/core/types/piece.types'
+import type { ProductAdditionRecord } from '@/core/types/product-addition.types'
 import type { ProductCombinationRecord } from '@/core/types/product-combination.types'
 import type { ProductRecord } from '@/core/types/product.types'
 
 import type {
+  ProductWorkspaceAddition,
   ProductWorkspaceCombination,
   ProductWorkspaceItem,
   ProductWorkspaceMaterial,
@@ -15,6 +17,7 @@ import type {
  * Workspace data returned by server mappers.
  */
 export type ProductWorkspaceData = {
+  readonly additions: readonly ProductWorkspaceAddition[]
   readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
   readonly combinations: readonly ProductWorkspaceCombination[]
   readonly pieces: readonly ProductWorkspacePiece[]
@@ -26,6 +29,7 @@ export type ProductWorkspaceData = {
  * Raw service records required to build workspace props.
  */
 export type ProductWorkspaceDataInput = {
+  readonly additions: readonly ProductAdditionRecord[]
   readonly catalogMaterials: readonly MaterialRecord[]
   readonly combinations: readonly ProductCombinationRecord[]
   readonly pieces: readonly PieceRecord[]
@@ -41,11 +45,23 @@ export type ProductWorkspaceDataInput = {
  */
 export function toProductWorkspaceData(input: ProductWorkspaceDataInput): ProductWorkspaceData {
   return {
+    additions: input.additions.map(toWorkspaceAddition),
     catalogMaterials: input.catalogMaterials.map(toWorkspaceMaterial),
     combinations: input.combinations.map(toWorkspaceCombination),
     pieces: input.pieces.map(toWorkspacePiece),
     product: toWorkspaceItem(input.product),
     productMaterials: input.productMaterials.map(toWorkspaceProductMaterial)
+  }
+}
+
+function toWorkspaceAddition(addition: ProductAdditionRecord): ProductWorkspaceAddition {
+  return {
+    category: addition.category,
+    id: addition.id,
+    name: addition.name,
+    quantity: addition.quantity,
+    unitPriceCop: addition.unitPriceCop,
+    updatedAt: addition.updatedAt.toISOString()
   }
 }
 
@@ -67,6 +83,7 @@ function toWorkspaceCombination(
     id: combination.id,
     materialAssignments: combination.materialAssignments.map(toWorkspaceCombinationMaterial),
     name: combination.name,
+    salePriceCop: combination.salePriceCop,
     updatedAt: combination.updatedAt.toISOString()
   }
 }

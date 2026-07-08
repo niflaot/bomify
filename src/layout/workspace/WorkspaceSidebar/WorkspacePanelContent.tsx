@@ -5,12 +5,15 @@ import {
   FileUp,
   Layers3,
   Package,
+  PackagePlus,
   Palette,
   Printer
 } from 'lucide-react'
 import type { ReactElement } from 'react'
 
 import type {
+  ProductWorkspaceAddition,
+  ProductWorkspaceAdditionActions,
   ProductWorkspaceMaterial,
   ProductWorkspaceMaterialActions,
   ProductWorkspaceCombination,
@@ -22,6 +25,7 @@ import type {
   ProductWorkspacePieceActions,
   ProductWorkspaceProductMaterial
 } from '@/views/ProductWorkspace/types/product-workspace.types'
+import { AdditionsPanel } from './Additions/AdditionsPanel'
 import { CombinationsPanel } from './Combinations/CombinationsPanel'
 import { ConsumptionPanel } from './Consumption/ConsumptionPanel'
 import { MaterialsPanel } from './Materials/MaterialsPanel'
@@ -29,6 +33,8 @@ import { PiecesPanel } from './Pieces/PiecesPanel'
 import { StickersPanel } from './Stickers/StickersPanel'
 
 type WorkspacePanelContentProps = {
+  readonly additionActions: ProductWorkspaceAdditionActions
+  readonly additions: readonly ProductWorkspaceAddition[]
   readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
   readonly combinationActions: ProductWorkspaceCombinationActions
   readonly combinations: readonly ProductWorkspaceCombination[]
@@ -52,6 +58,11 @@ function getPanelCopy(
   panel: ProductWorkspacePanel
 ): PanelCopy {
   const copies: Record<ProductWorkspacePanel, PanelCopy> = {
+    additions: {
+      description: labels.additionsPanelDescription,
+      icon: PackagePlus,
+      title: labels.additions
+    },
     combinations: {
       description: labels.combinationsPanelDescription,
       icon: Layers3,
@@ -123,6 +134,8 @@ function UploadsPanelBody(): ReactElement {
 
 function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
   const {
+    additionActions,
+    additions,
     catalogMaterials,
     combinationActions,
     combinations,
@@ -137,6 +150,17 @@ function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
 
   if (panel === 'product') {
     return <ProductPanelBody />
+  }
+
+  if (panel === 'additions') {
+    return (
+      <AdditionsPanel
+        actions={additionActions}
+        additions={additions}
+        labels={labels}
+        productId={product.id}
+      />
+    )
   }
 
   if (panel === 'materials') {
@@ -180,6 +204,7 @@ function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
   if (panel === 'consumption') {
     return (
       <ConsumptionPanel
+        additions={additions}
         combinations={combinations}
         labels={labels}
         pieces={pieces}

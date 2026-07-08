@@ -123,6 +123,22 @@ function CombinationForm(props: CombinationFormProps): ReactElement {
         />
       </div>
 
+      <div className="grid gap-2">
+        <Label htmlFor={`${variant}-combination-sale-price`}>
+          {labels.combinationSalePriceLabel}
+        </Label>
+        <Input
+          aria-invalid={Boolean(fieldErrors.salePriceCop)}
+          defaultValue={combination?.salePriceCop ?? ''}
+          id={`${variant}-combination-sale-price`}
+          min="0"
+          name="salePriceCop"
+          placeholder={labels.combinationSalePricePlaceholder}
+          step="1"
+          type="number"
+        />
+      </div>
+
       <CombinationMaterialAssignmentsField
         assignments={combination?.materialAssignments ?? []}
         invalid={Boolean(fieldErrors.materialRoleId)}

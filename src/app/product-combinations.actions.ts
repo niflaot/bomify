@@ -26,6 +26,22 @@ function readRequiredText(formData: FormData, key: string): string {
   return value
 }
 
+function readOptionalPriceCop(formData: FormData): number | null {
+  const raw = formData.get('salePriceCop')
+
+  if (typeof raw !== 'string' || !raw.trim()) {
+    return null
+  }
+
+  const price = Number(raw)
+
+  if (!Number.isFinite(price)) {
+    throw new Error('salePriceCop must be a valid number')
+  }
+
+  return price
+}
+
 function toFormState(error: unknown): ProductCombinationFormState {
   if (isUniqueConstraintError(error, ['combination_id', 'role_id'])) {
     return createErrorState('Material role ids must be unique per combination', {
@@ -49,6 +65,10 @@ function getCombinationFieldErrors(message: string): Record<string, string> | un
 
   if (/role|assignment|material/i.test(message)) {
     return { materialRoleId: message }
+  }
+
+  if (/price/i.test(message)) {
+    return { salePriceCop: message }
   }
 
   return undefined
@@ -96,7 +116,8 @@ export async function createProductCombinationAction(
       hexColor: readRequiredText(formData, 'hexColor'),
       materialAssignments: readMaterialAssignments(formData),
       name: readRequiredText(formData, 'name'),
-      productId
+      productId,
+      salePriceCop: readOptionalPriceCop(formData)
     })
     revalidatePath(`/products/${productId}`)
 
@@ -123,7 +144,8 @@ export async function updateProductCombinationAction(
     await updateProductCombination(productId, readRequiredText(formData, 'combinationId'), {
       hexColor: readRequiredText(formData, 'hexColor'),
       materialAssignments: readMaterialAssignments(formData),
-      name: readRequiredText(formData, 'name')
+      name: readRequiredText(formData, 'name'),
+      salePriceCop: readOptionalPriceCop(formData)
     })
     revalidatePath(`/products/${productId}`)
 

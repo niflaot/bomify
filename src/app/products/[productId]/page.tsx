@@ -4,6 +4,11 @@ import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 
 import {
+  createProductAdditionAction,
+  deleteProductAdditionAction,
+  updateProductAdditionAction
+} from '@/app/product-additions.actions'
+import {
   createProductCombinationAction,
   deleteProductCombinationAction,
   updateProductCombinationAction
@@ -20,6 +25,7 @@ import {
 } from '@/app/product-pieces.actions'
 import { listMaterials } from '@/core/services/material/material.service'
 import { listPieces } from '@/core/services/piece/piece.service'
+import { listProductAdditions } from '@/core/services/product-addition/product-addition.service'
 import { listProductCombinations } from '@/core/services/product-combination/product-combination.service'
 import { getProductById } from '@/core/services/product/product.service'
 import { listProductMaterials } from '@/core/services/product-material/product-material.service'
@@ -62,13 +68,14 @@ export default async function ProductWorkspacePage(
   props: ProductWorkspacePageProps
 ): Promise<ReactElement> {
   const { productId } = await props.params
-  const [t, product, combinations, catalogMaterials, productMaterials, pieces] = await Promise.all([
+  const [t, product, combinations, catalogMaterials, productMaterials, pieces, additions] = await Promise.all([
     getTranslations('productWorkspace'),
     getProductById(productId),
     listProductCombinations({ productId }),
     listMaterials(),
     listProductMaterials(productId),
-    listPieces({ productId })
+    listPieces({ productId }),
+    listProductAdditions({ productId })
   ])
 
   if (!product) {
@@ -76,6 +83,7 @@ export default async function ProductWorkspacePage(
   }
 
   const workspaceData = toProductWorkspaceData({
+    additions,
     catalogMaterials,
     combinations,
     pieces,
@@ -86,6 +94,11 @@ export default async function ProductWorkspacePage(
   return (
     <ProductWorkspace
       {...workspaceData}
+      additionActions={{
+        create: createProductAdditionAction,
+        delete: deleteProductAdditionAction,
+        update: updateProductAdditionAction
+      }}
       combinationActions={{
         create: createProductCombinationAction,
         delete: deleteProductCombinationAction,

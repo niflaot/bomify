@@ -20,14 +20,17 @@ import { buildExportFileName } from '@/core/utils/sheet-export/sheet-export.file
 
 import type { ProductionCutSummary } from '@/layout/workspace/WorkspaceCanvas/types/production-cut.types'
 import type {
+  ProductWorkspaceAddition,
   ProductWorkspaceItem,
   ProductWorkspaceLabels
 } from '@/views/ProductWorkspace/types/product-workspace.types'
 
 type MaterialsListDialogProps = {
+  readonly additions: readonly ProductWorkspaceAddition[]
   readonly combinationName: string | null
   readonly labels: ProductWorkspaceLabels
   readonly product: ProductWorkspaceItem
+  readonly productionUnits: number
   readonly summaries: readonly ProductionCutSummary[]
 }
 
@@ -40,7 +43,7 @@ type MaterialsListDialogProps = {
  * @returns Materials list dialog element.
  */
 export function MaterialsListDialog(props: MaterialsListDialogProps): ReactElement {
-  const { combinationName, labels, product, summaries } = props
+  const { additions, combinationName, labels, product, productionUnits, summaries } = props
   const [open, setOpen] = useState(false)
   const [blob, setBlob] = useState<Blob | null>(null)
 
@@ -53,8 +56,23 @@ export function MaterialsListDialog(props: MaterialsListDialogProps): ReactEleme
 
     setBlob(null)
     setBlob(await buildMaterialsListPdf({
+      additions: additions.map(addition => {
+        const quantity = addition.quantity * productionUnits
+
+        return {
+          category: addition.category,
+          costCop: Math.round(quantity * addition.unitPriceCop),
+          name: addition.name,
+          quantity
+        }
+      }),
       combinationName,
       labels: {
+        additionCategoryHerrajes: labels.additionCategoryHerrajes,
+        additionCategoryManoDeObra: labels.additionCategoryManoDeObra,
+        additionCategoryVarios: labels.additionCategoryVarios,
+        additionQuantityColumnLabel: labels.additionQuantityColumnLabel,
+        additionsSectionTitle: labels.additionsSectionTitle,
         combinationLabel: labels.combinationLabel,
         costColumnLabel: labels.consumptionCost,
         materialColumnLabel: labels.materialSelectLabel,

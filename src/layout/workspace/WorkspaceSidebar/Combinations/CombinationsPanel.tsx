@@ -6,6 +6,7 @@ import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/core/utils/class-name/class-name.utils'
+import { formatCop } from '@/core/utils/currency/currency.utils'
 
 import type {
   ProductWorkspaceCombination,
@@ -53,7 +54,7 @@ function CombinationRow(props: {
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{combination.name}</p>
           <p className="text-xs uppercase tracking-widest text-muted-foreground">
-            {combination.hexColor}
+            {combination.hexColor} · {formatCop(combination.salePriceCop)}
           </p>
         </div>
         {hasAssignments ? (
