@@ -5,8 +5,8 @@ import type { ReactElement } from 'react'
 import { WorkspaceHeader } from '@/layout/workspace/WorkspaceHeader/WorkspaceHeader'
 import { WorkspaceSidebar } from '@/layout/workspace/WorkspaceSidebar/WorkspaceSidebar'
 
-import { WorkspaceCanvas } from './partial/WorkspaceCanvas/WorkspaceCanvas'
-import { ProductWorkspaceProvider } from './product-workspace.context'
+import { WorkspaceCanvas } from '@/layout/workspace/WorkspaceCanvas/WorkspaceCanvas'
+import { ProductWorkspaceProvider } from './context/product-workspace.context'
 import type {
   ProductWorkspaceCombination,
   ProductWorkspaceCombinationActions,
@@ -17,7 +17,7 @@ import type {
   ProductWorkspacePiece,
   ProductWorkspacePieceActions,
   ProductWorkspaceProductMaterial
-} from './product-workspace.types'
+} from './types/product-workspace.types'
 
 type ProductWorkspaceProps = {
   readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
@@ -56,6 +56,7 @@ export function ProductWorkspace(props: ProductWorkspaceProps): ReactElement {
         <WorkspaceHeader
           combinations={combinations}
           labels={labels}
+          pieces={pieces}
           product={product}
         />
         <div className="grid min-h-0 grid-cols-[auto_1fr]">

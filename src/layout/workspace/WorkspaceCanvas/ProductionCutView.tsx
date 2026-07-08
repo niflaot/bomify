@@ -3,16 +3,16 @@
 import type { ReactElement } from 'react'
 import { useMemo, useState } from 'react'
 
-import { useProductWorkspace } from '../../product-workspace.context'
+import { useProductWorkspace } from '@/views/ProductWorkspace/context/product-workspace.context'
 import type {
   ProductWorkspaceCombination,
   ProductWorkspaceLabels,
   ProductWorkspacePiece
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 import { ProductionSelectors, ProductionToolbar } from './ProductionCutControls'
 import { ProductionCutSheet } from './ProductionCutSheet'
-import { buildProductionCutSummaries } from './production-cut.utils'
-import { useDespieceZoom } from './use-despiece-zoom.hook'
+import { buildProductionCutSummaries } from './utils/production-cut.utils'
+import { useDespieceZoom } from './hooks/use-despiece-zoom.hook'
 
 type ProductionCutViewProps = {
   readonly combinations: readonly ProductWorkspaceCombination[]

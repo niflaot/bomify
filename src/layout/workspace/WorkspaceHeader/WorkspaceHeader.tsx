@@ -1,4 +1,4 @@
-import { Download, Home } from 'lucide-react'
+import { Home } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactElement, ReactNode } from 'react'
@@ -12,17 +12,20 @@ import {
   SelectValue
 } from '@/components/ui/select'
 
-import { useProductWorkspace } from '@/views/ProductWorkspace/product-workspace.context'
+import { useProductWorkspace } from '@/views/ProductWorkspace/context/product-workspace.context'
+import { DownloadDialog } from '@/views/ProductWorkspace/partial/DownloadDialog/DownloadDialog'
 import type {
   ProductWorkspaceCombination,
   ProductWorkspaceItem,
   ProductWorkspaceLabels,
+  ProductWorkspacePiece,
   ProductWorkspaceView
-} from '@/views/ProductWorkspace/product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 
 type WorkspaceHeaderProps = {
   readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
+  readonly pieces: readonly ProductWorkspacePiece[]
   readonly product: ProductWorkspaceItem
 }
 
@@ -74,7 +77,7 @@ function WorkspaceTitle(props: {
  * @returns Header element.
  */
 export function WorkspaceHeader(props: WorkspaceHeaderProps): ReactElement {
-  const { combinations, labels, product } = props
+  const { combinations, labels, pieces, product } = props
   const {
     activeCombinationId,
     activeView,
@@ -136,10 +139,12 @@ export function WorkspaceHeader(props: WorkspaceHeaderProps): ReactElement {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button size="sm" type="button">
-          <Download aria-hidden="true" data-icon="inline-start" />
-          <span className="hidden sm:inline">{labels.export}</span>
-        </Button>
+        <DownloadDialog
+          combinations={combinations}
+          labels={labels}
+          pieces={pieces}
+          product={product}
+        />
       </div>
     </header>
   )

@@ -3,7 +3,7 @@
 import type { ReactElement, ReactNode } from 'react'
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
-import type { ProductWorkspacePanel, ProductWorkspaceView } from './product-workspace.types'
+import type { ProductWorkspacePanel, ProductWorkspaceView } from '../types/product-workspace.types'
 
 type ProductWorkspaceContextValue = {
   readonly activeCombinationId: string | null

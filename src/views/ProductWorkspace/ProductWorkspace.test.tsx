@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { renderWorkspace } from './product-workspace.test-fixtures'
+import { renderWorkspace } from './testing/product-workspace.test-fixtures'
 
 describe('ProductWorkspace', () => {
   it('renders the product workspace shell', () => {

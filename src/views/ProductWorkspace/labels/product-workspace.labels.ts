@@ -1,6 +1,6 @@
 import type { getTranslations } from 'next-intl/server'
 
-import type { ProductWorkspaceLabels } from './product-workspace.types'
+import type { ProductWorkspaceLabels } from '../types/product-workspace.types'
 
 /**
  * Builds translated workspace labels.
@@ -65,6 +65,17 @@ export function getWorkspaceLabels(
     deletePiece: t('deletePiece'),
     deleting: t('deleting'),
     despieceView: t('despieceView'),
+    downloadDialogDescription: t('downloadDialogDescription'),
+    downloadDialogTitle: t('downloadDialogTitle'),
+    downloadFormatDxf: t('downloadFormatDxf'),
+    downloadFormatLabel: t('downloadFormatLabel'),
+    downloadFormatPdf: t('downloadFormatPdf'),
+    downloadScopeCombined: t('downloadScopeCombined'),
+    downloadScopeLabel: t('downloadScopeLabel'),
+    downloadScopePerMaterial: t('downloadScopePerMaterial'),
+    downloadScopePerPliego: t('downloadScopePerPliego'),
+    downloadScopePerSheet: t('downloadScopePerSheet'),
+    downloading: t('downloading'),
     editCombination: t('editCombination'),
     editPiece: t('editPiece'),
     export: t('export'),

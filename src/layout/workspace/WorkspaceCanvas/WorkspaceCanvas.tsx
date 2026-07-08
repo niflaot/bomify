@@ -1,11 +1,11 @@
 import type { ReactElement } from 'react'
 
-import { useProductWorkspace } from '../../product-workspace.context'
+import { useProductWorkspace } from '@/views/ProductWorkspace/context/product-workspace.context'
 import type {
   ProductWorkspaceCombination,
   ProductWorkspaceLabels,
   ProductWorkspacePiece
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 import { DespieceView } from './DespieceView'
 import { ProductionCutView } from './ProductionCutView'
 

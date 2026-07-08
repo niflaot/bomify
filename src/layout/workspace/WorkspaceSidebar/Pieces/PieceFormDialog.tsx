@@ -28,7 +28,7 @@ import type {
   ProductWorkspaceLabels,
   ProductWorkspacePiece,
   ProductWorkspaceProductMaterial
-} from '@/views/ProductWorkspace/product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 import { PieceDxfDropzone } from './PieceDxfDropzone'
 import { PieceMaterialRequirementsField } from './PieceMaterialRequirementsField'
 

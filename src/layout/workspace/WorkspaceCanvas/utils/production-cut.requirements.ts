@@ -8,8 +8,8 @@ import type {
   ProductWorkspacePiece,
   ProductWorkspacePieceMaterialRequirement,
   ProductWorkspaceProductMaterial
-} from '../../product-workspace.types'
-import type { ProductionMaterialPieces, ProductionPieceDraft } from './production-cut.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
+import type { ProductionMaterialPieces, ProductionPieceDraft } from '../types/production-cut.types'
 
 type MaterialDraft = {
   readonly material: ProductWorkspaceProductMaterial

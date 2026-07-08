@@ -11,7 +11,7 @@ import type {
   ProductWorkspacePieceActions,
   ProductWorkspacePieceMaterialRequirement,
   ProductWorkspaceProductMaterial
-} from '@/views/ProductWorkspace/product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 import { MaterialSwatch } from '../Materials/MaterialSwatch'
 import { PieceDeleteDialog } from './PieceDeleteDialog'
 import { PieceFormDialog } from './PieceFormDialog'

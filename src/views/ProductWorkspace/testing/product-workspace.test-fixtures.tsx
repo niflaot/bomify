@@ -1,12 +1,12 @@
 import { render } from '@testing-library/react'
 
-import { ProductWorkspace } from './ProductWorkspace'
+import { ProductWorkspace } from '../ProductWorkspace'
 import type {
   ProductWorkspaceCombinationActions,
   ProductWorkspaceLabels,
   ProductWorkspaceMaterialActions,
   ProductWorkspacePieceActions
-} from './product-workspace.types'
+} from '../types/product-workspace.types'
 
 export const labels: ProductWorkspaceLabels = {
   addCombination: 'Add combination',
@@ -62,6 +62,17 @@ export const labels: ProductWorkspaceLabels = {
   deletePiece: 'Delete',
   deleting: 'Deleting',
   despieceView: 'Despiece',
+  downloadDialogDescription: 'Choose a format and how you want the files bundled.',
+  downloadDialogTitle: 'Download files',
+  downloadFormatDxf: 'DXF',
+  downloadFormatLabel: 'Format',
+  downloadFormatPdf: 'PDF',
+  downloadScopeCombined: 'One file',
+  downloadScopeLabel: 'Files',
+  downloadScopePerMaterial: 'One file per material',
+  downloadScopePerPliego: 'One file per pliego',
+  downloadScopePerSheet: 'One file per sheet',
+  downloading: 'Downloading',
   editCombination: 'Edit',
   editPiece: 'Edit',
   export: 'Export',

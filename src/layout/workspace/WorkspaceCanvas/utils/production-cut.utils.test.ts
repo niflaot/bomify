@@ -1,9 +1,9 @@
-import { labels } from '../../product-workspace.test-fixtures'
+import { labels } from '@/views/ProductWorkspace/testing/product-workspace.test-fixtures'
 import type {
   ProductWorkspaceCombination,
   ProductWorkspacePiece,
   ProductWorkspaceProductMaterial
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 import { buildProductionCutSummaries } from './production-cut.utils'
 
 const globalMaterial: ProductWorkspaceProductMaterial = {

@@ -55,6 +55,17 @@ export type ProductWorkspaceLabels = {
   readonly deletePiece: string
   readonly deleting: string
   readonly despieceView: string
+  readonly downloadDialogDescription: string
+  readonly downloadDialogTitle: string
+  readonly downloadFormatDxf: string
+  readonly downloadFormatLabel: string
+  readonly downloadFormatPdf: string
+  readonly downloadScopeCombined: string
+  readonly downloadScopeLabel: string
+  readonly downloadScopePerMaterial: string
+  readonly downloadScopePerPliego: string
+  readonly downloadScopePerSheet: string
+  readonly downloading: string
   readonly editCombination: string
   readonly editPiece: string
   readonly export: string

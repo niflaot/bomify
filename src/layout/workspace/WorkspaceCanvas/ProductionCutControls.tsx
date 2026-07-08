@@ -21,8 +21,8 @@ import {
   SelectValue
 } from '@/components/ui/select'
 
-import type { ProductWorkspaceLabels } from '../../product-workspace.types'
-import type { ProductionCutSummary } from './production-cut.types'
+import type { ProductWorkspaceLabels } from '@/views/ProductWorkspace/types/product-workspace.types'
+import type { ProductionCutSummary } from './types/production-cut.types'
 
 type ProductionToolbarProps = {
   readonly defaultZoom: number

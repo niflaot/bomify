@@ -11,4 +11,4 @@ export type {
   ProductWorkspacePiece,
   ProductWorkspacePieceActions,
   ProductWorkspaceProductMaterial
-} from './product-workspace.types'
+} from './types/product-workspace.types'

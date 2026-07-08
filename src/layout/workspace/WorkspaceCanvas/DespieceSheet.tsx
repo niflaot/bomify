@@ -4,8 +4,8 @@ import { MetricCanvas } from '@/components/MetricCanvas'
 import type { MaterialCutCanvasLabels } from '@/components/MaterialCutCanvas'
 import { PlacedMaterialPiece } from '@/components/MaterialCutCanvas/partial/PlacedMaterialPiece/PlacedMaterialPiece'
 
-import type { ProductWorkspaceLabels } from '../../product-workspace.types'
-import type { DespieceMaterialSheet } from './despiece-view.utils'
+import type { ProductWorkspaceLabels } from '@/views/ProductWorkspace/types/product-workspace.types'
+import type { DespieceMaterialSheet } from './utils/despiece-view.utils'
 
 type DespieceSheetProps = {
   readonly labels: ProductWorkspaceLabels

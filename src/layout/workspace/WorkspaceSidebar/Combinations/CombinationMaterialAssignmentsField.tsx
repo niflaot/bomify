@@ -19,7 +19,7 @@ import type {
   ProductWorkspaceCombinationMaterialAssignment,
   ProductWorkspaceLabels,
   ProductWorkspaceProductMaterial
-} from '@/views/ProductWorkspace/product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 
 type AssignmentRow = {
   readonly key: string

@@ -24,7 +24,7 @@ import type {
   ProductCombinationFormAction,
   ProductWorkspaceCombination,
   ProductWorkspaceLabels
-} from '@/views/ProductWorkspace/product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 
 type CombinationDeleteDialogProps = {
   readonly action: ProductCombinationFormAction

@@ -6,19 +6,19 @@ import { useMemo } from 'react'
 
 import { Button } from '@/components/ui/button'
 
-import { useProductWorkspace } from '../../product-workspace.context'
+import { useProductWorkspace } from '@/views/ProductWorkspace/context/product-workspace.context'
 import type {
   ProductWorkspaceCombination,
   ProductWorkspaceLabels,
   ProductWorkspacePiece
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 import {
   calculateDespieceStats,
   type DespieceStats
-} from './despiece-stats.utils'
-import { buildDespieceSheets } from './despiece-view.utils'
+} from './utils/despiece-stats.utils'
+import { buildDespieceSheets } from './utils/despiece-view.utils'
 import { DespieceSheet } from './DespieceSheet'
-import { useDespieceZoom } from './use-despiece-zoom.hook'
+import { useDespieceZoom } from './hooks/use-despiece-zoom.hook'
 
 type DespieceViewProps = {
   readonly combinations: readonly ProductWorkspaceCombination[]

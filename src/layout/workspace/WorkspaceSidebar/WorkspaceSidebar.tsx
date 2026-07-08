@@ -11,7 +11,7 @@ import type { ReactElement } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/core/utils/class-name/class-name.utils'
 
-import { useProductWorkspace } from '@/views/ProductWorkspace/product-workspace.context'
+import { useProductWorkspace } from '@/views/ProductWorkspace/context/product-workspace.context'
 import type {
   ProductWorkspaceMaterial,
   ProductWorkspaceMaterialActions,
@@ -23,7 +23,7 @@ import type {
   ProductWorkspacePanel,
   ProductWorkspacePiece,
   ProductWorkspacePieceActions
-} from '@/views/ProductWorkspace/product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 import { WorkspacePanelContent } from './WorkspacePanelContent'
 
 type WorkspaceSidebarProps = {

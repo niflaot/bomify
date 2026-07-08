@@ -9,7 +9,7 @@ import type {
   ProductWorkspacePiece,
   ProductWorkspacePieceActions,
   ProductWorkspaceProductMaterial
-} from '@/views/ProductWorkspace/product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 import { PieceCard } from './PieceCard'
 import { PieceFormDialog } from './PieceFormDialog'
 

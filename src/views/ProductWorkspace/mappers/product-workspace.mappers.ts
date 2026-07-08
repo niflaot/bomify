@@ -9,7 +9,7 @@ import type {
   ProductWorkspaceMaterial,
   ProductWorkspacePiece,
   ProductWorkspaceProductMaterial
-} from './product-workspace.types'
+} from '../types/product-workspace.types'
 
 /**
  * Workspace data returned by server mappers.

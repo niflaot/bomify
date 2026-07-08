@@ -5,18 +5,18 @@ import type {
   ProductWorkspaceCombination,
   ProductWorkspaceLabels,
   ProductWorkspacePiece
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 import { buildProductionMaterialPieces } from './production-cut.requirements'
 import type {
   ProductionCutSheet,
   ProductionCutSummary,
   ProductionMaterialPieces,
   ProductionPieceDraft
-} from './production-cut.types'
+} from '../types/production-cut.types'
 import {
   productionCutGapMm,
   productionSheetHeightCm
-} from './production-cut.types'
+} from '../types/production-cut.types'
 
 function decrementPlaced(
   pieces: readonly ProductionPieceDraft[],

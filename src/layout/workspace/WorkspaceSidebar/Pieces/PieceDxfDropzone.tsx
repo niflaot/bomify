@@ -13,7 +13,7 @@ import { cn } from '@/core/utils/class-name/class-name.utils'
 import type {
   ProductWorkspaceLabels,
   ProductWorkspacePiece
-} from '@/views/ProductWorkspace/product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 
 type PieceDxfDropzoneProps = {
   readonly id: string

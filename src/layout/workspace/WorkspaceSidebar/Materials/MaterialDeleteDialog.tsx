@@ -24,7 +24,7 @@ import type {
   MaterialFormAction,
   ProductWorkspaceLabels,
   ProductWorkspaceProductMaterial
-} from '@/views/ProductWorkspace/product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 
 type MaterialDeleteDialogProps = {
   readonly action: MaterialFormAction

@@ -7,14 +7,14 @@ import { useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
-import { useProductWorkspace } from '@/views/ProductWorkspace/product-workspace.context'
+import { useProductWorkspace } from '@/views/ProductWorkspace/context/product-workspace.context'
 import type {
   ProductWorkspaceCombination,
   ProductWorkspaceLabels,
   ProductWorkspacePiece
-} from '@/views/ProductWorkspace/product-workspace.types'
-import type { ProductionCutSummary } from '@/views/ProductWorkspace/partial/WorkspaceCanvas/production-cut.types'
-import { buildProductionCutSummaries } from '@/views/ProductWorkspace/partial/WorkspaceCanvas/production-cut.utils'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
+import type { ProductionCutSummary } from '@/layout/workspace/WorkspaceCanvas/types/production-cut.types'
+import { buildProductionCutSummaries } from '@/layout/workspace/WorkspaceCanvas/utils/production-cut.utils'
 
 import { MaterialSwatch } from '../Materials/MaterialSwatch'
 

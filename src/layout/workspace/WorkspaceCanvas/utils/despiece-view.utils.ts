@@ -11,7 +11,7 @@ import type {
   ProductWorkspaceLabels,
   ProductWorkspacePiece,
   ProductWorkspacePieceMaterialRequirement
-} from '../../product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 
 /**
  * One material sheet rendered by the despiece view.

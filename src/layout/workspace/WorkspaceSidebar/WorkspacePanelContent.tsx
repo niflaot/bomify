@@ -21,7 +21,7 @@ import type {
   ProductWorkspacePiece,
   ProductWorkspacePieceActions,
   ProductWorkspaceProductMaterial
-} from '@/views/ProductWorkspace/product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 import { CombinationsPanel } from './Combinations/CombinationsPanel'
 import { ConsumptionPanel } from './Consumption/ConsumptionPanel'
 import { MaterialsPanel } from './Materials/MaterialsPanel'

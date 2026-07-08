@@ -4,8 +4,8 @@ import { MetricCanvas } from '@/components/MetricCanvas'
 import type { MaterialCutCanvasLabels } from '@/components/MaterialCutCanvas'
 import { PlacedMaterialPiece } from '@/components/MaterialCutCanvas/partial/PlacedMaterialPiece/PlacedMaterialPiece'
 
-import type { ProductWorkspaceLabels } from '../../product-workspace.types'
-import type { ProductionCutSheet as ProductionCutSheetData } from './production-cut.types'
+import type { ProductWorkspaceLabels } from '@/views/ProductWorkspace/types/product-workspace.types'
+import type { ProductionCutSheet as ProductionCutSheetData } from './types/production-cut.types'
 
 type ProductionCutSheetProps = {
   readonly labels: ProductWorkspaceLabels

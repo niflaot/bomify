@@ -12,7 +12,7 @@ import type {
   ProductWorkspaceCombinationActions,
   ProductWorkspaceLabels,
   ProductWorkspaceProductMaterial
-} from '@/views/ProductWorkspace/product-workspace.types'
+} from '@/views/ProductWorkspace/types/product-workspace.types'
 import { CombinationFormDialog } from './CombinationFormDialog'
 import { CombinationDeleteDialog } from './CombinationDeleteDialog'
 import { MaterialSwatch } from '../Materials/MaterialSwatch'
