@@ -82,6 +82,7 @@ function buildSummary(materialGroup: ProductionMaterialPieces): ProductionCutSum
     materialColor: materialGroup.materialColor,
     materialId: materialGroup.materialId,
     materialName: materialGroup.materialName,
+    materialPriceCop: materialGroup.materialPriceCop,
     sheets,
     usedAreaMm2,
     wasteAreaMm2,

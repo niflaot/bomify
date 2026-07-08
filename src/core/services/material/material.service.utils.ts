@@ -9,9 +9,11 @@ const HEX_COLOR_PATTERN = /^#[0-9a-f]{6}$/i
 export type MaterialRow = {
   readonly id: string
   readonly name: string
+  readonly labelName: string | null
   readonly iconKey: string
   readonly hexColor: string
   readonly widthCm: number
+  readonly priceCop: number | null
   readonly createdAt: Date
   readonly updatedAt: Date
   readonly deletedAt: Date | null
@@ -94,6 +96,41 @@ export function normalizeMaterialIconKey(iconKey: string): MaterialIconKey {
 }
 
 /**
+ * Normalizes and validates a material price in whole Colombian pesos.
+ *
+ * @param priceCop - Material price in COP, or `null`/`undefined` when unset.
+ * @returns Normalized non-negative integer price, or `null`.
+ */
+export function normalizeMaterialPriceCop(priceCop: number | null | undefined): number | null {
+  if (priceCop === null || priceCop === undefined) {
+    return null
+  }
+
+  if (!Number.isFinite(priceCop) || priceCop < 0) {
+    throw new Error('Material price must be a non-negative number')
+  }
+
+  return Math.round(priceCop)
+}
+
+/**
+ * Normalizes a material's short, reusable label name shown on printed
+ * stickers instead of its full catalog name.
+ *
+ * @param labelName - Label name, or `null`/`undefined` when unset.
+ * @returns Trimmed label name, or `null` when empty.
+ */
+export function normalizeMaterialLabelName(labelName: string | null | undefined): string | null {
+  if (labelName === null || labelName === undefined) {
+    return null
+  }
+
+  const trimmed = labelName.trim()
+
+  return trimmed || null
+}
+
+/**
  * Maps a Prisma material row to a service record.
  *
  * @param material - Material row.
@@ -106,7 +143,9 @@ export function toMaterialRecord(material: MaterialRow): MaterialRecord {
     hexColor: material.hexColor,
     iconKey: normalizeMaterialIconKey(material.iconKey),
     id: material.id,
+    labelName: material.labelName,
     name: material.name,
+    priceCop: material.priceCop,
     updatedAt: material.updatedAt,
     widthCm: material.widthCm
   }

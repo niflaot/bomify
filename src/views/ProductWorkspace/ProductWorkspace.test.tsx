@@ -98,7 +98,7 @@ describe('ProductWorkspace', () => {
     await user.click(screen.getByRole('button', { name: 'Materials' }))
 
     expect(screen.getAllByText('Canvas').length).toBeGreaterThan(0)
-    expect(screen.getByText('140 cm')).toBeInTheDocument()
+    expect(screen.getByText('140 cm · $140.000')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Add material' }))
     await user.click(screen.getByRole('button', { name: 'New material' }))

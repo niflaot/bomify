@@ -6,10 +6,12 @@ import { useMemo } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { formatCop } from '@/core/utils/currency/currency.utils'
 
 import { useProductWorkspace } from '@/views/ProductWorkspace/context/product-workspace.context'
 import type {
   ProductWorkspaceCombination,
+  ProductWorkspaceItem,
   ProductWorkspaceLabels,
   ProductWorkspacePiece
 } from '@/views/ProductWorkspace/types/product-workspace.types'
@@ -17,11 +19,13 @@ import type { ProductionCutSummary } from '@/layout/workspace/WorkspaceCanvas/ty
 import { buildProductionCutSummaries } from '@/layout/workspace/WorkspaceCanvas/utils/production-cut.utils'
 
 import { MaterialSwatch } from '../Materials/MaterialSwatch'
+import { MaterialsListDialog } from './MaterialsListDialog'
 
 type ConsumptionPanelProps = {
   readonly combinations: readonly ProductWorkspaceCombination[]
   readonly labels: ProductWorkspaceLabels
   readonly pieces: readonly ProductWorkspacePiece[]
+  readonly product: ProductWorkspaceItem
 }
 
 function formatPercent(value: number): string {
@@ -111,6 +115,14 @@ function ConsumptionCard(props: {
         <Metric label={labels.consumptionUsed} value={formatSquareMeters(summary.usedAreaMm2)} />
         <Metric label={labels.consumptionWaste} value={formatSquareMeters(summary.wasteAreaMm2)} />
         <Metric label={labels.consumptionEfficiency} value={formatPercent(summary.efficiency)} />
+        <Metric
+          label={labels.consumptionCost}
+          value={formatCop(
+            summary.materialPriceCop === null
+              ? null
+              : Math.round(summary.materialPriceCop * summary.lengthMeters)
+          )}
+        />
       </dl>
     </li>
   )
@@ -135,7 +147,7 @@ function Metric(props: {
  * @returns Consumption panel content.
  */
 export function ConsumptionPanel(props: ConsumptionPanelProps): ReactElement {
-  const { combinations, labels, pieces } = props
+  const { combinations, labels, pieces, product } = props
   const {
     activeCombinationId,
     productionUnits,
@@ -164,6 +176,12 @@ export function ConsumptionPanel(props: ConsumptionPanelProps): ReactElement {
           <p className="mt-1 font-semibold">{activeCombination.name}</p>
         </div>
       ) : null}
+      <MaterialsListDialog
+        combinationName={activeCombination?.name ?? null}
+        labels={labels}
+        product={product}
+        summaries={summaries}
+      />
       {summaries.length > 0 ? (
         <ul className="grid gap-3">
           {summaries.map(summary => (

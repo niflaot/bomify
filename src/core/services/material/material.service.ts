@@ -8,7 +8,9 @@ import type {
 import {
   normalizeMaterialHexColor,
   normalizeMaterialIconKey,
+  normalizeMaterialLabelName,
   normalizeMaterialName,
+  normalizeMaterialPriceCop,
   normalizeMaterialWidthCm,
   toMaterialRecord
 } from './material.service.utils'
@@ -40,7 +42,9 @@ export async function createMaterial(input: CreateMaterialInput): Promise<Materi
     data: {
       hexColor: normalizeMaterialHexColor(input.hexColor),
       iconKey: normalizeMaterialIconKey(input.iconKey),
+      labelName: normalizeMaterialLabelName(input.labelName),
       name: normalizeMaterialName(input.name),
+      priceCop: normalizeMaterialPriceCop(input.priceCop),
       widthCm: normalizeMaterialWidthCm(input.widthCm)
     }
   })
@@ -93,7 +97,13 @@ export async function updateMaterial(
       iconKey: input.iconKey === undefined
         ? undefined
         : normalizeMaterialIconKey(input.iconKey),
+      labelName: input.labelName === undefined
+        ? undefined
+        : normalizeMaterialLabelName(input.labelName),
       name: input.name === undefined ? undefined : normalizeMaterialName(input.name),
+      priceCop: input.priceCop === undefined
+        ? undefined
+        : normalizeMaterialPriceCop(input.priceCop),
       widthCm: input.widthCm === undefined
         ? undefined
         : normalizeMaterialWidthCm(input.widthCm)

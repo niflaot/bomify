@@ -56,7 +56,9 @@ function MaterialAddForm(props: MaterialAddDialogProps & {
   const [mode, setMode] = useState<'existing' | 'new'>(hasCatalog ? 'existing' : 'new')
   const [hexColor, setHexColor] = useState('#111111')
   const [iconKey, setIconKey] = useState<MaterialIconKey>(DEFAULT_MATERIAL_ICON_KEY)
+  const [labelName, setLabelName] = useState('')
   const [name, setName] = useState('')
+  const [priceCop, setPriceCop] = useState('')
   const [widthCm, setWidthCm] = useState('')
   const [state, formAction] = useActionState<MaterialFormState, FormData>(action, {})
   const activeMode = hasCatalog ? mode : 'new'
@@ -118,12 +120,16 @@ function MaterialAddForm(props: MaterialAddDialogProps & {
           fieldErrors={fieldErrors}
           hexColor={hexColor}
           iconKey={iconKey}
+          labelName={labelName}
           labels={labels}
           name={name}
           onHexColorChange={setHexColor}
           onIconKeyChange={setIconKey}
+          onLabelNameChange={setLabelName}
           onNameChange={setName}
+          onPriceCopChange={setPriceCop}
           onWidthCmChange={setWidthCm}
+          priceCop={priceCop}
           widthCm={widthCm}
         />
       )}

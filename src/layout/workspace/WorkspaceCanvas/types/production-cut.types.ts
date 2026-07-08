@@ -18,6 +18,7 @@ export type ProductionMaterialPieces = {
   readonly materialColor: string
   readonly materialId: string
   readonly materialName: string
+  readonly materialPriceCop: number | null
   readonly materialWidthCm: number
   readonly iconKey: MaterialIconKey
   readonly pieces: readonly ProductionPieceDraft[]
@@ -47,6 +48,7 @@ export type ProductionCutSummary = {
   readonly materialColor: string
   readonly materialId: string
   readonly materialName: string
+  readonly materialPriceCop: number | null
   readonly sheets: readonly ProductionCutSheet[]
   readonly usedAreaMm2: number
   readonly wasteAreaMm2: number

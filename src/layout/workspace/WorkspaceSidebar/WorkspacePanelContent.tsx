@@ -26,6 +26,7 @@ import { CombinationsPanel } from './Combinations/CombinationsPanel'
 import { ConsumptionPanel } from './Consumption/ConsumptionPanel'
 import { MaterialsPanel } from './Materials/MaterialsPanel'
 import { PiecesPanel } from './Pieces/PiecesPanel'
+import { StickersPanel } from './Stickers/StickersPanel'
 
 type WorkspacePanelContentProps = {
   readonly catalogMaterials: readonly ProductWorkspaceMaterial[]
@@ -120,16 +121,6 @@ function UploadsPanelBody(): ReactElement {
   )
 }
 
-function StickersPanelBody(): ReactElement {
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      {[0, 1, 2, 3, 4, 5].map(index => (
-        <div className="aspect-[8/5] border border-dashed bg-muted/30" key={index} />
-      ))}
-    </div>
-  )
-}
-
 function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
   const {
     catalogMaterials,
@@ -181,6 +172,7 @@ function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
         pieces={pieces}
         productId={product.id}
         productMaterials={productMaterials}
+        productName={product.name}
       />
     )
   }
@@ -191,6 +183,7 @@ function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
         combinations={combinations}
         labels={labels}
         pieces={pieces}
+        product={product}
       />
     )
   }
@@ -200,7 +193,14 @@ function renderPanelBody(props: WorkspacePanelContentProps): ReactElement {
   }
 
   if (panel === 'stickers') {
-    return <StickersPanelBody />
+    return (
+      <StickersPanel
+        combinations={combinations}
+        labels={labels}
+        pieces={pieces}
+        productName={product.name}
+      />
+    )
   }
 
   return <ProductPanelBody />

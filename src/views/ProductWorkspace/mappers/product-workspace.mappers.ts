@@ -86,7 +86,9 @@ function toWorkspaceMaterial(material: MaterialRecord): ProductWorkspaceMaterial
     hexColor: material.hexColor,
     iconKey: material.iconKey,
     id: material.id,
+    labelName: material.labelName,
     name: material.name,
+    priceCop: material.priceCop,
     updatedAt: material.updatedAt.toISOString(),
     widthCm: material.widthCm
   }

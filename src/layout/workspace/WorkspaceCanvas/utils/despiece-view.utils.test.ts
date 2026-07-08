@@ -12,7 +12,9 @@ const globalMaterial: ProductWorkspaceProductMaterial = {
     hexColor: '#111111',
     iconKey: 'SwatchBook',
     id: 'material-one',
+    labelName: null,
     name: 'Canvas',
+    priceCop: null,
     updatedAt: '2026-07-06T12:00:00.000Z',
     widthCm: 140
   },
@@ -25,7 +27,9 @@ const combinationMaterial: ProductWorkspaceProductMaterial = {
     hexColor: '#0033ff',
     iconKey: 'SwatchBook',
     id: 'material-two',
+    labelName: null,
     name: 'Blue canvas',
+    priceCop: null,
     updatedAt: '2026-07-06T12:00:00.000Z',
     widthCm: 140
   },

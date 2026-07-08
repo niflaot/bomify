@@ -34,7 +34,9 @@ export type ProductWorkspaceMaterial = {
   readonly hexColor: string
   readonly iconKey: MaterialIconKey
   readonly id: string
+  readonly labelName: string | null
   readonly name: string
+  readonly priceCop: number | null
   readonly updatedAt: string
   readonly widthCm: number
 }
@@ -113,6 +115,7 @@ export type MaterialFormAction = (
 export type ProductWorkspaceMaterialActions = {
   readonly add: MaterialFormAction
   readonly delete: MaterialFormAction
+  readonly edit: MaterialFormAction
 }
 
 /**

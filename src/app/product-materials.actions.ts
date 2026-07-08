@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 
 import type { MaterialIconKey } from '@/core/constants/material-icons.constants'
-import { createMaterial } from '@/core/services/material/material.service'
+import { createMaterial, updateMaterial } from '@/core/services/material/material.service'
 import {
   attachProductMaterial,
   detachProductMaterial
@@ -40,6 +40,32 @@ function readIconKey(formData: FormData): MaterialIconKey {
   return readRequiredText(formData, 'iconKey')
 }
 
+function readOptionalPriceCop(formData: FormData): number | null {
+  const raw = formData.get('priceCop')
+
+  if (typeof raw !== 'string' || !raw.trim()) {
+    return null
+  }
+
+  const price = Number(raw)
+
+  if (!Number.isFinite(price)) {
+    throw new Error('priceCop must be a valid number')
+  }
+
+  return price
+}
+
+function readOptionalLabelName(formData: FormData): string | null {
+  const raw = formData.get('labelName')
+
+  if (typeof raw !== 'string' || !raw.trim()) {
+    return null
+  }
+
+  return raw
+}
+
 function toFormState(error: unknown): MaterialFormState {
   if (isUniqueConstraintError(error, ['product_id', 'material_id'])) {
     return createErrorState('This material is already attached to this product', {
@@ -69,6 +95,10 @@ function getMaterialFieldErrors(message: string): Record<string, string> | undef
     return { materialId: message }
   }
 
+  if (/price/i.test(message)) {
+    return { priceCop: message }
+  }
+
   return undefined
 }
 
@@ -90,7 +120,9 @@ export async function addProductMaterialAction(
       ? await createMaterial({
           hexColor: readRequiredText(formData, 'hexColor'),
           iconKey: readIconKey(formData),
+          labelName: readOptionalLabelName(formData),
           name: readRequiredText(formData, 'name'),
+          priceCop: readOptionalPriceCop(formData),
           widthCm: readWidthCm(formData)
         })
       : { id: readRequiredText(formData, 'materialId') }
@@ -98,6 +130,39 @@ export async function addProductMaterialAction(
     await attachProductMaterial({
       materialId: material.id,
       productId
+    })
+    revalidatePath(`/products/${productId}`)
+
+    return createSuccessState()
+  } catch (error) {
+    return toFormState(error)
+  }
+}
+
+/**
+ * Updates a global material's catalog data (name, color, width, icon,
+ * price). This affects every product that uses this material, not just
+ * the one the edit was opened from.
+ *
+ * @param _state - Previous form state.
+ * @param formData - Material edit form payload.
+ * @returns Form state describing the mutation result.
+ */
+export async function updateMaterialAction(
+  _state: MaterialFormState,
+  formData: FormData
+): Promise<MaterialFormState> {
+  try {
+    const productId = readRequiredText(formData, 'productId')
+    const materialId = readRequiredText(formData, 'materialId')
+
+    await updateMaterial(materialId, {
+      hexColor: readRequiredText(formData, 'hexColor'),
+      iconKey: readIconKey(formData),
+      labelName: readOptionalLabelName(formData),
+      name: readRequiredText(formData, 'name'),
+      priceCop: readOptionalPriceCop(formData),
+      widthCm: readWidthCm(formData)
     })
     revalidatePath(`/products/${productId}`)
 

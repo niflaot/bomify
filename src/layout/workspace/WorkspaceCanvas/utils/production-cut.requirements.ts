@@ -162,6 +162,7 @@ function toMaterialPieces(
     materialColor: material.material.hexColor,
     materialId: material.id,
     materialName: material.material.name,
+    materialPriceCop: material.material.priceCop,
     materialWidthCm: material.material.widthCm,
     pieces: drafts.map(draft => toProductionPiece(labels, draft))
   }

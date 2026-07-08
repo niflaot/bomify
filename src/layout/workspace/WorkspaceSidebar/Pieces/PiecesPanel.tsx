@@ -1,8 +1,11 @@
+'use client'
+
 import { Plus } from 'lucide-react'
 import type { ReactElement } from 'react'
 
 import { Button } from '@/components/ui/button'
 
+import { useProductWorkspace } from '@/views/ProductWorkspace/context/product-workspace.context'
 import type {
   ProductWorkspaceCombination,
   ProductWorkspaceLabels,
@@ -12,6 +15,7 @@ import type {
 } from '@/views/ProductWorkspace/types/product-workspace.types'
 import { PieceCard } from './PieceCard'
 import { PieceFormDialog } from './PieceFormDialog'
+import { PiecesListDialog } from './PiecesListDialog'
 
 type PiecesPanelProps = {
   readonly actions: ProductWorkspacePieceActions
@@ -20,6 +24,7 @@ type PiecesPanelProps = {
   readonly pieces: readonly ProductWorkspacePiece[]
   readonly productId: string
   readonly productMaterials: readonly ProductWorkspaceProductMaterial[]
+  readonly productName: string
 }
 
 function EmptyPieces(props: { readonly labels: ProductWorkspaceLabels }): ReactElement {
@@ -40,7 +45,11 @@ function EmptyPieces(props: { readonly labels: ProductWorkspaceLabels }): ReactE
  * @returns Pieces panel body.
  */
 export function PiecesPanel(props: PiecesPanelProps): ReactElement {
-  const { actions, combinations, labels, pieces, productId, productMaterials } = props
+  const { actions, combinations, labels, pieces, productId, productMaterials, productName } = props
+  const { activeCombinationId } = useProductWorkspace()
+  const activeCombination = combinations.find(combination =>
+    combination.id === activeCombinationId
+  ) ?? null
 
   return (
     <div className="grid gap-4">
@@ -57,6 +66,12 @@ export function PiecesPanel(props: PiecesPanelProps): ReactElement {
           </Button>
         }
         variant="create"
+      />
+      <PiecesListDialog
+        activeCombination={activeCombination}
+        labels={labels}
+        pieces={pieces}
+        productName={productName}
       />
 
       {pieces.length > 0 ? (

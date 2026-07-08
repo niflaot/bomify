@@ -4,6 +4,7 @@ import type { ReactElement } from 'react'
 import { useMemo, useState } from 'react'
 
 import { Input } from '@/components/ui/input'
+import { formatCop } from '@/core/utils/currency/currency.utils'
 
 import type {
   ProductWorkspaceLabels,
@@ -13,6 +14,7 @@ import type {
 } from '@/views/ProductWorkspace/types/product-workspace.types'
 import { MaterialAddDialog } from './MaterialAddDialog'
 import { MaterialDeleteDialog } from './MaterialDeleteDialog'
+import { MaterialEditDialog } from './MaterialEditDialog'
 import { MaterialSwatch } from './MaterialSwatch'
 
 type MaterialsPanelProps = {
@@ -44,11 +46,17 @@ function MaterialCard(props: {
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{material.name}</p>
           <p className="text-xs text-muted-foreground">
-            {material.widthCm} cm
+            {material.widthCm} cm · {formatCop(material.priceCop)}
           </p>
         </div>
       </div>
       <div className="flex justify-end gap-2">
+        <MaterialEditDialog
+          action={actions.edit}
+          labels={labels}
+          productId={productId}
+          productMaterial={productMaterial}
+        />
         <MaterialDeleteDialog
           action={actions.delete}
           labels={labels}

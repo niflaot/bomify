@@ -7,7 +7,9 @@ import type { MutationFormState } from './form-state.types'
 export type CreateMaterialInput = {
   readonly hexColor: string
   readonly iconKey: MaterialIconKey
+  readonly labelName?: string | null
   readonly name: string
+  readonly priceCop?: number | null
   readonly widthCm: number
 }
 
@@ -17,7 +19,9 @@ export type CreateMaterialInput = {
 export type UpdateMaterialInput = {
   readonly hexColor?: string
   readonly iconKey?: MaterialIconKey
+  readonly labelName?: string | null
   readonly name?: string
+  readonly priceCop?: number | null
   readonly widthCm?: number
 }
 
@@ -35,9 +39,11 @@ export type ListMaterialsInput = {
 export type MaterialRecord = {
   readonly id: string
   readonly name: string
+  readonly labelName: string | null
   readonly iconKey: MaterialIconKey
   readonly hexColor: string
   readonly widthCm: number
+  readonly priceCop: number | null
   readonly createdAt: Date
   readonly updatedAt: Date
   readonly deletedAt: Date | null

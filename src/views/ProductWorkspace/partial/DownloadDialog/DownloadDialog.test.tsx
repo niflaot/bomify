@@ -19,7 +19,9 @@ const productMaterial: ProductWorkspaceProductMaterial = {
     hexColor: '#111111',
     iconKey: 'SwatchBook',
     id: 'material-one',
+    labelName: null,
     name: 'Canvas',
+    priceCop: null,
     updatedAt: '2026-07-06T12:00:00.000Z',
     widthCm: 140
   },

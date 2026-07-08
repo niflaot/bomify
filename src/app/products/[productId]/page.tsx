@@ -10,7 +10,8 @@ import {
 } from '@/app/product-combinations.actions'
 import {
   addProductMaterialAction,
-  deleteProductMaterialAction
+  deleteProductMaterialAction,
+  updateMaterialAction
 } from '@/app/product-materials.actions'
 import {
   createPieceAction,
@@ -93,7 +94,8 @@ export default async function ProductWorkspacePage(
       labels={getWorkspaceLabels(t)}
       materialActions={{
         add: addProductMaterialAction,
-        delete: deleteProductMaterialAction
+        delete: deleteProductMaterialAction,
+        edit: updateMaterialAction
       }}
       pieceActions={{
         create: createPieceAction,

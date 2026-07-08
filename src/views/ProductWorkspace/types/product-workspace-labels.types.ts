@@ -41,6 +41,7 @@ export type ProductWorkspaceLabels = {
   readonly consumptionEmptyDescription: string
   readonly consumptionLength: string
   readonly consumptionMeters: string
+  readonly consumptionCost: string
   readonly consumptionPanelDescription: string
   readonly consumptionSheets: string
   readonly consumptionUnitsLabel: string
@@ -60,6 +61,8 @@ export type ProductWorkspaceLabels = {
   readonly downloadFormatDxf: string
   readonly downloadFormatLabel: string
   readonly downloadFormatPdf: string
+  readonly downloadMaterialsList: string
+  readonly downloadPiecesList: string
   readonly downloadScopeCombined: string
   readonly downloadScopeLabel: string
   readonly downloadScopePerMaterial: string
@@ -67,6 +70,7 @@ export type ProductWorkspaceLabels = {
   readonly downloadScopePerSheet: string
   readonly downloading: string
   readonly editCombination: string
+  readonly editMaterial: string
   readonly editPiece: string
   readonly export: string
   readonly formErrorToast: string
@@ -77,23 +81,36 @@ export type ProductWorkspaceLabels = {
   readonly materialColorLabel: string
   readonly materialDeleteDescription: string
   readonly materialDeleteTitle: string
+  readonly materialEditDescription: string
+  readonly materialEditTitle: string
+  readonly materialEditWarning: string
   readonly materialEmptyDescription: string
   readonly materialEmptyTitle: string
   readonly materialIconLabel: string
   readonly materialIconSearchLabel: string
   readonly materialIconSearchPlaceholder: string
+  readonly materialLabelNameLabel: string
+  readonly materialLabelNamePlaceholder: string
   readonly materialNameLabel: string
   readonly materialNamePlaceholder: string
+  readonly materialPriceLabel: string
+  readonly materialPricePlaceholder: string
   readonly materialRemovedToast: string
   readonly materialSavedToast: string
   readonly materialSelectLabel: string
   readonly materialWidthLabel: string
   readonly materialWidthPlaceholder: string
   readonly materials: string
+  readonly materialsListDialogDescription: string
+  readonly materialsListDialogTitle: string
   readonly materialsPanelDescription: string
   readonly newCatalogMaterial: string
   readonly noCombination: string
   readonly nextSheet: string
+  readonly pdfDownloadButton: string
+  readonly pdfPreviewError: string
+  readonly pdfPreviewLoading: string
+  readonly pdfPreviewPagesLabel: string
   readonly pieceAddMaterialRequirement: string
   readonly pieceCombinationScopeEmptyDescription: string
   readonly pieceDeleteDescription: string
@@ -123,6 +140,12 @@ export type ProductWorkspaceLabels = {
   readonly pieceScopeAllLabel: string
   readonly pieceWidthLabel: string
   readonly pieces: string
+  readonly piecesListDialogDescription: string
+  readonly piecesListDialogTitle: string
+  readonly piecesListGroupByLabel: string
+  readonly piecesListGroupByMaterial: string
+  readonly piecesListGroupByPiece: string
+  readonly piecesListShowThumbnails: string
   readonly piecesPanelDescription: string
   readonly previousSheet: string
   readonly product: string
@@ -138,6 +161,10 @@ export type ProductWorkspaceLabels = {
   readonly selectExistingMaterial: string
   readonly sidebarTitle: string
   readonly stickers: string
+  readonly stickersDialogDescription: string
+  readonly stickersDialogTitle: string
+  readonly stickersDownload: string
+  readonly stickersGapLabel: string
   readonly stickersPanelDescription: string
   readonly updated: string
   readonly uploads: string
